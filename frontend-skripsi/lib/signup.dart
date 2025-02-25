@@ -1,8 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:flutter_application_1/login.dart';
 
-class SignUpPage extends StatelessWidget {
+class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
+
+  @override
+  _SignUpPageState createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  bool _isLoading = false;
+
+  Future<void> _signUp() async {
+    final String email = _emailController.text.trim();
+    final String username = _usernameController.text.trim();
+    final String password = _passwordController.text.trim();
+
+    if (email.isEmpty || username.isEmpty || password.isEmpty) {
+      _showMessage('All fields are required');
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    final Uri url = Uri.parse('http://10.0.2.2:3005/user/register');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'name': username,
+          'password': password,
+        }),
+      );
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        _showMessage('Sign up successful!', success: true);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+        );
+      } else {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        _showMessage(responseData['message'] ?? 'Sign up failed');
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      _showMessage('Error: Unable to connect to the server');
+    }
+  }
+
+  void _showMessage(String message, {bool success = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: success ? Colors.green : Colors.red,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +120,9 @@ class SignUpPage extends StatelessWidget {
                     const SizedBox(height: 20),
 
                     // Email Field
-                    const TextField(
-                      decoration: InputDecoration(
+                    TextField(
+                      controller: _emailController,
+                      decoration: const InputDecoration(
                         labelText: 'Email :',
                         border: OutlineInputBorder(),
                       ),
@@ -58,8 +130,9 @@ class SignUpPage extends StatelessWidget {
                     const SizedBox(height: 15),
 
                     // Username Field
-                    const TextField(
-                      decoration: InputDecoration(
+                    TextField(
+                      controller: _usernameController,
+                      decoration: const InputDecoration(
                         labelText: 'Username :',
                         border: OutlineInputBorder(),
                       ),
@@ -67,13 +140,29 @@ class SignUpPage extends StatelessWidget {
                     const SizedBox(height: 15),
 
                     // Password Field
-                    const TextField(
+                    TextField(
+                      controller: _passwordController,
                       obscureText: true,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Password :',
                         border: OutlineInputBorder(),
                       ),
                     ),
+                    const SizedBox(height: 20),
+
+                    // Sign Up Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _isLoading ? null : _signUp,
+                        child: _isLoading
+                            ? const CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : const Text('Sign Up'),
+                      ),
+                    ),
+
                     const SizedBox(height: 20),
 
                     // Login Text
