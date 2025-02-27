@@ -168,6 +168,13 @@ class _SignUpPageState extends State<SignUpPage> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: _isLoading ? null : _signUp,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          textStyle: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
                         child: _isLoading
                             ? const CircularProgressIndicator(
                                 color: Colors.white,

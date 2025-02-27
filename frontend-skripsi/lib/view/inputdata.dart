@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_application_1/view/login.dart';
+import 'package:flutter_application_1/view/pickgoal.dart';
 
 class InputDataPage extends StatefulWidget {
   final String userId;
@@ -22,6 +22,7 @@ class _InputDataPage extends State<InputDataPage> {
   Future<void> _submitMeasurements() async {
     final String height = _heightController.text.trim();
     final String weight = _weightController.text.trim();
+    String setUserId = widget.userId;
 
     if (height.isEmpty || weight.isEmpty || _selectedGender == null) {
       _showMessage('All fields are required.');
@@ -33,7 +34,7 @@ class _InputDataPage extends State<InputDataPage> {
     });
 
     final Uri url =
-        Uri.parse('http://10.0.2.2:3005/user/measurements/${widget.userId}');
+        Uri.parse('http://10.0.2.2:3005/user/measurements/$setUserId');
 
     try {
       final response = await http.put(
@@ -55,7 +56,7 @@ class _InputDataPage extends State<InputDataPage> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  const LoginPage()), // Redirect after success
+                  PickGoalPage(userId: setUserId)), // Redirect after success
         );
       } else {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
@@ -182,6 +183,13 @@ class _InputDataPage extends State<InputDataPage> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: _isLoading ? null : _submitMeasurements,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          textStyle: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
                         child: _isLoading
                             ? const CircularProgressIndicator(
                                 color: Colors.white,
