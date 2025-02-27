@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/view/pickgoal.dart';
+import 'package:flutter_application_1/view/signup.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,9 +11,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: const PickGoalPage(
-          userId: '1',
-        ));
+        debugShowCheckedModeBanner: false, home: const SignUpPage());
   }
 }
