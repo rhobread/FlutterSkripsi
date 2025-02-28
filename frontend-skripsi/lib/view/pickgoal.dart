@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/view/picklocation.dart';
+import 'package:flutter_application_1/view/pickavailability.dart';
 
 class PickGoalPage extends StatefulWidget {
   final String userId;
@@ -34,7 +34,7 @@ class _PickGoalPageState extends State<PickGoalPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => PickLocationPage(userId: setUserId)),
+            builder: (context) => PickAvailabilityPage(userId: setUserId)),
       );
     } catch (e) {
       setState(() {
