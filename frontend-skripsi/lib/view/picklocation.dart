@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/view/login.dart';
+import 'package:flutter_application_1/view/pickequipment.dart';
 
 class PickLocationPage extends StatefulWidget {
   final String userId;
@@ -12,7 +12,7 @@ class PickLocationPage extends StatefulWidget {
 
 class _PickGoalPageState extends State<PickLocationPage> {
   bool _isLoading = false;
-  int _selectedLocation = -1; // -1 means no selection
+  int _selectedLocation = -1;
 
   final List<String> location = ["Gym", "Home"];
 
@@ -22,12 +22,20 @@ class _PickGoalPageState extends State<PickLocationPage> {
     });
 
     try {
+      bool isGymSelected = _selectedLocation == 0;
+
       setState(() {
         _isLoading = false;
       });
+
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LoginPage()),
+        MaterialPageRoute(
+          builder: (context) => PickEquipmentPage(
+            userId: widget.userId,
+            isGymSelected: isGymSelected,
+          ),
+        ),
       );
     } catch (e) {
       setState(() {
