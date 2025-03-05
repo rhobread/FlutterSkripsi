@@ -74,7 +74,7 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
     setState(() => _isLoading = true);
 
     try {
-      final response = await http.post(
+      final response = await http.put(
         Uri.parse('http://10.0.2.2:3005/user/equipments/${widget.userId}'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
