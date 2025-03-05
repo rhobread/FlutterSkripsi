@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_application_1/view/InitialView/login.dart';
-import 'package:flutter_application_1/view/InitialView/inputdata.dart';
+import 'package:flutter_application_1/view/InitialView/pickgoal_view.dart';
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+class InputDataPage extends StatefulWidget {
+  final String userId;
+
+  const InputDataPage({super.key, required this.userId});
 
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _InputDataPage createState() => _InputDataPage();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class _InputDataPage extends State<InputDataPage> {
+  final TextEditingController _heightController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
+  String? _selectedGender;
 
   bool _isLoading = false;
 
-  Future<void> _signUp() async {
-    final String email = _emailController.text.trim();
-    final String username = _usernameController.text.trim();
-    final String password = _passwordController.text.trim();
+  Future<void> _submitMeasurements() async {
+    final String height = _heightController.text.trim();
+    final String weight = _weightController.text.trim();
+    String setUserId = widget.userId;
 
-    if (email.isEmpty || username.isEmpty || password.isEmpty) {
-      _showMessage('All fields are required');
+    if (height.isEmpty || weight.isEmpty || _selectedGender == null) {
+      _showMessage('All fields are required.');
       return;
     }
 
@@ -32,16 +33,16 @@ class _SignUpPageState extends State<SignUpPage> {
       _isLoading = true;
     });
 
-    final Uri url = Uri.parse('http://10.0.2.2:3005/user/register');
+    final Uri url =
+        Uri.parse('http://10.0.2.2:3005/user/measurements/$setUserId');
 
     try {
-      final response = await http.post(
+      final response = await http.put(
         url,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'email': email,
-          'name': username,
-          'password': password,
+          'height': int.tryParse(height) ?? 0,
+          'weight': int.tryParse(weight) ?? 0,
         }),
       );
 
@@ -49,27 +50,18 @@ class _SignUpPageState extends State<SignUpPage> {
         _isLoading = false;
       });
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-
-        if (responseData.containsKey('data') &&
-            responseData['data'].containsKey('id')) {
-          String userId = responseData['data']['id'].toString();
-
-          _showMessage('Sign up successful!', success: true);
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => InputDataPage(userId: userId),
-            ),
-          );
-        } else {
-          _showMessage('User ID not found in response.');
-        }
+      if (response.statusCode == 200) {
+        _showMessage('Measurements updated successfully!', success: true);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  PickGoalPage(userId: setUserId)), // Redirect after success
+        );
       } else {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        _showMessage(responseData['message'] ?? 'Sign up failed');
+        _showMessage(
+            responseData['message'] ?? 'Failed to update measurements');
       }
     } catch (e) {
       setState(() {
@@ -122,9 +114,9 @@ class _SignUpPageState extends State<SignUpPage> {
                   children: [
                     const SizedBox(height: 30),
 
-                    // Sign Up Title
+                    // Title
                     const Text(
-                      'Sign Up',
+                      'Input your data!',
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -132,42 +124,65 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     const SizedBox(height: 20),
 
-                    // Email Field
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 20),
+                      child: const Text(
+                        'Used to generate your routines, won\'t be shared!',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+
+                    // Weight Field
                     TextField(
-                      controller: _emailController,
+                      controller: _weightController,
                       decoration: const InputDecoration(
-                        labelText: 'Email :',
+                        labelText: 'Weight (kg):',
                         border: OutlineInputBorder(),
                       ),
+                      keyboardType: TextInputType.number,
                     ),
                     const SizedBox(height: 15),
 
-                    // Username Field
+                    // Height Field
                     TextField(
-                      controller: _usernameController,
+                      controller: _heightController,
                       decoration: const InputDecoration(
-                        labelText: 'Username :',
+                        labelText: 'Height (cm):',
                         border: OutlineInputBorder(),
                       ),
+                      keyboardType: TextInputType.number,
                     ),
                     const SizedBox(height: 15),
 
-                    // Password Field
-                    TextField(
-                      controller: _passwordController,
-                      obscureText: true,
+                    // Gender Dropdown
+                    DropdownButtonFormField<String>(
+                      value: _selectedGender,
                       decoration: const InputDecoration(
-                        labelText: 'Password :',
+                        labelText: 'Gender:',
                         border: OutlineInputBorder(),
                       ),
+                      items: ['Male', 'Female'].map((String gender) {
+                        return DropdownMenuItem<String>(
+                          value: gender,
+                          child: Text(gender),
+                        );
+                      }).toList(),
+                      onChanged: (String? value) {
+                        setState(() {
+                          _selectedGender = value;
+                        });
+                      },
                     ),
                     const SizedBox(height: 20),
 
-                    // Sign Up Button
+                    // Submit Button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: _isLoading ? null : _signUp,
+                        onPressed: _isLoading ? null : _submitMeasurements,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
                           foregroundColor: Colors.white,
@@ -179,38 +194,11 @@ class _SignUpPageState extends State<SignUpPage> {
                             ? const CircularProgressIndicator(
                                 color: Colors.white,
                               )
-                            : const Text('Sign Up'),
+                            : const Text('Continue'),
                       ),
                     ),
 
                     const SizedBox(height: 20),
-
-                    // Login Text
-                    const Text(
-                      'Already have an account?',
-                      style: TextStyle(fontSize: 14),
-                    ),
-
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
-                          ),
-                        );
-                      },
-                      child: const Text(
-                        'Log In',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 30),
                   ],
                 ),
               ),

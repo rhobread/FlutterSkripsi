@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/view/InitialView/pickavailability.dart';
+import 'package:flutter_application_1/view/InitialView/pickavailability_view.dart';
 
 class PickGoalPage extends StatefulWidget {
   final String userId;

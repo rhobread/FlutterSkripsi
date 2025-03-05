@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/view/InitialView/signup.dart';
+import 'package:flutter_application_1/view/HomeView/home_view.dart';
+// import 'package:flutter_application_1/view/InitialView/signup.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,6 +12,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false, home: const SignUpPage());
+        debugShowCheckedModeBanner: false, home: const HomePage());
   }
 }

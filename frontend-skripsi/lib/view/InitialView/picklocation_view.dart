@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/view/InitialView/pickequipment.dart';
+import 'package:flutter_application_1/view/InitialView/pickequipment_view.dart';
 
 class PickLocationPage extends StatefulWidget {
   final String userId;
