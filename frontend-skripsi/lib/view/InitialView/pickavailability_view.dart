@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:flutter_application_1/view/InitialView/picklocation_view.dart';
+import 'package:flutter_application_1/service/InitialService/pickavailability_service.dart';
 
 class PickAvailabilityPage extends StatefulWidget {
   final String userId;
@@ -27,6 +25,9 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
   final Map<int, TextEditingController> _minutesControllers = {};
   bool _isLoading = false;
 
+  final PickAvailabilityService _pickAvailabilityService =
+      PickAvailabilityService();
+
   @override
   void initState() {
     super.initState();
@@ -36,63 +37,19 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
     }
   }
 
-  Future<void> _submitAvailability() async {
-    List<int> daysAvailable = [];
-    List<int> minutesAvailable = [];
-    String setUserId = widget.userId;
-
-    for (int i = 0; i < 7; i++) {
-      if (_selectedDays[i] == true) {
-        daysAvailable.add(i);
-        minutesAvailable.add(int.tryParse(_minutesControllers[i]!.text) ?? 0);
-      }
-    }
-
+  void _setLoading(bool value) {
     setState(() {
-      _isLoading = true;
+      _isLoading = value;
     });
-
-    final Uri url =
-        Uri.parse('http://10.0.2.2:3005/user/availabilities/${widget.userId}');
-
-    try {
-      final response = await http.put(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'days_available': daysAvailable,
-          'minutes_available': minutesAvailable,
-        }),
-      );
-
-      setState(() {
-        _isLoading = false;
-      });
-
-      if (response.statusCode == 200) {
-        _showMessage('Availability updated successfully!', success: true);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => PickLocationPage(userId: setUserId)),
-        );
-      } else {
-        _showMessage('Failed to update availability');
-      }
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      _showMessage('Error: Unable to connect to the server');
-    }
   }
 
-  void _showMessage(String message, {bool success = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: success ? Colors.green : Colors.red,
-      ),
+  void _submitAvailability() {
+    _pickAvailabilityService.submitAvailability(
+      context: context,
+      userId: widget.userId,
+      selectedDays: _selectedDays,
+      minutesControllers: _minutesControllers,
+      setLoading: _setLoading,
     );
   }
 
@@ -125,7 +82,6 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               child: Column(
                 children: [
-                  // Title with subtitle
                   const Text(
                     'Select Your Availability',
                     style: TextStyle(
@@ -144,7 +100,6 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
-
                   Column(
                     children: displayOrder.map((index) {
                       return Padding(
@@ -159,7 +114,7 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
                                 });
                               },
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Expanded(
                               flex: 3,
                               child: Text(
@@ -170,18 +125,17 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
                             Expanded(
                               flex: 2,
                               child: SizedBox(
-                                height: 50, // Adjusted height for a better look
+                                height: 50,
                                 child: TextField(
                                   controller: _minutesControllers[index],
                                   keyboardType: TextInputType.number,
                                   enabled: _selectedDays[index],
                                   textAlign: TextAlign.center,
                                   decoration: const InputDecoration(
-                                    labelText:
-                                        'Minutes', // Floating label effect
+                                    labelText: 'Minutes',
                                     border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(8)), // Rounded border
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
                                     ),
                                   ),
                                 ),
@@ -193,8 +147,6 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
                     }).toList(),
                   ),
                   const SizedBox(height: 20),
-
-                  // Submit button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -204,7 +156,9 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         textStyle: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),

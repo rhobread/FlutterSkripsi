@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:flutter_application_1/view/InitialView/pickgoal_view.dart';
+import 'package:flutter_application_1/service/InitialService/inputdata_service.dart';
 
 class InputDataPage extends StatefulWidget {
   final String userId;
@@ -16,67 +14,27 @@ class _InputDataPage extends State<InputDataPage> {
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
   String? _selectedGender;
-
   bool _isLoading = false;
 
-  Future<void> _submitMeasurements() async {
-    final String height = _heightController.text.trim();
-    final String weight = _weightController.text.trim();
-    String setUserId = widget.userId;
+  final InputDataService _inputDataService = InputDataService();
 
-    if (height.isEmpty || weight.isEmpty || _selectedGender == null) {
-      _showMessage('All fields are required.');
-      return;
-    }
-
+  void _setLoading(bool value) {
     setState(() {
-      _isLoading = true;
+      _isLoading = value;
     });
-
-    final Uri url =
-        Uri.parse('http://10.0.2.2:3005/user/measurements/$setUserId');
-
-    try {
-      final response = await http.put(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'height': int.tryParse(height) ?? 0,
-          'weight': int.tryParse(weight) ?? 0,
-        }),
-      );
-
-      setState(() {
-        _isLoading = false;
-      });
-
-      if (response.statusCode == 200) {
-        _showMessage('Measurements updated successfully!', success: true);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  PickGoalPage(userId: setUserId)), // Redirect after success
-        );
-      } else {
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-        _showMessage(
-            responseData['message'] ?? 'Failed to update measurements');
-      }
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      _showMessage('Error: Unable to connect to the server');
-    }
   }
 
-  void _showMessage(String message, {bool success = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: success ? Colors.green : Colors.red,
-      ),
+  void _submitMeasurements() {
+    final String height = _heightController.text.trim();
+    final String weight = _weightController.text.trim();
+
+    _inputDataService.submitMeasurements(
+      context: context,
+      userId: widget.userId,
+      height: height,
+      weight: weight,
+      selectedGender: _selectedGender,
+      setLoading: _setLoading,
     );
   }
 
@@ -103,7 +61,6 @@ class _InputDataPage extends State<InputDataPage> {
               ),
             ),
           ),
-
           // Scrollable Form
           Expanded(
             child: SingleChildScrollView(
@@ -113,8 +70,6 @@ class _InputDataPage extends State<InputDataPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 30),
-
-                    // Title
                     const Text(
                       'Input your data!',
                       style: TextStyle(
@@ -123,7 +78,6 @@ class _InputDataPage extends State<InputDataPage> {
                       ),
                     ),
                     const SizedBox(height: 20),
-
                     Container(
                       margin: const EdgeInsets.only(bottom: 20),
                       child: const Text(
@@ -134,7 +88,6 @@ class _InputDataPage extends State<InputDataPage> {
                         ),
                       ),
                     ),
-
                     // Weight Field
                     TextField(
                       controller: _weightController,
@@ -145,7 +98,6 @@ class _InputDataPage extends State<InputDataPage> {
                       keyboardType: TextInputType.number,
                     ),
                     const SizedBox(height: 15),
-
                     // Height Field
                     TextField(
                       controller: _heightController,
@@ -156,7 +108,6 @@ class _InputDataPage extends State<InputDataPage> {
                       keyboardType: TextInputType.number,
                     ),
                     const SizedBox(height: 15),
-
                     // Gender Dropdown
                     DropdownButtonFormField<String>(
                       value: _selectedGender,
@@ -177,7 +128,6 @@ class _InputDataPage extends State<InputDataPage> {
                       },
                     ),
                     const SizedBox(height: 20),
-
                     // Submit Button
                     SizedBox(
                       width: double.infinity,
@@ -197,14 +147,12 @@ class _InputDataPage extends State<InputDataPage> {
                             : const Text('Continue'),
                       ),
                     ),
-
                     const SizedBox(height: 20),
                   ],
                 ),
               ),
             ),
           ),
-
           // Black Footer
           Container(
             color: Colors.black,

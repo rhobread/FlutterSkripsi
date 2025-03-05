@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:flutter_application_1/service/InitialService/pickequipment_service.dart';
 
 class PickEquipmentPage extends StatefulWidget {
   final String userId;
@@ -21,43 +20,25 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
   Set<int> _selectedEquipment = {};
   bool _isLoading = false;
 
+  final PickEquipmentService _pickEquipmentService = PickEquipmentService();
+
   @override
   void initState() {
     super.initState();
-    _fetchEquipments();
+    _initializeEquipment();
   }
 
-  Future<void> _fetchEquipments() async {
-    try {
-      final response = await http.get(
-        Uri.parse('http://10.0.2.2:3005/workout/equipments'),
-      );
-
-      if (response.statusCode == 200) {
-        final jsonBody = jsonDecode(response.body) as Map<String, dynamic>;
-        final List<dynamic> data = jsonBody['data'];
-
-        setState(() {
-          _equipmentList = data.map((item) {
-            return {
-              'id': item['id'],
-              'name': item['name'],
-              'image': 'lib/assets/${item['image']}',
-            };
-          }).toList();
-
-          if (widget.isGymSelected) {
-            _selectedEquipment =
-                _equipmentList.map<int>((e) => e['id']).toSet();
-          }
-        });
-      } else {
-        _showMessage(
-            'Error fetching equipment. (Status: ${response.statusCode})');
+  void _initializeEquipment() async {
+    List<Map<String, dynamic>> equipments = await _pickEquipmentService.fetchEquipments(
+      context: context,
+      isGymSelected: widget.isGymSelected,
+    );
+    setState(() {
+      _equipmentList = equipments;
+      if (widget.isGymSelected) {
+        _selectedEquipment = _equipmentList.map<int>((e) => e['id'] as int).toSet();
       }
-    } catch (e) {
-      _showMessage('Error fetching equipment: $e');
-    }
+    });
   }
 
   void _toggleSelection(int id) {
@@ -70,37 +51,18 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
     });
   }
 
-  Future<void> _submitSelection() async {
-    setState(() => _isLoading = true);
-
-    try {
-      final response = await http.put(
-        Uri.parse('http://10.0.2.2:3005/user/equipments/${widget.userId}'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'equipmentIds': _selectedEquipment.toList(),
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        _showMessage('Equipment saved successfully!', success: true);
-      } else {
-        _showMessage(
-            'Error saving selection. (Status: ${response.statusCode})');
-      }
-    } catch (e) {
-      _showMessage('Network error: $e');
-    }
-
-    setState(() => _isLoading = false);
+  void _setLoading(bool value) {
+    setState(() {
+      _isLoading = value;
+    });
   }
 
-  void _showMessage(String message, {bool success = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: success ? Colors.green : Colors.red,
-      ),
+  void _submitSelection() {
+    _pickEquipmentService.submitEquipmentSelection(
+      context: context,
+      userId: widget.userId,
+      selectedEquipment: _selectedEquipment,
+      setLoading: _setLoading,
     );
   }
 
@@ -145,8 +107,7 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: GridView.builder(
                       itemCount: _equipmentList.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
@@ -154,9 +115,7 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
                       ),
                       itemBuilder: (context, index) {
                         final item = _equipmentList[index];
-                        final isSelected =
-                            _selectedEquipment.contains(item['id']);
-
+                        final isSelected = _selectedEquipment.contains(item['id']);
                         return GestureDetector(
                           onTap: () => _toggleSelection(item['id']),
                           child: Card(
@@ -186,9 +145,7 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
                                         item['name'],
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          color: isSelected
-                                              ? Colors.white
-                                              : Colors.black,
+                                          color: isSelected ? Colors.white : Colors.black,
                                           fontSize: 14,
                                         ),
                                         overflow: TextOverflow.ellipsis,
@@ -212,15 +169,12 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
                                       child: Image.asset(
                                         item['image'],
                                         fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
+                                        errorBuilder: (context, error, stackTrace) {
                                           return Center(
                                             child: Text(
                                               'No image',
                                               style: TextStyle(
-                                                color: isSelected
-                                                    ? Colors.white
-                                                    : Colors.black,
+                                                color: isSelected ? Colors.white : Colors.black,
                                               ),
                                             ),
                                           );
@@ -247,8 +201,7 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 15),
-                  textStyle: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
+                  textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 child: _isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
