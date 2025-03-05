@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/service/CommonService/common_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_application_1/view/InitialView/pickgoal_view.dart';
 
@@ -14,7 +15,7 @@ class InputDataService {
   }) async {
     // Validate input fields
     if (height.isEmpty || weight.isEmpty || selectedGender == null) {
-      _showMessage(context, 'All fields are required.');
+      showSnackBarMessage(context, 'All fields are required.');
       return;
     }
 
@@ -34,7 +35,7 @@ class InputDataService {
       setLoading(false);
 
       if (response.statusCode == 200) {
-        _showMessage(context, 'Measurements updated successfully!',
+        showSnackBarMessage(context, 'Measurements updated successfully!',
             success: true);
         Navigator.pushReplacement(
           context,
@@ -44,22 +45,13 @@ class InputDataService {
         );
       } else {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        _showMessage(context,
+        showSnackBarMessage(context,
             responseData['message'] ?? 'Failed to update measurements');
       }
     } catch (e) {
       setLoading(false);
-      _showMessage(context, 'Error: Unable to connect to the server');
+      showSnackBarMessage(context, 'Error: Unable to connect to the server');
     }
   }
 
-  void _showMessage(BuildContext context, String message,
-      {bool success = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: success ? Colors.green : Colors.red,
-      ),
-    );
-  }
 }

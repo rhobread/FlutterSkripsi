@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_application_1/view/HomeView/home_view.dart';
+import 'package:flutter_application_1/service/CommonService/common_service.dart';
 
 class PickEquipmentService {
   Future<List<Map<String, dynamic>>> fetchEquipments({
@@ -27,11 +28,12 @@ class PickEquipmentService {
 
         return equipmentList;
       } else {
-        _showMessage(context, 'Error fetching equipment. (Status: ${response.statusCode})');
+        showSnackBarMessage(context,
+            'Error fetching equipment. (Status: ${response.statusCode})');
         return [];
       }
     } catch (e) {
-      _showMessage(context, 'Error fetching equipment: $e');
+      showSnackBarMessage(context, 'Error fetching equipment: $e');
       return [];
     }
   }
@@ -53,27 +55,20 @@ class PickEquipmentService {
       );
 
       if (response.statusCode == 200) {
-        _showMessage(context, 'Equipment saved successfully!', success: true);
+        showSnackBarMessage(context, 'Equipment saved successfully!',
+            success: true);
         // Navigate to HomePage on success
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
         );
       } else {
-        _showMessage(context, 'Error saving selection. (Status: ${response.statusCode})');
+        showSnackBarMessage(context,
+            'Error saving selection. (Status: ${response.statusCode})');
       }
     } catch (e) {
-      _showMessage(context, 'Network error: $e');
+      showSnackBarMessage(context, 'Network error: $e');
     }
     setLoading(false);
-  }
-
-  void _showMessage(BuildContext context, String message, {bool success = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: success ? Colors.green : Colors.red,
-      ),
-    );
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/service/CommonService/common_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_application_1/view/InitialView/picklocation_view.dart';
 
@@ -36,7 +37,7 @@ class PickAvailabilityService {
       setLoading(false);
 
       if (response.statusCode == 200) {
-        _showMessage(context, 'Availability updated successfully!',
+        showSnackBarMessage(context, 'Availability updated successfully!',
             success: true);
         Navigator.pushReplacement(
           context,
@@ -45,21 +46,11 @@ class PickAvailabilityService {
           ),
         );
       } else {
-        _showMessage(context, 'Failed to update availability');
+        showSnackBarMessage(context, 'Failed to update availability');
       }
     } catch (e) {
       setLoading(false);
-      _showMessage(context, 'Error: Unable to connect to the server');
+      showSnackBarMessage(context, 'Error: Unable to connect to the server');
     }
-  }
-
-  void _showMessage(BuildContext context, String message,
-      {bool success = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: success ? Colors.green : Colors.red,
-      ),
-    );
   }
 }

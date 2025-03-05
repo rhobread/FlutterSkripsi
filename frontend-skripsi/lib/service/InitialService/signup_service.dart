@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_application_1/service/CommonService/common_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/view/InitialView/inputdata_view.dart';
@@ -10,14 +11,13 @@ class SignUpService {
     required TextEditingController usernameController,
     required TextEditingController passwordController,
     required Function(bool) setLoading,
-  }) 
-  async {
+  }) async {
     final String email = emailController.text.trim();
     final String username = usernameController.text.trim();
     final String password = passwordController.text.trim();
 
     if (email.isEmpty || username.isEmpty || password.isEmpty) {
-      _showMessage(context, 'All fields are required');
+      showSnackBarMessage(context, 'All fields are required');
       return;
     }
 
@@ -42,32 +42,23 @@ class SignUpService {
         if (responseData.containsKey('data') &&
             responseData['data'].containsKey('id')) {
           String userId = responseData['data']['id'].toString();
-          _showMessage(context, 'Sign up successful!', success: true);
+          showSnackBarMessage(context, 'Sign up successful!', success: true);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => InputDataPage(userId: userId)),
           );
         } else {
-          _showMessage(context, 'User ID not found in response.');
+          showSnackBarMessage(context, 'User ID not found in response.');
         }
       } else {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        _showMessage(context, responseData['message'] ?? 'Sign up failed');
+        showSnackBarMessage(
+            context, responseData['message'] ?? 'Sign up failed');
       }
     } catch (e) {
       setLoading(false);
-      _showMessage(context, 'Error: Unable to connect to the server');
+      showSnackBarMessage(context, 'Error: Unable to connect to the server');
     }
-  }
-
-  void _showMessage(BuildContext context, String message,
-      {bool success = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: success ? Colors.green : Colors.red,
-      ),
-    );
   }
 }

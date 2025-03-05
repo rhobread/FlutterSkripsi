@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/service/CommonService/common_service.dart';
 import 'package:flutter_application_1/view/InitialView/pickequipment_view.dart';
 
 class PickLocationService {
@@ -24,17 +25,7 @@ class PickLocationService {
       );
     } catch (e) {
       setLoading(false);
-      _showMessage(context, 'Error: Unable to connect to the server');
+      showSnackBarMessage(context, 'Error: Unable to connect to the server');
     }
-  }
-
-  void _showMessage(BuildContext context, String message,
-      {bool success = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: success ? Colors.green : Colors.red,
-      ),
-    );
   }
 }
