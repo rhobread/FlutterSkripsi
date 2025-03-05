@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/view/signup.dart';
+import 'package:flutter_application_1/view/InitialView/signup.dart';
 
 void main() {
   runApp(const MyApp());

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_application_1/view/login.dart';
-import 'package:flutter_application_1/view/inputdata.dart';
+import 'package:flutter_application_1/view/InitialView/login.dart';
+import 'package:flutter_application_1/view/InitialView/inputdata.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});

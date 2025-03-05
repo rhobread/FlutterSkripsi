@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_application_1/view/picklocation.dart';
+import 'package:flutter_application_1/view/InitialView/picklocation.dart';
 
 class PickAvailabilityPage extends StatefulWidget {
   final String userId;

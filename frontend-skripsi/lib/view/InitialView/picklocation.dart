@@ -1,40 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/view/pickavailability.dart';
+import 'package:flutter_application_1/view/InitialView/pickequipment.dart';
 
-class PickGoalPage extends StatefulWidget {
+class PickLocationPage extends StatefulWidget {
   final String userId;
 
-  const PickGoalPage({super.key, required this.userId});
+  const PickLocationPage({super.key, required this.userId});
 
   @override
   _PickGoalPageState createState() => _PickGoalPageState();
 }
 
-class _PickGoalPageState extends State<PickGoalPage> {
+class _PickGoalPageState extends State<PickLocationPage> {
   bool _isLoading = false;
-  int _selectedGoal = -1; // -1 means no selection
+  int _selectedLocation = -1;
 
-  final List<String> goals = [
-    "Maintenance",
-    "Muscle Gain / Bulking",
-    "Weight Loss"
-  ];
+  final List<String> location = ["Gym", "Home"];
 
   Future<void> _continueNextPage() async {
-    String setUserId = widget.userId;
     setState(() {
       _isLoading = true;
     });
 
     try {
+      bool isGymSelected = _selectedLocation == 0;
+
       setState(() {
         _isLoading = false;
       });
-      _showMessage('Goal Picked!', success: true);
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => PickAvailabilityPage(userId: setUserId)),
+          builder: (context) => PickEquipmentPage(
+            userId: widget.userId,
+            isGymSelected: isGymSelected,
+          ),
+        ),
       );
     } catch (e) {
       setState(() {
@@ -55,7 +56,7 @@ class _PickGoalPageState extends State<PickGoalPage> {
 
   void _selectGoal(int index) {
     setState(() {
-      _selectedGoal = index;
+      _selectedLocation = index;
     });
   }
 
@@ -114,14 +115,14 @@ class _PickGoalPageState extends State<PickGoalPage> {
                     const SizedBox(height: 20),
 
                     // Goal Selection Buttons
-                    for (int i = 0; i < goals.length; i++)
+                    for (int i = 0; i < location.length; i++)
                       Container(
                         margin: const EdgeInsets.only(bottom: 10),
                         width: double.infinity,
                         child: OutlinedButton(
                           onPressed: () => _selectGoal(i),
                           style: OutlinedButton.styleFrom(
-                            backgroundColor: _selectedGoal == i
+                            backgroundColor: _selectedLocation == i
                                 ? Colors.black
                                 : Colors.white,
                             side:
@@ -129,11 +130,11 @@ class _PickGoalPageState extends State<PickGoalPage> {
                             padding: const EdgeInsets.symmetric(vertical: 15),
                           ),
                           child: Text(
-                            goals[i],
+                            location[i],
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: _selectedGoal == i
+                              color: _selectedLocation == i
                                   ? Colors.white
                                   : Colors.black,
                             ),
@@ -147,7 +148,7 @@ class _PickGoalPageState extends State<PickGoalPage> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: _selectedGoal == -1 || _isLoading
+                        onPressed: _selectedLocation == -1 || _isLoading
                             ? null
                             : _continueNextPage,
                         style: ElevatedButton.styleFrom(

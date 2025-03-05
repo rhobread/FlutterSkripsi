@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_application_1/view/pickgoal.dart';
+import 'package:flutter_application_1/view/InitialView/pickgoal.dart';
 
 class InputDataPage extends StatefulWidget {
   final String userId;
