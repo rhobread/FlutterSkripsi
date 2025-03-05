@@ -1,57 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/view/InitialView/pickequipment_view.dart';
+import 'package:flutter_application_1/service/InitialService/picklocation_service.dart';
 
 class PickLocationPage extends StatefulWidget {
   final String userId;
-
   const PickLocationPage({super.key, required this.userId});
 
   @override
-  _PickGoalPageState createState() => _PickGoalPageState();
+  _PickLocationPageState createState() => _PickLocationPageState();
 }
 
-class _PickGoalPageState extends State<PickLocationPage> {
+class _PickLocationPageState extends State<PickLocationPage> {
+  final PickLocationService _pickLocationService = PickLocationService();
   bool _isLoading = false;
   int _selectedLocation = -1;
 
   final List<String> location = ["Gym", "Home"];
 
-  Future<void> _continueNextPage() async {
+  void _setLoading(bool value) {
     setState(() {
-      _isLoading = true;
+      _isLoading = value;
     });
-
-    try {
-      bool isGymSelected = _selectedLocation == 0;
-
-      setState(() {
-        _isLoading = false;
-      });
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PickEquipmentPage(
-            userId: widget.userId,
-            isGymSelected: isGymSelected,
-          ),
-        ),
-      );
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      _showMessage('Error: Unable to connect to the server');
-    }
-  }
-
-  void _showMessage(String message, {bool success = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: success ? Colors.green : Colors.red,
-      ),
-    );
   }
 
   void _selectGoal(int index) {
@@ -66,7 +34,6 @@ class _PickGoalPageState extends State<PickLocationPage> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          // Black Header
           Container(
             color: Colors.black,
             height: 100,
@@ -83,8 +50,6 @@ class _PickGoalPageState extends State<PickLocationPage> {
               ),
             ),
           ),
-
-          // Scrollable Form
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
@@ -93,8 +58,6 @@ class _PickGoalPageState extends State<PickLocationPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 30),
-
-                    // Title
                     const Text(
                       'Pick your goal!',
                       style: TextStyle(
@@ -103,7 +66,6 @@ class _PickGoalPageState extends State<PickLocationPage> {
                       ),
                     ),
                     const SizedBox(height: 10),
-
                     const Text(
                       'Used to generate your routines, won\'t be shared!',
                       style: TextStyle(
@@ -113,8 +75,6 @@ class _PickGoalPageState extends State<PickLocationPage> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 20),
-
-                    // Goal Selection Buttons
                     for (int i = 0; i < location.length; i++)
                       Container(
                         margin: const EdgeInsets.only(bottom: 10),
@@ -141,16 +101,18 @@ class _PickGoalPageState extends State<PickLocationPage> {
                           ),
                         ),
                       ),
-
                     const SizedBox(height: 20),
-
-                    // Continue Button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: _selectedLocation == -1 || _isLoading
                             ? null
-                            : _continueNextPage,
+                            : () => _pickLocationService.continueNextPage(
+                                  context: context,
+                                  userId: widget.userId,
+                                  selectedLocation: _selectedLocation,
+                                  setLoading: _setLoading,
+                                ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
                           foregroundColor: Colors.white,
@@ -170,8 +132,6 @@ class _PickGoalPageState extends State<PickLocationPage> {
               ),
             ),
           ),
-
-          // Black Footer
           Container(
             color: Colors.black,
             height: 30,

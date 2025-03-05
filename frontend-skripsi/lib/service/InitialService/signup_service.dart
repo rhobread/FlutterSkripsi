@@ -10,7 +10,8 @@ class SignUpService {
     required TextEditingController usernameController,
     required TextEditingController passwordController,
     required Function(bool) setLoading,
-  }) async {
+  }) 
+  async {
     final String email = emailController.text.trim();
     final String username = usernameController.text.trim();
     final String password = passwordController.text.trim();

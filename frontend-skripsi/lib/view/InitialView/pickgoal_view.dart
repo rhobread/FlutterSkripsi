@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/view/InitialView/pickavailability_view.dart';
+import 'package:flutter_application_1/service/InitialService/pickgoal_service.dart';
 
 class PickGoalPage extends StatefulWidget {
   final String userId;
@@ -11,52 +11,12 @@ class PickGoalPage extends StatefulWidget {
 }
 
 class _PickGoalPageState extends State<PickGoalPage> {
-  bool _isLoading = false;
-  int _selectedGoal = -1; // -1 means no selection
+  late PickGoalController _controller;
 
-  final List<String> goals = [
-    "Maintenance",
-    "Muscle Gain / Bulking",
-    "Weight Loss"
-  ];
-
-  Future<void> _continueNextPage() async {
-    String setUserId = widget.userId;
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      setState(() {
-        _isLoading = false;
-      });
-      _showMessage('Goal Picked!', success: true);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => PickAvailabilityPage(userId: setUserId)),
-      );
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      _showMessage('Error: Unable to connect to the server');
-    }
-  }
-
-  void _showMessage(String message, {bool success = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: success ? Colors.green : Colors.red,
-      ),
-    );
-  }
-
-  void _selectGoal(int index) {
-    setState(() {
-      _selectedGoal = index;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _controller = PickGoalController(widget.userId, context);
   }
 
   @override
@@ -114,14 +74,16 @@ class _PickGoalPageState extends State<PickGoalPage> {
                     const SizedBox(height: 20),
 
                     // Goal Selection Buttons
-                    for (int i = 0; i < goals.length; i++)
+                    for (int i = 0; i < _controller.goals.length; i++)
                       Container(
                         margin: const EdgeInsets.only(bottom: 10),
                         width: double.infinity,
                         child: OutlinedButton(
-                          onPressed: () => _selectGoal(i),
+                          onPressed: () => setState(() {
+                            _controller.selectGoal(i);
+                          }),
                           style: OutlinedButton.styleFrom(
-                            backgroundColor: _selectedGoal == i
+                            backgroundColor: _controller.selectedGoal == i
                                 ? Colors.black
                                 : Colors.white,
                             side:
@@ -129,11 +91,11 @@ class _PickGoalPageState extends State<PickGoalPage> {
                             padding: const EdgeInsets.symmetric(vertical: 15),
                           ),
                           child: Text(
-                            goals[i],
+                            _controller.goals[i],
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: _selectedGoal == i
+                              color: _controller.selectedGoal == i
                                   ? Colors.white
                                   : Colors.black,
                             ),
@@ -147,9 +109,18 @@ class _PickGoalPageState extends State<PickGoalPage> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: _selectedGoal == -1 || _isLoading
+                        onPressed: _controller.selectedGoal == -1 ||
+                                _controller.isLoading
                             ? null
-                            : _continueNextPage,
+                            : () async {
+                                setState(() {
+                                  _controller.isLoading = true;
+                                });
+                                await _controller.continueNextPage();
+                                setState(() {
+                                  _controller.isLoading = false;
+                                });
+                              },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
                           foregroundColor: Colors.white,
@@ -157,7 +128,7 @@ class _PickGoalPageState extends State<PickGoalPage> {
                           textStyle: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
-                        child: _isLoading
+                        child: _controller.isLoading
                             ? const CircularProgressIndicator(
                                 color: Colors.white,
                               )
