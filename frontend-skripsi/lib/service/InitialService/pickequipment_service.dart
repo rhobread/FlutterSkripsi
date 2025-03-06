@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -55,16 +57,38 @@ class PickEquipmentService {
       );
 
       if (response.statusCode == 200) {
-        showSnackBarMessage(context, 'Equipment saved successfully!',
-            success: true);
-        // Navigate to HomePage on success
-        Navigator.pushReplacement(
+        showSnackBarMessage(
           context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+          'Equipment saved successfully! Generating your workout...',
+          success: true,
         );
+
+        final workoutResponse = await generateWorkoutPlan(userId: userId);
+
+        if (workoutResponse.statusCode == 200) {
+          showSnackBarMessage(
+            context,
+            'Workout generated successfully!',
+            success: true,
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomePage(
+                      userId: userId,
+                    )),
+          );
+        } else {
+          showSnackBarMessage(
+            context,
+            'Error generating workout. (Status: ${workoutResponse.statusCode})',
+          );
+        }
       } else {
-        showSnackBarMessage(context,
-            'Error saving selection. (Status: ${response.statusCode})');
+        showSnackBarMessage(
+          context,
+          'Error saving selection. (Status: ${response.statusCode})',
+        );
       }
     } catch (e) {
       showSnackBarMessage(context, 'Network error: $e');
