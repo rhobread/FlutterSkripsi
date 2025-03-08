@@ -1,8 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/service/InitialService/login_service.dart';
 import 'package:flutter_application_1/view/InitialView/signup_view.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  _LogInPageState createState() => _LogInPageState();
+}
+
+class _LogInPageState extends State<LoginPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  bool _isLoading = false;
+  final LoginService _logInService = LoginService();
+
+  void _setLoading(bool value) {
+    setState(() {
+      _isLoading = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +28,6 @@ class LoginPage extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          // Black Header
           Container(
             color: Colors.black,
             height: 100,
@@ -27,8 +44,6 @@ class LoginPage extends StatelessWidget {
               ),
             ),
           ),
-
-          // Scrollable Form
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
@@ -37,8 +52,6 @@ class LoginPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 30),
-
-                    // Log In Title
                     const Text(
                       'Log In',
                       style: TextStyle(
@@ -47,31 +60,54 @@ class LoginPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-
-                    // Email Field
-                    const TextField(
-                      decoration: InputDecoration(
+                    TextField(
+                      controller: _emailController,
+                      decoration: const InputDecoration(
                         labelText: 'Email :',
                         border: OutlineInputBorder(),
                       ),
                     ),
                     const SizedBox(height: 15),
-
-                    // Password Field
-                    const TextField(
+                    TextField(
+                      controller: _passwordController,
                       obscureText: true,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Password :',
                         border: OutlineInputBorder(),
                       ),
                     ),
-                    const SizedBox(height: 30),
-
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _isLoading
+                            ? null
+                            : () {
+                                _logInService.Login(
+                                  context: context,
+                                  emailController: _emailController,
+                                  passwordController: _passwordController,
+                                  setLoading: _setLoading,
+                                );
+                              },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          textStyle: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        child: _isLoading
+                            ? const CircularProgressIndicator(
+                                color: Colors.white)
+                            : const Text('Log In'),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     const Text(
                       'Dont have an account?',
                       style: TextStyle(fontSize: 14),
                     ),
-
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -90,15 +126,12 @@ class LoginPage extends StatelessWidget {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 30),
                   ],
                 ),
               ),
             ),
           ),
-
-          // Black Footer
           Container(
             color: Colors.black,
             height: 30,

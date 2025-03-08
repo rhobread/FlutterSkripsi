@@ -53,5 +53,4 @@ class InputDataService {
       showSnackBarMessage(context, 'Error: Unable to connect to the server');
     }
   }
-
 }
