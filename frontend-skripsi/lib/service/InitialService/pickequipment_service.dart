@@ -1,10 +1,6 @@
-// ignore_for_file: use_build_context_synchronously
-
-import 'dart:convert';
-import 'package:flutter/material.dart';
+import 'package:flutter_application_1/service/CommonService/export_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_application_1/view/HomeView/home_view.dart';
-import 'package:flutter_application_1/service/CommonService/common_service.dart';
 
 class PickEquipmentService {
   Future<List<Map<String, dynamic>>> fetchEquipments({

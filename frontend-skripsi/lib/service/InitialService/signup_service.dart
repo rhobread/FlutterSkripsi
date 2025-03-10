@@ -1,7 +1,5 @@
-import 'dart:convert';
-import 'package:flutter_application_1/service/CommonService/common_service.dart';
+import 'package:flutter_application_1/service/CommonService/export_service.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
 import 'package:flutter_application_1/view/InitialView/inputdata_view.dart';
 
 class SignUpService {
