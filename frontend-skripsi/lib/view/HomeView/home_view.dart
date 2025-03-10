@@ -22,7 +22,6 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadInitialData() async {
     try {
-      final homeService = HomeService();
       final workouts = await homeService.fetchWorkouts(
         context: context,
         userId: widget.userId,

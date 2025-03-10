@@ -1,68 +1,115 @@
 import 'package:flutter_application_1/service/CommonService/export_service.dart';
+import 'package:flutter_application_1/service/HomeService/profile_service.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ProfilePage extends StatefulWidget {
+  final String userId;
+  const ProfilePage({super.key, required this.userId});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ProfileScreen(),
-    );
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final profileService = ProfileService();
+  var _userData; // Change from List to Map
+  String availableEquipment = "1";
+  String gender = "";
+  String weight = "";
+  String height = "";
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInitialData();
   }
-}
 
-class ProfileScreen extends StatefulWidget {
-  @override
-  _ProfileScreenState createState() => _ProfileScreenState();
-}
+  Future<void> _loadInitialData() async {
+    try {
+      final userData = await profileService.getUserDetails(
+          context: context, userId: widget.userId);
 
-class _ProfileScreenState extends State<ProfileScreen> {
-  String goal = "Weight Loss";
-  String availableEquipment = "1 Selected";
-  String gender = "Male";
-  String weight = "90.0 kg";
-  String height = "170 cm";
+      setState(() {
+        _userData = userData; // Assign received user data
+        gender = "Male";
+        weight = _userData['weight'].toString();
+        height = _userData['height'].toString();
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      showSnackBarMessage(context, e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("My Profile",
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          "My Profile",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0,
         leading: const BackButton(),
       ),
-      body: ListView(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
-        children: [
-          _buildProfileItem(
-              "Goal",
-              goal,
-              () => _updateField(
-                  "Goal", goal, (newValue) => setState(() => goal = newValue))),
-          _buildProfileItem(
-              "Available Equipment",
-              availableEquipment,
-              () => _updateField("Available Equipment", availableEquipment,
-                  (newValue) => setState(() => availableEquipment = newValue))),
-          const SizedBox(height: 16),
-          const Text("Basic Info",
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 0, 0, 0))),
-          _buildProfileItem("Gender", gender, _showGenderBottomSheet),
-          _buildProfileItem("Current Weight", weight, _showWeightBottomSheet),
-          _buildProfileItem("Height", height, _showHeightBottomSheet),
-          const SizedBox(height: 20),
-        ],
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : _userData == null
+                ? const Center(
+                    child: Text(
+                      "Failed to load profile data",
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  )
+                : ListView(
+                    children: [
+                      _buildProfileItem(
+                        "availability",
+                        availableEquipment,
+                        () => _updateField(
+                          "availability",
+                          availableEquipment,
+                          (newValue) => setState(
+                            () => availableEquipment = newValue,
+                          ),
+                        ),
+                      ),
+                      _buildProfileItem(
+                        "Available Equipment",
+                        availableEquipment,
+                        () => _updateField(
+                          "Available Equipment",
+                          availableEquipment,
+                          (newValue) => setState(
+                            () => availableEquipment = newValue,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        "Basic Info",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      _buildProfileItem(
+                          "Gender", gender, _showGenderBottomSheet),
+                      _buildProfileItem(
+                          "Current Weight", weight, _showWeightBottomSheet),
+                      _buildProfileItem(
+                          "Height", height, _showHeightBottomSheet),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
       ),
     );
   }
