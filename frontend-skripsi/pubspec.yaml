@@ -1,7 +1,7 @@
 name: flutter_application_1
 description: "A new Flutter project."
 
-publish_to: 'none' 
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -12,7 +12,9 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^0.13.6
-  
+  shared_preferences: ^2.2.2
+  get: ^4.6.6
+
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
@@ -24,6 +26,5 @@ dev_dependencies:
 flutter:
   assets:
     - lib/assets/
-  
-  uses-material-design: true
 
+  uses-material-design: true
