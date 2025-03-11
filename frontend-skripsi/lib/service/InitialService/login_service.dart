@@ -24,10 +24,7 @@ class LoginService {
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email, 
-          'password': password
-          }),
+        body: jsonEncode({'email': email, 'password': password}),
       );
 
       setLoading(false);
@@ -36,7 +33,7 @@ class LoginService {
         final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         final List<dynamic> responseData = jsonResponse.values.toList();
 
-        if (responseData != null && responseData.isNotEmpty) {
+        if (responseData.isNotEmpty) {
           var userIdEntry = responseData[0];
 
           if (userIdEntry != null) {
