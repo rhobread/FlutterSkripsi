@@ -14,8 +14,8 @@ class ProfileService {
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = jsonDecode(response.body);
 
-        var Data = jsonData['data'];
-        return Data;
+        var data = jsonData['data'];
+        return data;
       } else {
         showSnackBarMessage(context,
             'Error fetching user details. (Status: ${response.statusCode})');

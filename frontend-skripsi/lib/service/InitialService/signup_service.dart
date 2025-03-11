@@ -40,12 +40,13 @@ class SignUpService {
         if (responseData.containsKey('data') &&
             responseData['data'].containsKey('id')) {
           String userId = responseData['data']['id'].toString();
+
+          final userController = Get.find<UserController>();
+          userController.saveUserId(userId);
+
           showSnackBarMessage(context, 'Sign up successful!', success: true);
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => InputDataPage(userId: userId)),
-          );
+
+          Get.off(() => InputDataPage());
         } else {
           showSnackBarMessage(context, 'User ID not found in response.');
         }

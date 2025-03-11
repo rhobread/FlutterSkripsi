@@ -2,12 +2,10 @@ import 'package:flutter_application_1/service/CommonService/export_service.dart'
 import 'package:flutter_application_1/service/InitialService/pickequipment_service.dart';
 
 class PickEquipmentPage extends StatefulWidget {
-  final String userId;
   final bool isGymSelected;
 
   const PickEquipmentPage({
     super.key,
-    required this.userId,
     required this.isGymSelected,
   });
 
@@ -19,6 +17,7 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
   List<Map<String, dynamic>> _equipmentList = [];
   Set<int> _selectedEquipment = {};
   bool _isLoading = false;
+  final userController = Get.find<UserController>();
 
   final PickEquipmentService _pickEquipmentService = PickEquipmentService();
 
@@ -29,14 +28,16 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
   }
 
   void _initializeEquipment() async {
-    List<Map<String, dynamic>> equipments = await _pickEquipmentService.fetchEquipments(
+    List<Map<String, dynamic>> equipments =
+        await _pickEquipmentService.fetchEquipments(
       context: context,
       isGymSelected: widget.isGymSelected,
     );
     setState(() {
       _equipmentList = equipments;
       if (widget.isGymSelected) {
-        _selectedEquipment = _equipmentList.map<int>((e) => e['id'] as int).toSet();
+        _selectedEquipment =
+            _equipmentList.map<int>((e) => e['id'] as int).toSet();
       }
     });
   }
@@ -60,7 +61,7 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
   void _submitSelection() {
     _pickEquipmentService.submitEquipmentSelection(
       context: context,
-      userId: widget.userId,
+      userId: userController.userId.value,
       selectedEquipment: _selectedEquipment,
       setLoading: _setLoading,
     );
@@ -107,7 +108,8 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: GridView.builder(
                       itemCount: _equipmentList.length,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
@@ -115,7 +117,8 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
                       ),
                       itemBuilder: (context, index) {
                         final item = _equipmentList[index];
-                        final isSelected = _selectedEquipment.contains(item['id']);
+                        final isSelected =
+                            _selectedEquipment.contains(item['id']);
                         return GestureDetector(
                           onTap: () => _toggleSelection(item['id']),
                           child: Card(
@@ -145,7 +148,9 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
                                         item['name'],
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          color: isSelected ? Colors.white : Colors.black,
+                                          color: isSelected
+                                              ? Colors.white
+                                              : Colors.black,
                                           fontSize: 14,
                                         ),
                                         overflow: TextOverflow.ellipsis,
@@ -169,12 +174,15 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
                                       child: Image.asset(
                                         item['image'],
                                         fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) {
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
                                           return Center(
                                             child: Text(
                                               'No image',
                                               style: TextStyle(
-                                                color: isSelected ? Colors.white : Colors.black,
+                                                color: isSelected
+                                                    ? Colors.white
+                                                    : Colors.black,
                                               ),
                                             ),
                                           );
@@ -201,7 +209,8 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 15),
-                  textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  textStyle: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 child: _isLoading
                     ? const CircularProgressIndicator(color: Colors.white)

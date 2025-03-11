@@ -2,8 +2,7 @@ import 'package:flutter_application_1/service/CommonService/export_service.dart'
 import 'package:flutter_application_1/service/InitialService/picklocation_service.dart';
 
 class PickLocationPage extends StatefulWidget {
-  final String userId;
-  const PickLocationPage({super.key, required this.userId});
+  const PickLocationPage({super.key});
 
   @override
   _PickLocationPageState createState() => _PickLocationPageState();
@@ -11,6 +10,7 @@ class PickLocationPage extends StatefulWidget {
 
 class _PickLocationPageState extends State<PickLocationPage> {
   final PickLocationService _pickLocationService = PickLocationService();
+  final userController = Get.find<UserController>();
   bool _isLoading = false;
   int _selectedLocation = -1;
 
@@ -109,7 +109,7 @@ class _PickLocationPageState extends State<PickLocationPage> {
                             ? null
                             : () => _pickLocationService.continueNextPage(
                                   context: context,
-                                  userId: widget.userId,
+                                  userId: userController.userId.value,
                                   selectedLocation: _selectedLocation,
                                   setLoading: _setLoading,
                                 ),

@@ -25,28 +25,29 @@ class LoginService {
         url,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
+          'email': email, 
+          'password': password
+          }),
       );
 
       setLoading(false);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-
-        final List<dynamic>? responseData = jsonResponse.values.toList();
+        final List<dynamic> responseData = jsonResponse.values.toList();
 
         if (responseData != null && responseData.isNotEmpty) {
           var userIdEntry = responseData[0];
 
           if (userIdEntry != null) {
             String userId = userIdEntry.toString();
+
+            final userController = Get.find<UserController>();
+            userController.saveUserId(userId);
+
             showSnackBarMessage(context, 'Log in successful!', success: true);
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage(userId: userId)),
-            );
+
+            Get.off(() => HomePage());
           } else {
             showSnackBarMessage(context, 'User ID not found in response.');
           }

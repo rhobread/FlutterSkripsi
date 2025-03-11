@@ -2,9 +2,7 @@ import 'package:flutter_application_1/service/CommonService/export_service.dart'
 import 'package:flutter_application_1/service/InitialService/pickgoal_service.dart';
 
 class PickGoalPage extends StatefulWidget {
-  final String userId;
-
-  const PickGoalPage({super.key, required this.userId});
+  const PickGoalPage({super.key});
 
   @override
   _PickGoalPageState createState() => _PickGoalPageState();
@@ -12,11 +10,12 @@ class PickGoalPage extends StatefulWidget {
 
 class _PickGoalPageState extends State<PickGoalPage> {
   late PickGoalController _controller;
+  final userController = Get.find<UserController>();
 
   @override
   void initState() {
     super.initState();
-    _controller = PickGoalController(widget.userId, context);
+    _controller = PickGoalController(userController.userId.value, context);
   }
 
   @override

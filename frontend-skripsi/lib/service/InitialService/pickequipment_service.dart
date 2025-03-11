@@ -67,13 +67,7 @@ class PickEquipmentService {
             'Workout generated successfully!',
             success: true,
           );
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => HomePage(
-                      userId: userId,
-                    )),
-          );
+          Get.off(() => HomePage());
         } else {
           showSnackBarMessage(
             context,

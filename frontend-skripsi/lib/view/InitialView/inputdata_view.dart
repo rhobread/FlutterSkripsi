@@ -2,9 +2,7 @@ import 'package:flutter_application_1/service/CommonService/export_service.dart'
 import 'package:flutter_application_1/service/InitialService/inputdata_service.dart';
 
 class InputDataPage extends StatefulWidget {
-  final String userId;
-
-  const InputDataPage({super.key, required this.userId});
+  const InputDataPage({super.key});
 
   @override
   _InputDataPage createState() => _InputDataPage();
@@ -13,6 +11,7 @@ class InputDataPage extends StatefulWidget {
 class _InputDataPage extends State<InputDataPage> {
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
+  final userController = Get.find<UserController>();
   String? _selectedGender;
   bool _isLoading = false;
 
@@ -30,7 +29,7 @@ class _InputDataPage extends State<InputDataPage> {
 
     _inputDataService.submitMeasurements(
       context: context,
-      userId: widget.userId,
+      userId: userController.userId.value,
       height: height,
       weight: weight,
       selectedGender: _selectedGender,
@@ -44,7 +43,6 @@ class _InputDataPage extends State<InputDataPage> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          // Black Header
           Container(
             color: Colors.black,
             height: 100,
@@ -61,7 +59,6 @@ class _InputDataPage extends State<InputDataPage> {
               ),
             ),
           ),
-          // Scrollable Form
           Expanded(
             child: SingleChildScrollView(
               child: Padding(

@@ -22,12 +22,9 @@ class PickGoalController {
   Future<void> continueNextPage() async {
     try {
       _showMessage('Goal Picked!', success: true);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PickAvailabilityPage(userId: userId),
-        ),
-      );
+      
+      Get.off(() => PickAvailabilityPage());
+
     } catch (e) {
       _showMessage('Error: Unable to connect to the server');
     }

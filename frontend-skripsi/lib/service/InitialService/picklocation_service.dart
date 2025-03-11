@@ -13,15 +13,7 @@ class PickLocationService {
       bool isGymSelected = selectedLocation == 0;
       setLoading(false);
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PickEquipmentPage(
-            userId: userId,
-            isGymSelected: isGymSelected,
-          ),
-        ),
-      );
+      Get.off(() => PickEquipmentPage(isGymSelected: isGymSelected));
     } catch (e) {
       setLoading(false);
       showSnackBarMessage(context, 'Error: Unable to connect to the server');

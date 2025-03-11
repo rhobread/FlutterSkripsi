@@ -2,15 +2,15 @@ import 'package:flutter_application_1/service/CommonService/export_service.dart'
 import 'package:flutter_application_1/service/InitialService/pickavailability_service.dart';
 
 class PickAvailabilityPage extends StatefulWidget {
-  final String userId;
-
-  const PickAvailabilityPage({super.key, required this.userId});
+  const PickAvailabilityPage({super.key});
 
   @override
   _PickAvailabilityPageState createState() => _PickAvailabilityPageState();
 }
 
 class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
+  final userController = Get.find<UserController>();
+
   final List<String> _daysOfWeek = [
     'Sunday',
     'Monday',
@@ -46,7 +46,7 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
   void _submitAvailability() {
     _pickAvailabilityService.submitAvailability(
       context: context,
-      userId: widget.userId,
+      userId: userController.userId.value,
       selectedDays: _selectedDays,
       minutesControllers: _minutesControllers,
       setLoading: _setLoading,

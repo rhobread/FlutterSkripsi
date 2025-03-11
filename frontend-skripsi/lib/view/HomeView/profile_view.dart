@@ -11,7 +11,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final profileService = ProfileService();
-  var _userData; // Change from List to Map
+  var _userData; 
   String availableEquipment = "1";
   String gender = "";
   String weight = "";

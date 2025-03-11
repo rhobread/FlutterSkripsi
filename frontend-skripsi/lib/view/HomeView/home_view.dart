@@ -2,8 +2,7 @@ import 'package:flutter_application_1/service/CommonService/export_service.dart'
 import 'package:flutter_application_1/service/HomeService/home_service.dart';
 
 class HomePage extends StatefulWidget {
-  final String userId;
-  const HomePage({super.key, required this.userId});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -11,6 +10,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final homeService = HomeService();
+  final userController = Get.find<UserController>(); 
   List<Map<String, dynamic>> _workoutList = [];
   bool _isLoading = true;
 
@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
     try {
       final workouts = await homeService.fetchWorkouts(
         context: context,
-        userId: widget.userId,
+        userId: userController.userId.value,
       );
 
       setState(() {
@@ -42,7 +42,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("HomePage")),
+      appBar: AppBar(
+        title: Obx(() => Text(
+            "Welcome, User ${userController.userId}")), // ✅ Update dynamically
+      ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _workoutList.isEmpty

@@ -37,12 +37,9 @@ class PickAvailabilityService {
       if (response.statusCode == 200) {
         showSnackBarMessage(context, 'Availability updated successfully!',
             success: true);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PickLocationPage(userId: userId),
-          ),
-        );
+
+        Get.off(() => PickLocationPage());
+
       } else {
         showSnackBarMessage(context, 'Failed to update availability');
       }

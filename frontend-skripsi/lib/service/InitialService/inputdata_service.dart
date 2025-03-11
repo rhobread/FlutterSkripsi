@@ -35,12 +35,8 @@ class InputDataService {
       if (response.statusCode == 200) {
         showSnackBarMessage(context, 'Measurements updated successfully!',
             success: true);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PickGoalPage(userId: userId),
-          ),
-        );
+
+        Get.off(() => PickGoalPage());
       } else {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         showSnackBarMessage(context,
