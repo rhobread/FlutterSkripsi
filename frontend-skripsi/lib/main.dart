@@ -1,7 +1,6 @@
 import 'package:flutter_application_1/service/CommonService/export_service.dart';
+import 'package:flutter_application_1/view/HomeView/main_view.dart';
 import 'package:flutter_application_1/view/InitialView/signup_view.dart';
-import 'package:flutter_application_1/view/HomeView/home_view.dart';
-import 'package:flutter_application_1/view/HomeView/profiledetails_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,10 +18,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: GetBuilder<UserController>(
         builder: (userController) {
-          // return userController.userId.isNotEmpty ? HomePage() : SignUpPage();
-          return ProfileDetailsPage(
-            userId: "12",
-          );
+          return userController.userId.isNotEmpty ? MainPage() : SignUpPage();
         },
       ),
     );

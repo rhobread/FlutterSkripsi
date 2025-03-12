@@ -10,7 +10,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final homeService = HomeService();
-  final userController = Get.find<UserController>(); 
+  final userController = Get.find<UserController>();
   List<Map<String, dynamic>> _workoutList = [];
   bool _isLoading = true;
 

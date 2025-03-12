@@ -38,6 +38,7 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
   }
 
   void _setLoading(bool value) {
+    if (!mounted) return;
     setState(() {
       _isLoading = value;
     });

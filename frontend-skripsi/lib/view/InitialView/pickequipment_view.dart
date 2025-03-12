@@ -53,6 +53,7 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
   }
 
   void _setLoading(bool value) {
+    if (!mounted) return;
     setState(() {
       _isLoading = value;
     });

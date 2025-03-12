@@ -1,6 +1,6 @@
 import 'package:flutter_application_1/service/CommonService/export_service.dart';
+import 'package:flutter_application_1/view/HomeView/main_view.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_application_1/view/HomeView/home_view.dart';
 
 class PickEquipmentService {
   Future<List<Map<String, dynamic>>> fetchEquipments({
@@ -67,7 +67,7 @@ class PickEquipmentService {
             'Workout generated successfully!',
             success: true,
           );
-          Get.off(() => HomePage());
+          Get.off(() => MainPage());
         } else {
           showSnackBarMessage(
             context,

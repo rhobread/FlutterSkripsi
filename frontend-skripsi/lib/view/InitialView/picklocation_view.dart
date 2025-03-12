@@ -17,6 +17,7 @@ class _PickLocationPageState extends State<PickLocationPage> {
   final List<String> location = ["Gym", "Home"];
 
   void _setLoading(bool value) {
+    if (!mounted) return;
     setState(() {
       _isLoading = value;
     });

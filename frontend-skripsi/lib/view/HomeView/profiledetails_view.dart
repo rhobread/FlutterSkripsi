@@ -47,102 +47,63 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text(
-          "My Profile",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        title: const Text("ME", style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: const BackButton(),
+        foregroundColor: Colors.black,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : _userData == null
-                ? const Center(
-                    child: Text(
-                      "Failed to load profile data",
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                  )
-                : ListView(
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _userData == null
+              ? const Center(
+                  child: Text(
+                    "Failed to load profile data",
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                )
+              : Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ListView(
                     children: [
-                      _buildProfileItem(
-                        "availability",
-                        availableEquipment,
-                        () => _updateField(
-                          "availability",
-                          availableEquipment,
-                          (newValue) => setState(
-                            () => availableEquipment = newValue,
-                          ),
+                      buildSection("Available Days", [
+                        buildSettingsTile(
+                          context,
+                          Icons.calendar_today,
+                          "Available Days",
+                          Colors.blue,
                         ),
-                      ),
-                      _buildProfileItem(
-                        "Available Equipment",
-                        availableEquipment,
-                        () => _updateField(
+                      ]),
+                      buildSection("Available Equipment", [
+                        buildSettingsTile(
+                          context,
+                          Icons.fitness_center,
                           "Available Equipment",
-                          availableEquipment,
-                          (newValue) => setState(
-                            () => availableEquipment = newValue,
-                          ),
+                          Colors.red,
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      const Text(
-                        "Basic Info",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      _buildProfileItem(
-                          "Gender", gender, _showGenderBottomSheet),
-                      _buildProfileItem(
-                          "Current Weight", weight, _showWeightBottomSheet),
-                      _buildProfileItem(
-                          "Height", height, _showHeightBottomSheet),
-                      const SizedBox(height: 20),
+                      ]),
+                      buildSection("Basic Info", [
+                        buildProfileItem(context, Icons.wc, "Gender", gender,
+                            Colors.deepOrangeAccent, _showGenderBottomSheet),
+                        buildProfileItem(
+                            context,
+                            Icons.monitor_weight,
+                            "Current Weight",
+                            weight,
+                            Colors.green,
+                            _showWeightBottomSheet),
+                        buildProfileItem(
+                            context,
+                            Icons.height,
+                            "Height",
+                            height,
+                            Colors.lightBlueAccent,
+                            _showHeightBottomSheet),
+                      ]),
                     ],
                   ),
-      ),
-    );
-  }
-
-  void _updateField(
-      String title, String currentValue, Function(String) onUpdate) {
-    TextEditingController controller =
-        TextEditingController(text: currentValue);
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Update $title"),
-          content: TextField(
-            controller: controller,
-            keyboardType: TextInputType.text,
-            decoration: InputDecoration(hintText: "Enter new $title"),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                onUpdate(controller.text);
-                Navigator.pop(context);
-              },
-              child: const Text("Save"),
-            ),
-          ],
-        );
-      },
+                ),
     );
   }
 
@@ -279,12 +240,19 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
   }
 
   void _showHeightBottomSheet() {
-    int currentHeight = int.tryParse(height.split(" ")[0]) ?? 170;
-    int initialIndex = currentHeight - 140;
-    FixedExtentScrollController scrollController =
-        FixedExtentScrollController(initialItem: initialIndex);
+    double currentHeight = double.tryParse(height.split(" ")[0]) ?? 170.0;
+    int mainHeight =
+        currentHeight.floor(); // Get main height (e.g., 170 from 170.5)
+    int decimalHeight = ((currentHeight - mainHeight) * 10)
+        .round(); // Get decimal part (e.g., 5 from 170.5)
 
-    int selectedHeight = currentHeight; // ✅ Declare outside StatefulBuilder
+    FixedExtentScrollController mainController = FixedExtentScrollController(
+        initialItem: mainHeight - 140); // Min 140 cm
+    FixedExtentScrollController decimalController =
+        FixedExtentScrollController(initialItem: decimalHeight); // 0 to 9
+
+    int selectedMainHeight = mainHeight;
+    int selectedDecimalHeight = decimalHeight;
 
     showModalBottomSheet(
       context: context,
@@ -301,40 +269,95 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   Expanded(
-                    child: ListWheelScrollView.useDelegate(
-                      controller: scrollController,
-                      itemExtent: 50,
-                      perspective: 0.005,
-                      physics: const FixedExtentScrollPhysics(),
-                      onSelectedItemChanged: (index) {
-                        setModalState(() {
-                          selectedHeight = index + 140;
-                        });
-                      },
-                      childDelegate: ListWheelChildBuilderDelegate(
-                        builder: (context, index) {
-                          return Center(
-                            child: Text(
-                              "${index + 140} cm",
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: (index + 140) == selectedHeight
-                                    ? Colors.blue
-                                    : Colors.black,
-                              ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Main Height Scroll
+                        SizedBox(
+                          width: 80,
+                          child: ListWheelScrollView.useDelegate(
+                            controller: mainController,
+                            itemExtent: 50,
+                            perspective: 0.005,
+                            physics: const FixedExtentScrollPhysics(),
+                            onSelectedItemChanged: (index) {
+                              setModalState(() {
+                                selectedMainHeight =
+                                    index + 140; // 140 to 200 cm
+                              });
+                            },
+                            childDelegate: ListWheelChildBuilderDelegate(
+                              builder: (context, index) {
+                                return Center(
+                                  child: Text(
+                                    "${index + 140}",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: (index + 140) == selectedMainHeight
+                                          ? Colors.blue
+                                          : Colors.black,
+                                    ),
+                                  ),
+                                );
+                              },
+                              childCount: 61, // 140 to 200 cm
                             ),
-                          );
-                        },
-                        childCount: 61,
-                      ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        const Text(
+                          ".",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(width: 10),
+                        // Decimal Height Scroll
+                        SizedBox(
+                          width: 50,
+                          child: ListWheelScrollView.useDelegate(
+                            controller: decimalController,
+                            itemExtent: 50,
+                            perspective: 0.005,
+                            physics: const FixedExtentScrollPhysics(),
+                            onSelectedItemChanged: (index) {
+                              setModalState(() {
+                                selectedDecimalHeight = index; // 0 to 9
+                              });
+                            },
+                            childDelegate: ListWheelChildBuilderDelegate(
+                              builder: (context, index) {
+                                return Center(
+                                  child: Text(
+                                    "$index",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: index == selectedDecimalHeight
+                                          ? Colors.blue
+                                          : Colors.black,
+                                    ),
+                                  ),
+                                );
+                              },
+                              childCount: 10, // 0 to 9
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        const Text(
+                          "cm",
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       setState(() {
                         height =
-                            "$selectedHeight cm"; // ✅ Correctly updates height
+                            "$selectedMainHeight.$selectedDecimalHeight cm"; // Update height
                       });
                       Navigator.pop(context);
                     },
@@ -414,22 +437,6 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
           },
         );
       },
-    );
-  }
-
-  Widget _buildProfileItem(String title, String value, VoidCallback onTap) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: ListTile(
-        title: Text(title,
-            style: const TextStyle(
-                fontSize: 14, color: Color.fromARGB(255, 0, 0, 0))),
-        subtitle: Text(value,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        trailing: const Icon(Icons.arrow_forward_ios,
-            size: 16, color: Color.fromARGB(255, 0, 0, 0)),
-        onTap: onTap,
-      ),
     );
   }
 }

@@ -18,6 +18,7 @@ class _InputDataPage extends State<InputDataPage> {
   final InputDataService _inputDataService = InputDataService();
 
   void _setLoading(bool value) {
+    if (!mounted) return;
     setState(() {
       _isLoading = value;
     });

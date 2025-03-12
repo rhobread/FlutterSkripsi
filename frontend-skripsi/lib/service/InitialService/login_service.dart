@@ -1,6 +1,6 @@
 import 'package:flutter_application_1/service/CommonService/export_service.dart';
+import 'package:flutter_application_1/view/HomeView/main_view.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_application_1/view/HomeView/home_view.dart';
 
 class LoginService {
   Future<void> Login({
@@ -44,7 +44,7 @@ class LoginService {
 
             showSnackBarMessage(context, 'Log in successful!', success: true);
 
-            Get.off(() => HomePage());
+            Get.off(() => MainPage());
           } else {
             showSnackBarMessage(context, 'User ID not found in response.');
           }

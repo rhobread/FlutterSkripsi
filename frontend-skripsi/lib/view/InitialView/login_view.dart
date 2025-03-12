@@ -17,6 +17,7 @@ class _LogInPageState extends State<LoginPage> {
   final LoginService _logInService = LoginService();
 
   void _setLoading(bool value) {
+    if (!mounted) return;
     setState(() {
       _isLoading = value;
     });
