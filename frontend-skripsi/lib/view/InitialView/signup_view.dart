@@ -1,6 +1,6 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
 import 'package:flutter_application_1/service/InitialService/signup_service.dart';
 import 'package:flutter_application_1/view/InitialView/login_view.dart';
+import 'package:flutter_application_1/service/CommonService/export_service.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -30,22 +30,7 @@ class _SignUpPageState extends State<SignUpPage> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          Container(
-            color: Colors.black,
-            height: 100,
-            width: double.infinity,
-            alignment: Alignment.center,
-            child: const SafeArea(
-              child: Text(
-                'GymTits',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
+          buildMainHeader(),
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
@@ -62,80 +47,51 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    TextField(
+                    buildTextField(
                       controller: _emailController,
-                      decoration: const InputDecoration(
-                        labelText: 'Email :',
-                        border: OutlineInputBorder(),
-                      ),
+                      labelText: 'Email',
+                      icon: Icons.email,
                     ),
                     const SizedBox(height: 15),
-                    TextField(
+                    buildTextField(
                       controller: _usernameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Username :',
-                        border: OutlineInputBorder(),
-                      ),
+                      labelText: 'Username',
+                      icon: Icons.person,
                     ),
                     const SizedBox(height: 15),
-                    TextField(
+                    buildTextField(
                       controller: _passwordController,
+                      labelText: 'Password',
+                      icon: Icons.lock,
                       obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Password :',
-                        border: OutlineInputBorder(),
-                      ),
                     ),
                     const SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: _isLoading
-                            ? null
-                            : () {
-                                _signUpService.signUp(
-                                  context: context,
-                                  emailController: _emailController,
-                                  usernameController: _usernameController,
-                                  passwordController: _passwordController,
-                                  setLoading: _setLoading,
-                                );
-                              },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          textStyle: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                    _buildSignUpButton(),
+                    const SizedBox(height: 20),
+                    Column(
+                      children: [
+                        const Text(
+                          'Already have an account?',
+                          style: TextStyle(fontSize: 14),
                         ),
-                        child: _isLoading
-                            ? const CircularProgressIndicator(
-                                color: Colors.white)
-                            : const Text('Sign Up'),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Already have an account?',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginPage()),
+                            );
+                          },
+                          child: const Text(
+                            'Log In',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue,
+                            ),
                           ),
-                        );
-                      },
-                      child: const Text(
-                        'Log In',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
                         ),
-                      ),
+                      ],
                     ),
                     const SizedBox(height: 30),
                   ],
@@ -143,13 +99,27 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
             ),
           ),
-          Container(
-            color: Colors.black,
-            height: 30,
-            width: double.infinity,
-          ),
+          buildMainFooter(),
         ],
       ),
+    );
+  }
+
+  Widget _buildSignUpButton() {
+    return buildCustomButton(
+      label: 'Sign Up',
+      isLoading: _isLoading,
+      onPressed: _isLoading
+          ? null
+          : () {
+              _signUpService.signUp(
+                context: context,
+                emailController: _emailController,
+                usernameController: _usernameController,
+                passwordController: _passwordController,
+                setLoading: _setLoading,
+              );
+            },
     );
   }
 }

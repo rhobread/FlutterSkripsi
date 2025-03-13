@@ -46,7 +46,7 @@ class SignUpService {
 
           showSnackBarMessage(context, 'Sign up successful!', success: true);
 
-          Get.off(() => InputDataPage());
+          Get.offAll(() => InputDataPage());
         } else {
           showSnackBarMessage(context, 'User ID not found in response.');
         }

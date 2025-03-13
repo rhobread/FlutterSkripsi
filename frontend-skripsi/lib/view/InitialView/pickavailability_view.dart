@@ -62,22 +62,7 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          Container(
-            color: Colors.black,
-            height: 80,
-            width: double.infinity,
-            alignment: Alignment.center,
-            child: const SafeArea(
-              child: Text(
-                'GymTits',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
+          buildMainHeader(),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -148,37 +133,17 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
                     }).toList(),
                   ),
                   const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _isLoading ? null : _submitAvailability,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        textStyle: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: _isLoading
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text('Submit'),
-                    ),
+                  buildCustomButton(
+                    label: 'Submit',
+                    isLoading: _isLoading,
+                    onPressed: _isLoading ? null : _submitAvailability,
                   ),
                   const SizedBox(height: 20),
                 ],
               ),
             ),
           ),
-          Container(
-            color: Colors.black,
-            height: 30,
-            width: double.infinity,
-          ),
+          buildMainFooter(),
         ],
       ),
     );

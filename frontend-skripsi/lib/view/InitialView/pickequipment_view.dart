@@ -4,10 +4,7 @@ import 'package:flutter_application_1/service/InitialService/pickequipment_servi
 class PickEquipmentPage extends StatefulWidget {
   final bool isGymSelected;
 
-  const PickEquipmentPage({
-    super.key,
-    required this.isGymSelected,
-  });
+  const PickEquipmentPage({super.key, required this.isGymSelected});
 
   @override
   _PickEquipmentPageState createState() => _PickEquipmentPageState();
@@ -15,16 +12,18 @@ class PickEquipmentPage extends StatefulWidget {
 
 class _PickEquipmentPageState extends State<PickEquipmentPage> {
   List<Map<String, dynamic>> _equipmentList = [];
+  List<Map<String, dynamic>> _filteredEquipmentList = [];
   Set<int> _selectedEquipment = {};
   bool _isLoading = false;
-  final userController = Get.find<UserController>();
-
+  final TextEditingController _searchController = TextEditingController();
   final PickEquipmentService _pickEquipmentService = PickEquipmentService();
+  final userController = Get.find<UserController>();
 
   @override
   void initState() {
     super.initState();
     _initializeEquipment();
+    _searchController.addListener(_filterEquipment);
   }
 
   void _initializeEquipment() async {
@@ -35,10 +34,20 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
     );
     setState(() {
       _equipmentList = equipments;
+      _filteredEquipmentList = equipments;
       if (widget.isGymSelected) {
         _selectedEquipment =
             _equipmentList.map<int>((e) => e['id'] as int).toSet();
       }
+    });
+  }
+
+  void _filterEquipment() {
+    String query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredEquipmentList = _equipmentList
+          .where((item) => item['name'].toLowerCase().contains(query))
+          .toList();
     });
   }
 
@@ -52,19 +61,12 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
     });
   }
 
-  void _setLoading(bool value) {
-    if (!mounted) return;
-    setState(() {
-      _isLoading = value;
-    });
-  }
-
   void _submitSelection() {
     _pickEquipmentService.submitEquipmentSelection(
       context: context,
       userId: userController.userId.value,
       selectedEquipment: _selectedEquipment,
-      setLoading: _setLoading,
+      setLoading: (value) => setState(() => _isLoading = value),
     );
   }
 
@@ -83,10 +85,9 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
               child: Text(
                 'JymMat',
                 style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
             ),
           ),
@@ -102,97 +103,75 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search Equipment...',
+                prefixIcon: Icon(Icons.search, color: Colors.black),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+          ),
           Expanded(
-            child: _equipmentList.isEmpty
+            child: _filteredEquipmentList.isEmpty
                 ? const Center(child: CircularProgressIndicator())
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: GridView.builder(
-                      itemCount: _equipmentList.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        childAspectRatio: 0.9,
-                      ),
+                    child: ListView.builder(
+                      itemCount: _filteredEquipmentList.length,
                       itemBuilder: (context, index) {
-                        final item = _equipmentList[index];
+                        final item = _filteredEquipmentList[index];
                         final isSelected =
                             _selectedEquipment.contains(item['id']);
+
                         return GestureDetector(
                           onTap: () => _toggleSelection(item['id']),
                           child: Card(
-                            color: isSelected ? Colors.black : Colors.white,
+                            elevation: 2,
+                            color: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                               side: BorderSide(
-                                color: isSelected ? Colors.white : Colors.black,
+                                color: isSelected
+                                    ? Colors.black
+                                    : Colors.transparent,
                                 width: 2,
                               ),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Checkbox(
-                                      value: isSelected,
-                                      onChanged: (bool? newValue) {
-                                        _toggleSelection(item['id']);
-                                      },
-                                      activeColor: Colors.white,
-                                      checkColor: Colors.black,
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        item['name'],
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: isSelected
-                                              ? Colors.white
-                                              : Colors.black,
-                                          fontSize: 14,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    width: double.infinity,
-                                    margin: const EdgeInsets.only(
-                                      left: 10,
-                                      right: 10,
-                                      bottom: 10,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Image.asset(
-                                        item['image'],
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return Center(
-                                            child: Text(
-                                              'No image',
-                                              style: TextStyle(
-                                                color: isSelected
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: Colors.black.withOpacity(0.1),
+                                radius: 25,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(25),
+                                  child: Image.asset(
+                                    item['image'],
+                                    fit: BoxFit.cover,
+                                    width: 50,
+                                    height: 50,
+                                    errorBuilder: (context, error,
+                                            stackTrace) =>
+                                        const Icon(Icons.image_not_supported,
+                                            color: Colors.grey),
                                   ),
                                 ),
-                              ],
+                              ),
+                              title: Text(
+                                item['name'],
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                              ),
+                              trailing: Checkbox(
+                                value: isSelected,
+                                onChanged: (bool? newValue) =>
+                                    _toggleSelection(item['id']),
+                                activeColor: Colors.black,
+                                checkColor: Colors.white,
+                              ),
                             ),
                           ),
                         );

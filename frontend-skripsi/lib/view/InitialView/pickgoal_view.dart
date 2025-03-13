@@ -24,92 +24,46 @@ class _PickGoalPageState extends State<PickGoalPage> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          // Black Header
-          Container(
-            color: Colors.black,
-            height: 100,
-            width: double.infinity,
-            alignment: Alignment.center,
-            child: const SafeArea(
-              child: Text(
-                'JymMat',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-
-          // Scrollable Form
+          // Black Header (assumed to be defined in common_widgets)
+          buildMainHeader(),
           Expanded(
             child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 30),
-
-                    // Title
-                    const Text(
-                      'Pick your goal!',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 30),
+                  const Text(
+                    'Pick your goal!',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
                     ),
-                    const SizedBox(height: 10),
-
-                    const Text(
-                      'Used to generate your routines, won\'t be shared!',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
-                      textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    'Used to generate your routines, won\'t be shared!',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey,
                     ),
-                    const SizedBox(height: 20),
-
-                    // Goal Selection Buttons
-                    for (int i = 0; i < _controller.goals.length; i++)
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () => setState(() {
-                            _controller.selectGoal(i);
-                          }),
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: _controller.selectedGoal == i
-                                ? Colors.black
-                                : Colors.white,
-                            side:
-                                const BorderSide(color: Colors.black, width: 2),
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                          ),
-                          child: Text(
-                            _controller.goals[i],
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: _controller.selectedGoal == i
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    const SizedBox(height: 20),
-
-                    // Continue Button
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: _controller.selectedGoal == -1 ||
-                                _controller.isLoading
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+                  for (int i = 0; i < _controller.goals.length; i++)
+                    buildSelectOption(
+                      title: _controller.goals[i],
+                      isSelected: _controller.selectedGoal == i,
+                      onPressed: () => setState(() {
+                        _controller.selectGoal(i);
+                      }),
+                    ),
+                  const SizedBox(height: 20),
+                  buildCustomButton(
+                    label: 'Continue',
+                    isLoading: _controller.isLoading,
+                    onPressed:
+                        _controller.selectedGoal == -1 || _controller.isLoading
                             ? null
                             : () async {
                                 setState(() {
@@ -120,32 +74,13 @@ class _PickGoalPageState extends State<PickGoalPage> {
                                   _controller.isLoading = false;
                                 });
                               },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          textStyle: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        child: _controller.isLoading
-                            ? const CircularProgressIndicator(
-                                color: Colors.white,
-                              )
-                            : const Text('Continue'),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
               ),
             ),
           ),
-
-          // Black Footer
-          Container(
-            color: Colors.black,
-            height: 30,
-            width: double.infinity,
-          ),
+          buildMainFooter(),
         ],
       ),
     );

@@ -8,12 +8,12 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("ME", style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.transparent,
+        title: const Text("ME",
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+        backgroundColor: Colors.white,
         elevation: 0,
-        foregroundColor: Colors.black,
       ),
       body: Column(
         children: [
@@ -85,7 +85,7 @@ class ProfilePage extends StatelessWidget {
       textConfirm: "Yes",
       confirmTextColor: Colors.white,
       onConfirm: () async {
-        await UserController().clearUserId(); 
+        await UserController().clearUserId();
         Get.off(() => const LoginPage());
       },
     );

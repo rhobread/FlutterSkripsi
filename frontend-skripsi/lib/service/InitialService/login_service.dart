@@ -44,7 +44,7 @@ class LoginService {
 
             showSnackBarMessage(context, 'Log in successful!', success: true);
 
-            Get.off(() => MainPage());
+            Get.offAll(() => MainPage());
           } else {
             showSnackBarMessage(context, 'User ID not found in response.');
           }

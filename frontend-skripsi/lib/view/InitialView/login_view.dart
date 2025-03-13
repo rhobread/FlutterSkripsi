@@ -29,22 +29,7 @@ class _LogInPageState extends State<LoginPage> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          Container(
-            color: Colors.black,
-            height: 100,
-            width: double.infinity,
-            alignment: Alignment.center,
-            child: const SafeArea(
-              child: Text(
-                'GymTits',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
+          buildMainHeader(),
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
@@ -60,55 +45,35 @@ class _LogInPageState extends State<LoginPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    TextField(
+                    const SizedBox(height: 25),
+
+                    /// **Email Field**
+                    buildTextField(
                       controller: _emailController,
-                      decoration: const InputDecoration(
-                        labelText: 'Email :',
-                        border: OutlineInputBorder(),
-                      ),
+                      labelText: 'Email',
+                      icon: Icons.email,
                     ),
                     const SizedBox(height: 15),
-                    TextField(
+
+                    /// **Password Field**
+                    buildTextField(
                       controller: _passwordController,
+                      labelText: 'Password',
+                      icon: Icons.lock,
                       obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Password :',
-                        border: OutlineInputBorder(),
-                      ),
                     ),
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: _isLoading
-                            ? null
-                            : () {
-                                _logInService.Login(
-                                  context: context,
-                                  emailController: _emailController,
-                                  passwordController: _passwordController,
-                                  setLoading: _setLoading,
-                                );
-                              },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          textStyle: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        child: _isLoading
-                            ? const CircularProgressIndicator(
-                                color: Colors.white)
-                            : const Text('Log In'),
-                      ),
-                    ),
+                    const SizedBox(height: 25),
+
+                    /// **Login Button**
+                    _buildLoginButton(),
+
                     const SizedBox(height: 20),
                     const Text(
-                      'Dont have an account?',
+                      'Don’t have an account?',
                       style: TextStyle(fontSize: 14),
                     ),
+
+                    /// **Sign Up Navigation**
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -133,13 +98,26 @@ class _LogInPageState extends State<LoginPage> {
               ),
             ),
           ),
-          Container(
-            color: Colors.black,
-            height: 30,
-            width: double.infinity,
-          ),
+          buildMainFooter(),
         ],
       ),
+    );
+  }
+
+  Widget _buildLoginButton() {
+    return buildCustomButton(
+      label: 'Log In',
+      isLoading: _isLoading,
+      onPressed: _isLoading
+          ? null
+          : () {
+              _logInService.Login(
+                context: context,
+                emailController: _emailController,
+                passwordController: _passwordController,
+                setLoading: _setLoading,
+              );
+            },
     );
   }
 }
