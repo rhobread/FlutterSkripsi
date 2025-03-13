@@ -69,18 +69,18 @@ class _InputDataPageState extends State<InputDataPage> {
 
                   // Weight Field
                   buildTextField(
-                    controller: _weightController,
-                    labelText: 'Weight (kg)',
-                    icon: Icons.fitness_center,
-                  ),
+                      controller: _weightController,
+                      labelText: 'Weight (kg)',
+                      icon: Icons.fitness_center,
+                      isNumeric: true),
                   const SizedBox(height: 15),
 
                   // Height Field
                   buildTextField(
-                    controller: _heightController,
-                    labelText: 'Height (cm)',
-                    icon: Icons.height,
-                  ),
+                      controller: _heightController,
+                      labelText: 'Height (cm)',
+                      icon: Icons.height,
+                      isNumeric: true),
                   const SizedBox(height: 15),
 
                   // Gender Dropdown

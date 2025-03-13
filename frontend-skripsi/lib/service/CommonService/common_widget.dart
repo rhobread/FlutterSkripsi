@@ -84,10 +84,15 @@ Widget buildTextField({
   required String labelText,
   required IconData icon,
   bool obscureText = false,
+  bool isNumeric = false, // New optional param
 }) {
   return TextField(
     controller: controller,
     obscureText: obscureText,
+    keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
+    inputFormatters: isNumeric
+        ? [FilteringTextInputFormatter.digitsOnly] // Restricts to integers
+        : [],
     style: const TextStyle(fontSize: 16),
     decoration: InputDecoration(
       labelText: labelText,

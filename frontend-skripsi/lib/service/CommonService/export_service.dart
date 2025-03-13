@@ -4,4 +4,5 @@ export 'package:flutter_application_1/service/CommonService/common_function.dart
 export 'package:flutter_application_1/service/CommonService/common_widget.dart';
 export 'package:shared_preferences/shared_preferences.dart';
 export 'package:flutter_application_1/controller/user_controller.dart';
+export 'package:flutter/services.dart';
 export 'package:get/get.dart';
