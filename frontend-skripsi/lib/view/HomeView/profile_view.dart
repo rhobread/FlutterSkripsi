@@ -25,7 +25,7 @@ class ProfilePage extends StatelessWidget {
             child: ListTile(
               title: const Text("Hello",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              subtitle: Text(userController.userName as String, style: const TextStyle(color: Colors.grey)),
+              subtitle: Text(userController.userName.value, style: const TextStyle(color: Colors.grey)),
             ),
           ),
 
