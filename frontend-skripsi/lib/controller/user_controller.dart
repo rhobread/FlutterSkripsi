@@ -20,11 +20,16 @@ class UserController extends GetxController {
     userName.value = name;
   }
 
-  // 3️Clear userId on logout
+  // 3️ Clear userId on logout
   Future<void> clearUserId() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('userId');
-    userId.value = "";
-    userName.value = "";
-  }
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  
+  await Future.wait([
+    prefs.remove('userId'),
+    prefs.remove('userName'),
+  ]);
+
+  userId.value = "";
+  userName.value = "";
+}
 }

@@ -34,8 +34,8 @@ class LoginService {
         final List<dynamic> responseData = jsonResponse.values.toList();
 
         if (responseData.isNotEmpty) {
-          var userIdEntry = responseData[0];
-          var userNameEntry = responseData[1];
+          var userIdEntry = responseData[2]["id"];
+          var userNameEntry = responseData[2]["name"];
 
           if (userIdEntry != null) {
             String userId = userIdEntry.toString();
