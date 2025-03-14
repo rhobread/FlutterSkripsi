@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Obx(() => Text(
-            "Welcome, User ${userController.userId}")), // ✅ Update dynamically
+            "Welcome, User ${userController.userName}")), // ✅ Update dynamically
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

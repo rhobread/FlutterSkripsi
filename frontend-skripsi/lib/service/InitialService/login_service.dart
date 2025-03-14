@@ -18,11 +18,11 @@ class LoginService {
     }
 
     setLoading(true);
-    final Uri url = Uri.parse('http://10.0.2.2:3005/user/login');
+    final Uri fetchUrl = UrlConfig.getApiUrl('user/login');
 
     try {
       final response = await http.post(
-        url,
+        fetchUrl,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'password': password}),
       );
@@ -35,12 +35,15 @@ class LoginService {
 
         if (responseData.isNotEmpty) {
           var userIdEntry = responseData[0];
+          var userNameEntry = responseData[1];
 
           if (userIdEntry != null) {
             String userId = userIdEntry.toString();
+            String userName =
+                (userNameEntry != null) ? userNameEntry.toString() : "";
 
             final userController = Get.find<UserController>();
-            userController.saveUserId(userId);
+            userController.saveUser(userId, userName);
 
             showSnackBarMessage(context, 'Log in successful!', success: true);
 

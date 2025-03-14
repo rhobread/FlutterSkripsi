@@ -27,16 +27,20 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
   Future<void> _loadInitialData() async {
     try {
       final userData = await profileService.getUserDetails(
-          context: context, userId: widget.userId);
+        context: context, 
+        userId: widget.userId,
+      );
 
+      if (!mounted) return; 
       setState(() {
-        _userData = userData; // Assign received user data
+        _userData = userData; 
         gender = "Male";
         weight = _userData['weight'].toString();
         height = _userData['height'].toString();
         _isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return; 
       setState(() {
         _isLoading = false;
       });

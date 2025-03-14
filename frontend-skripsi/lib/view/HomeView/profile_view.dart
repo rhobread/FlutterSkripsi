@@ -3,7 +3,8 @@ import 'package:flutter_application_1/view/HomeView/profiledetails_view.dart';
 import 'package:flutter_application_1/view/InitialView/login_view.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  ProfilePage({super.key});
+  final userController = Get.find<UserController>();
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +22,10 @@ class ProfilePage extends StatelessWidget {
           buildContainer(
             margin: const EdgeInsets.all(16),
             padding: const EdgeInsets.all(16),
-            child: const ListTile(
-              title: Text("Hello",
+            child: ListTile(
+              title: const Text("Hello",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              subtitle: Text("GayBoy69", style: TextStyle(color: Colors.grey)),
+              subtitle: Text(userController.userName as String, style: const TextStyle(color: Colors.grey)),
             ),
           ),
 

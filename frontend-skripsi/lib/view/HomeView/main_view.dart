@@ -14,7 +14,7 @@ class _MainPageState extends State<MainPage> {
 
   final List<Widget> _pages = [
     const HomePage(),
-    const ProfilePage(),
+    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {

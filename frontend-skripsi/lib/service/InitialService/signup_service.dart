@@ -20,11 +20,11 @@ class SignUpService {
     }
 
     setLoading(true);
-    final Uri url = Uri.parse('http://10.0.2.2:3005/user/register');
+    final Uri fetchUrl = UrlConfig.getApiUrl('user/register');
 
     try {
       final response = await http.post(
-        url,
+        fetchUrl,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': email,
@@ -39,10 +39,11 @@ class SignUpService {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         if (responseData.containsKey('data') &&
             responseData['data'].containsKey('id')) {
-          String userId = responseData['data']['id'].toString();
+          String userIdEntry = responseData['data']['id'].toString();
+          String userNameEntry = responseData['data']['name'].toString();
 
           final userController = Get.find<UserController>();
-          userController.saveUserId(userId);
+          userController.saveUser(userIdEntry, userNameEntry);
 
           showSnackBarMessage(context, 'Sign up successful!', success: true);
 

@@ -19,12 +19,11 @@ class PickAvailabilityService {
       }
     }
     setLoading(true);
-    final Uri url =
-        Uri.parse('http://10.0.2.2:3005/user/availabilities/$userId');
+    final Uri fetchUrl = UrlConfig.getApiUrl('user/availabilities/$userId');
 
     try {
       final response = await http.put(
-        url,
+        fetchUrl,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'days_available': daysAvailable,

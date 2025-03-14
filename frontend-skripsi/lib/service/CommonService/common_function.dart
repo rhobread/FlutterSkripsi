@@ -15,10 +15,12 @@ void showSnackBarMessage(BuildContext context, String message,
 //Generate Workout Plan
 Future<http.Response> generateWorkoutPlan({required String userId}) async {
   try {
+    final Uri fetchUrl = UrlConfig.getApiUrl('workout/generate/$userId');
+
     return await http.post(
-      Uri.parse('http://10.0.2.2:3005/workout/generate/$userId'),
+      fetchUrl, 
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'userId': userId}),
+      body: jsonEncode({'userId': userId}), // JSON body
     );
   } catch (e) {
     return http.Response('Network error: $e', 500);

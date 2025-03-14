@@ -8,9 +8,8 @@ class PickEquipmentService {
     required bool isGymSelected,
   }) async {
     try {
-      final response = await http.get(
-        Uri.parse('http://10.0.2.2:3005/workout/equipments'),
-      );
+      final Uri fetchUrl = UrlConfig.getApiUrl('workout/equipments');
+      final response = await http.get(fetchUrl);
 
       if (response.statusCode == 200) {
         final jsonBody = jsonDecode(response.body) as Map<String, dynamic>;
@@ -44,8 +43,9 @@ class PickEquipmentService {
   }) async {
     setLoading(true);
     try {
+      final Uri fetchUrl = UrlConfig.getApiUrl('user/equipments/$userId');
       final response = await http.put(
-        Uri.parse('http://10.0.2.2:3005/user/equipments/$userId'),
+        fetchUrl,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'equipmentIds': selectedEquipment.toList(),

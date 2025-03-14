@@ -7,9 +7,8 @@ class HomeService {
     required String userId,
   }) async {
     try {
-      final response = await http.get(
-        Uri.parse('http://10.0.2.2:3005/workout/user/$userId'),
-      );
+      final Uri fetchUrl = UrlConfig.getApiUrl('workout/user/$userId');
+      final response = await http.get(fetchUrl);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = jsonDecode(response.body);

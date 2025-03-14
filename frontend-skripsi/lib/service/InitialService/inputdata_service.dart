@@ -18,11 +18,11 @@ class InputDataService {
     }
 
     setLoading(true);
-    final Uri url = Uri.parse('http://10.0.2.2:3005/user/measurements/$userId');
+    final Uri fetchUrl = UrlConfig.getApiUrl('user/measurements/$userId');
 
     try {
       final response = await http.put(
-        url,
+        fetchUrl,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'height': int.tryParse(height) ?? 0,
