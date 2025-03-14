@@ -35,6 +35,7 @@ class _InputDataPageState extends State<InputDataPage> {
       weight: weight,
       selectedGender: _selectedGender,
       setLoading: _setLoading,
+      isInitial: true
     );
   }
 
@@ -69,18 +70,36 @@ class _InputDataPageState extends State<InputDataPage> {
 
                   // Weight Field
                   buildTextField(
-                      controller: _weightController,
-                      labelText: 'Weight (kg)',
-                      icon: Icons.fitness_center,
-                      isNumeric: true),
+                    controller: _weightController,
+                    labelText: 'Weight (kg)',
+                    icon: Icons.fitness_center,
+                    isNumeric: true,
+                    trailingIcon: Icons.edit, 
+                    onIconTap: () {
+                      showWeightBottomSheet(context, userController.userId.value, _weightController.text, (newWeight) {
+                        setState(() {
+                          _weightController.text = newWeight; 
+                        });
+                      } as Function(String p1), false);
+                    },
+                  ),
                   const SizedBox(height: 15),
 
                   // Height Field
                   buildTextField(
-                      controller: _heightController,
-                      labelText: 'Height (cm)',
-                      icon: Icons.height,
-                      isNumeric: true),
+                    controller: _heightController,
+                    labelText: 'Height (cm)',
+                    icon: Icons.height,
+                    isNumeric: true,
+                    trailingIcon: Icons.edit, 
+                    onIconTap: () {
+                      showHeightBottomSheet(context, userController.userId.value, _heightController.text, (newWeight) {
+                        setState(() {
+                          _heightController.text = newWeight; 
+                        });
+                      } as Function(String p1), false);
+                    }
+                  ),
                   const SizedBox(height: 15),
 
                   // Gender Dropdown

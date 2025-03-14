@@ -84,7 +84,9 @@ Widget buildTextField({
   required String labelText,
   required IconData icon,
   bool obscureText = false,
-  bool isNumeric = false, // New optional param
+  bool isNumeric = false,
+  IconData? trailingIcon, 
+  VoidCallback? onIconTap, 
 }) {
   return TextField(
     controller: controller,
@@ -97,6 +99,12 @@ Widget buildTextField({
     decoration: InputDecoration(
       labelText: labelText,
       prefixIcon: Icon(icon, color: Colors.black54),
+      suffixIcon: trailingIcon != null
+          ? IconButton(
+              icon: Icon(trailingIcon, color: Colors.black54),
+              onPressed: onIconTap, 
+            )
+          : null,
       filled: true,
       fillColor: Colors.grey[100],
       border: OutlineInputBorder(

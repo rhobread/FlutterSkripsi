@@ -181,21 +181,10 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
           ),
           Padding(
             padding: const EdgeInsets.all(20),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _submitSelection,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  textStyle: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                child: _isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text('Continue'),
-              ),
+            child: buildCustomButton(
+              label: 'Continue',
+              isLoading: _isLoading,
+              onPressed: _isLoading ? null : _submitSelection,
             ),
           ),
         ],

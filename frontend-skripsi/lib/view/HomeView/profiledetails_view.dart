@@ -3,8 +3,7 @@ import 'package:flutter_application_1/service/HomeService/profiledetails_service
 import 'package:flutter_application_1/service/InitialService/inputdata_service.dart';
 
 class ProfileDetailsPage extends StatefulWidget {
-  final String userId;
-  const ProfileDetailsPage({super.key, required this.userId});
+  const ProfileDetailsPage({super.key});
 
   @override
   State<ProfileDetailsPage> createState() => _ProfileDetailsPageState();
@@ -12,6 +11,8 @@ class ProfileDetailsPage extends StatefulWidget {
 
 class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
   final profileService = ProfileDetailsService();
+  final userController = Get.find<UserController>();
+  String userId = "";
   var _userData;
   String availableEquipment = "1";
   String gender = "";
@@ -27,9 +28,11 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
 
   Future<void> _loadInitialData() async {
     try {
+      userId = userController.userId.value;;
+
       final userData = await profileService.getUserDetails(
         context: context, 
-        userId: widget.userId,
+        userId: userId,
       );
 
       if (!mounted) return; 
@@ -103,7 +106,7 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                             weight + " kg",
                             Colors.green,
                             () {
-                            showWeightBottomSheet(context, weight, (newWeight) {
+                            showWeightBottomSheet(context, userId , weight, (newWeight) {
                               setState(() {
                                 weight = newWeight; 
                               });
@@ -117,7 +120,7 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                           height,
                           Colors.lightBlueAccent,
                           () {
-                            showHeightBottomSheet(context, height, (newHeight) {
+                            showHeightBottomSheet(context, userId, height, (newHeight) {
                               setState(() {
                                 height = newHeight; 
                               });
@@ -177,14 +180,14 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                             ),
                           );
                         },
-                        childCount: genders.length, // Only "Male" & "Female"
+                        childCount: genders.length, 
                       ),
                     ),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        gender = genders[selectedIndex]; // Update gender
+                        gender = genders[selectedIndex]; 
                       });
                       Navigator.pop(context);
                     },

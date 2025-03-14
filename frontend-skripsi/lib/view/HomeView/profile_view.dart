@@ -40,9 +40,7 @@ class ProfilePage extends StatelessWidget {
                   Icons.person,
                   "My Profile",
                   Colors.blue,
-                  onTap: () => Get.to(() => const ProfileDetailsPage(
-                        userId: "12",
-                      )),
+                  onTap: () => Get.to(() => const ProfileDetailsPage()),
                 ),
                 buildSettingsTile(
                   context,
