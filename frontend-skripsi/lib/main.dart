@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       home: GetBuilder<UserController>(
         builder: (userController) {
           return userController.userId.isNotEmpty ? MainPage() : SignUpPage();
-          // return PickEquipmentPage( isGymSelected: true,);
+          //zz return PickEquipmentPage( isGymSelected: true,);
           // return PickLocationPage();
         },
       ),

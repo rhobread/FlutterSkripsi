@@ -42,10 +42,10 @@ class _InputDataPageState extends State<InputDataPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: buildMainHeader(context: context),
       backgroundColor: Colors.white,
       body: Column(
-        children: [
-          buildMainHeader(), // Use your existing header widget
+        children: [ 
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 25),

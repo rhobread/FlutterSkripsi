@@ -35,10 +35,41 @@ class PickEquipmentService {
     }
   }
 
+  Future<List<Map<String, dynamic>>> getUserEquipments({
+    required BuildContext context,
+    required String userId
+  }) async {
+    try {
+      final Uri fetchUrl = UrlConfig.getApiUrl('user/equipments/$userId');
+      final response = await http.get(fetchUrl);
+
+      if (response.statusCode == 200) {
+        final jsonBody = jsonDecode(response.body) as Map<String, dynamic>;
+        final List<dynamic> data = jsonBody['data'];
+
+        List<Map<String, dynamic>> equipmentList = data.map((item) {
+          return {
+            'id': item['equipment_id'],
+          };
+        }).toList();
+
+        return equipmentList;
+      } else {
+        showSnackBarMessage(context,
+            'Error fetching equipment. (Status: ${response.statusCode})');
+        return [];
+      }
+    } catch (e) {
+      showSnackBarMessage(context, 'Error fetching equipment: $e');
+      return [];
+    }
+  }
+
   Future<void> submitEquipmentSelection({
     required BuildContext context,
     required String userId,
     required Set<int> selectedEquipment,
+    required bool isUpdateEquipment,
     required Function(bool) setLoading,
   }) async {
     setLoading(true);
@@ -67,7 +98,14 @@ class PickEquipmentService {
             'Workout generated successfully!',
             success: true,
           );
-          Get.off(() => MainPage());
+          
+          if(isUpdateEquipment){
+            Get.back();
+          }
+          else{
+            Get.off(() => MainPage());
+          }
+
         } else {
           showSnackBarMessage(
             context,

@@ -32,10 +32,10 @@ class _PickLocationPageState extends State<PickLocationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: buildMainHeader(context: context),
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          buildMainHeader(),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),

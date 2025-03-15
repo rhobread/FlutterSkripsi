@@ -23,7 +23,7 @@ class PickGoalController {
     try {
       _showMessage('Goal Picked!', success: true);
       
-      Get.off(() => PickAvailabilityPage());
+      Get.off(() => PickAvailabilityPage(isUpdateAvailability: false,));
 
     } catch (e) {
       _showMessage('Error: Unable to connect to the server');

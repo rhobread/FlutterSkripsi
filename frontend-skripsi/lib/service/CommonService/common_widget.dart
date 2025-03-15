@@ -155,7 +155,7 @@ Widget buildCustomButton({
   );
 }
 
-Widget buildMainHeader() {
+Widget buildMainHeaderBackup() {
   return Container(
     color: Colors.black,
     height: 100,
@@ -171,6 +171,27 @@ Widget buildMainHeader() {
         ),
       ),
     ),
+  );
+}
+
+PreferredSizeWidget buildMainHeader({bool showBackButton = false, required BuildContext context}) {
+  return AppBar(
+    backgroundColor: Colors.black,
+    centerTitle: true,
+    title: const Text(
+      'GymTits',
+      style: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
+    ),
+    leading: showBackButton
+        ? IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
+          )
+        : null,
   );
 }
 

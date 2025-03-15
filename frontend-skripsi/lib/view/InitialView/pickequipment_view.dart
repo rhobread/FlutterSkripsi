@@ -3,8 +3,9 @@ import 'package:flutter_application_1/service/InitialService/pickequipment_servi
 
 class PickEquipmentPage extends StatefulWidget {
   final bool isGymSelected;
+  final bool isUpdateEquipment;
 
-  const PickEquipmentPage({super.key, required this.isGymSelected});
+  const PickEquipmentPage({super.key, required this.isGymSelected, required this.isUpdateEquipment});
 
   @override
   _PickEquipmentPageState createState() => _PickEquipmentPageState();
@@ -12,6 +13,7 @@ class PickEquipmentPage extends StatefulWidget {
 
 class _PickEquipmentPageState extends State<PickEquipmentPage> {
   List<Map<String, dynamic>> _equipmentList = [];
+  List<Map<String, dynamic>> _userequipments = [];
   List<Map<String, dynamic>> _filteredEquipmentList = [];
   Set<int> _selectedEquipment = {};
   bool _isLoading = false;
@@ -27,17 +29,28 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
   }
 
   void _initializeEquipment() async {
-    List<Map<String, dynamic>> equipments =
-        await _pickEquipmentService.fetchEquipments(
+    if (widget.isUpdateEquipment) {
+      _userequipments = await _pickEquipmentService.getUserEquipments(
+        context: context, 
+        userId: userController.userId.value
+      );
+    }
+
+    List<Map<String, dynamic>> equipments = await _pickEquipmentService.fetchEquipments(
       context: context,
       isGymSelected: widget.isGymSelected,
     );
+
     setState(() {
       _equipmentList = equipments;
       _filteredEquipmentList = equipments;
+
       if (widget.isGymSelected) {
-        _selectedEquipment =
-            _equipmentList.map<int>((e) => e['id'] as int).toSet();
+        _selectedEquipment = _equipmentList.map<int>((e) => e['id'] as int).toSet();
+      }
+
+      if (widget.isUpdateEquipment) {
+        _selectedEquipment.addAll(_userequipments.map<int>((e) => e['id'] as int));
       }
     });
   }
@@ -66,6 +79,7 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
       context: context,
       userId: userController.userId.value,
       selectedEquipment: _selectedEquipment,
+      isUpdateEquipment: widget.isUpdateEquipment,
       setLoading: (value) => setState(() => _isLoading = value),
     );
   }
@@ -73,24 +87,10 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: buildMainHeader(showBackButton: widget.isUpdateEquipment, context: context),
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          Container(
-            color: Colors.black,
-            height: 100,
-            width: double.infinity,
-            alignment: Alignment.center,
-            child: const SafeArea(
-              child: Text(
-                'JymMat',
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-            ),
-          ),
           const SizedBox(height: 30),
           const Text(
             'Select Your Equipment',

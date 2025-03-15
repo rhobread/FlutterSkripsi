@@ -3,11 +3,43 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_application_1/view/InitialView/picklocation_view.dart';
 
 class PickAvailabilityService {
+  Future<List<Map<String, dynamic>>> getUserAvailability({
+    required BuildContext context,
+    required String userId
+  }) async {
+    try {
+      final Uri fetchUrl = UrlConfig.getApiUrl('user/availability/$userId');
+      final response = await http.get(fetchUrl);
+
+      if (response.statusCode == 200) {
+        final jsonBody = jsonDecode(response.body) as Map<String, dynamic>;
+        final List<dynamic> data = jsonBody['data'];
+
+        List<Map<String, dynamic>> availabilityList = data.map((item) {
+          return {
+            'day': item['day'],
+            'minutes': item['minutes'],
+          };
+        }).toList();
+
+        return availabilityList;
+      } else {
+        showSnackBarMessage(context,
+            'Error getting user availability. (Status: ${response.statusCode})');
+        return [];
+      }
+    } catch (e) {
+      showSnackBarMessage(context, 'Error  getting user availability: $e');
+      return [];
+    }
+  }
+
   Future<void> submitAvailability({
     required BuildContext context,
     required String userId,
     required Map<int, bool> selectedDays,
     required Map<int, TextEditingController> minutesControllers,
+    required bool isUpdateAvailability,
     required Function(bool) setLoading,
   }) async {
     List<int> daysAvailable = [];
@@ -37,8 +69,13 @@ class PickAvailabilityService {
         showSnackBarMessage(context, 'Availability updated successfully!',
             success: true);
 
-        Get.off(() => PickLocationPage());
-
+        if(isUpdateAvailability){
+          Get.back();
+        }
+        else{
+          Get.off(() => PickLocationPage());
+        }
+        
       } else {
         showSnackBarMessage(context, 'Failed to update availability');
       }

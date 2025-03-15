@@ -2,7 +2,8 @@ import 'package:flutter_application_1/service/CommonService/export_service.dart'
 import 'package:flutter_application_1/service/InitialService/pickavailability_service.dart';
 
 class PickAvailabilityPage extends StatefulWidget {
-  const PickAvailabilityPage({super.key});
+  final bool isUpdateAvailability;
+  const PickAvailabilityPage({super.key, required this.isUpdateAvailability});
 
   @override
   _PickAvailabilityPageState createState() => _PickAvailabilityPageState();
@@ -10,6 +11,7 @@ class PickAvailabilityPage extends StatefulWidget {
 
 class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
   final userController = Get.find<UserController>();
+  List<Map<String, dynamic>> _useravailability = [];
 
   final List<String> _daysOfWeek = [
     'Sunday',
@@ -25,8 +27,7 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
   final Map<int, TextEditingController> _minutesControllers = {};
   bool _isLoading = false;
 
-  final PickAvailabilityService _pickAvailabilityService =
-      PickAvailabilityService();
+  final PickAvailabilityService _pickAvailabilityService = PickAvailabilityService();
 
   @override
   void initState() {
@@ -35,6 +36,30 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
       _selectedDays[i] = false;
       _minutesControllers[i] = TextEditingController();
     }
+    if (widget.isUpdateAvailability) {
+      _initializeAvailability();
+    }
+  }
+
+  Future<void> _initializeAvailability() async {
+    List<Map<String, dynamic>> availability = await _pickAvailabilityService.getUserAvailability(
+      context: context,
+      userId: userController.userId.value,
+    );
+
+    setState(() {
+      _useravailability = availability;
+      for (var entry in _useravailability) {
+        String day = entry["day"];
+        int minutes = entry["minutes"];
+
+        int index = _daysOfWeek.indexWhere((d) => d.toLowerCase() == day.toLowerCase());
+        if (index != -1) {
+          _selectedDays[index] = true;
+          _minutesControllers[index]?.text = minutes.toString();
+        }
+      }
+    });
   }
 
   void _setLoading(bool value) {
@@ -50,6 +75,7 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
       userId: userController.userId.value,
       selectedDays: _selectedDays,
       minutesControllers: _minutesControllers,
+      isUpdateAvailability: widget.isUpdateAvailability,
       setLoading: _setLoading,
     );
   }
@@ -59,10 +85,10 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
     List<int> displayOrder = [1, 2, 3, 4, 5, 6, 0];
 
     return Scaffold(
+      appBar: buildMainHeader(showBackButton: widget.isUpdateAvailability, context: context),
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          buildMainHeader(),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -70,19 +96,13 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
                 children: [
                   const Text(
                     'Select Your Availability',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 10),
                   const Text(
                     'Used to plan your training schedule, won\'t be shared!',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
@@ -97,6 +117,9 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
                               onChanged: (bool? value) {
                                 setState(() {
                                   _selectedDays[index] = value ?? false;
+                                  if (!value!) {
+                                    _minutesControllers[index]?.clear();
+                                  }
                                 });
                               },
                             ),
@@ -120,8 +143,7 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
                                   decoration: const InputDecoration(
                                     labelText: 'Minutes',
                                     border: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(8)),
+                                      borderRadius: BorderRadius.all(Radius.circular(8)),
                                     ),
                                   ),
                                 ),

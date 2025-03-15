@@ -21,11 +21,10 @@ class _PickGoalPageState extends State<PickGoalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: buildMainHeader(context: context),
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          // Black Header (assumed to be defined in common_widgets)
-          buildMainHeader(),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 25),

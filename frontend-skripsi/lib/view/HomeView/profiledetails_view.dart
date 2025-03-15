@@ -1,6 +1,8 @@
 import 'package:flutter_application_1/service/CommonService/export_service.dart';
 import 'package:flutter_application_1/service/HomeService/profiledetails_service.dart';
 import 'package:flutter_application_1/service/InitialService/inputdata_service.dart';
+import 'package:flutter_application_1/view/InitialView/pickequipment_view.dart';
+import 'package:flutter_application_1/view/InitialView/pickavailability_view.dart';
 
 class ProfileDetailsPage extends StatefulWidget {
   const ProfileDetailsPage({super.key});
@@ -82,6 +84,7 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                           Icons.calendar_today,
                           "Available Days",
                           Colors.blue,
+                          onTap: () => Get.to(() => const PickAvailabilityPage(isUpdateAvailability: true))
                         ),
                       ]),
                       buildSection("Available Equipment", [
@@ -90,6 +93,7 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                           Icons.fitness_center,
                           "Available Equipment",
                           Colors.red,
+                          onTap: () => Get.to(() => const PickEquipmentPage(isGymSelected: false, isUpdateEquipment: true,))
                         ),
                       ]),
                       buildSection("Basic Info", [

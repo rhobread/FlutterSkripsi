@@ -13,7 +13,7 @@ class PickLocationService {
       bool isGymSelected = selectedLocation == 0;
       setLoading(false);
 
-      Get.off(() => PickEquipmentPage(isGymSelected: isGymSelected));
+      Get.off(() => PickEquipmentPage(isGymSelected: isGymSelected, isUpdateEquipment: false));
     } catch (e) {
       setLoading(false);
       showSnackBarMessage(context, 'Error: Unable to connect to the server');
