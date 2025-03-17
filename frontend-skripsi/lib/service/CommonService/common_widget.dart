@@ -163,7 +163,7 @@ Widget buildMainHeaderBackup() {
     alignment: Alignment.center,
     child: const SafeArea(
       child: Text(
-        'GymTits',
+        'GymTest',
         style: TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.bold,
@@ -179,7 +179,7 @@ PreferredSizeWidget buildMainHeader({bool showBackButton = false, required Build
     backgroundColor: Colors.black,
     centerTitle: true,
     title: const Text(
-      'GymTits',
+      'GymTest',
       style: TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.bold,
