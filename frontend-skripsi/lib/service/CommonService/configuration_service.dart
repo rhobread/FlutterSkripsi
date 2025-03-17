@@ -13,7 +13,7 @@ class UrlConfig {
         return 'http://10.0.2.2:3005';
       } 
       else {
-        return 'http://192.168.x.x:3005'; 
+        return 'http://localhost:3005'; 
       }
     } 
     else {
