@@ -121,7 +121,7 @@ class _HistoryPageState extends State<HistoryPage> {
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         title: Obx(() => Text(
-              "Welcome, ${userController.userName.value}",
+              "History",
               style: const TextStyle(
                   fontWeight: FontWeight.bold, color: Colors.black),
             )),

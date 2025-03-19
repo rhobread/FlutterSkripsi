@@ -32,17 +32,30 @@ class _MainPageState extends State<MainPage> {
         index: _selectedIndex,
         children: _pages,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped, // Handle navigation
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: "History"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Me"),
-        ],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFFFDFDFD), // Light background
+          border: Border(
+            top: BorderSide(color: Colors.grey.shade300, width: 0.8), // Soft top border
+          ),
+        ),
+        child: BottomNavigationBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0, // Remove shadow
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Colors.black, // Match UI text color
+          unselectedItemColor: Colors.grey,
+          selectedFontSize: 12,
+          unselectedFontSize: 12,
+          iconSize: 24, // Adjust icon size
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped, // Handle navigation
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+            BottomNavigationBarItem(icon: Icon(Icons.history), label: "History"),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Me"),
+          ],
+        ),
       ),
     );
   }
