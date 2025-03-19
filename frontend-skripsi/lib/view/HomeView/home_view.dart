@@ -74,14 +74,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5), // ✅ Light background
-      appBar: AppBar(
-        title: Obx(() => Text(
-              "Welcome, ${userController.userName.value}",
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-            )),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        foregroundColor: Colors.black,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: buildCustomAppBar(dynamicTitle: userController.userName),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

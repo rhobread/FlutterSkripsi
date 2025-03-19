@@ -299,3 +299,23 @@ Widget buildMonthPickerTile({
     ),
   );
 }
+
+Widget buildCustomAppBar({
+  String? title, // Make title optional
+  RxString? dynamicTitle,
+}) {
+  return AppBar(
+    title: dynamicTitle != null
+        ? Obx(() => Text(
+              "Welcome, ${dynamicTitle.value}",
+              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+            ))
+        : Text(
+            title ?? '', // Use title if provided, otherwise empty string
+            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+    backgroundColor: Colors.white,
+    elevation: 0,
+    foregroundColor: Colors.black,
+  );
+}

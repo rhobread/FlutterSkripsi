@@ -119,15 +119,9 @@ class _HistoryPageState extends State<HistoryPage> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
-      appBar: AppBar(
-        title: Obx(() => Text(
-              "History",
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold, color: Colors.black),
-            )),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        foregroundColor: Colors.black,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: buildCustomAppBar(title: "History"),
       ),
       body: Column(
         children: [
