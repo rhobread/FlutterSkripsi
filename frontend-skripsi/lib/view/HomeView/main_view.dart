@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/view/HomeView/history_view.dart';
 import 'package:flutter_application_1/view/HomeView/home_view.dart';
 import 'package:flutter_application_1/view/HomeView/profile_view.dart';
 
@@ -15,6 +16,7 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _pages = [
     const HomePage(),
     ProfilePage(),
+    HistoryPage()
   ];
 
   void _onItemTapped(int index) {
@@ -39,6 +41,7 @@ class _MainPageState extends State<MainPage> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Me"),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: "History"),
         ],
       ),
     );
