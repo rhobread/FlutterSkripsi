@@ -2,7 +2,6 @@ import 'package:flutter_application_1/service/CommonService/export_service.dart'
 import 'package:flutter_application_1/view/InitialView/pickavailability_view.dart';
 
 class PickGoalController {
-  final BuildContext context;
   final String userId;
   bool isLoading = false;
   int selectedGoal = -1; // -1 means no selection
@@ -13,7 +12,7 @@ class PickGoalController {
     "Weight Loss"
   ];
 
-  PickGoalController(this.userId, this.context);
+  PickGoalController(this.userId);
 
   void selectGoal(int index) {
     selectedGoal = index;
@@ -21,21 +20,12 @@ class PickGoalController {
 
   Future<void> continueNextPage() async {
     try {
-      _showMessage('Goal Picked!', success: true);
+      showSnackBarMessage('Sucess!', 'Goal Picked!', success: true);
       
       Get.off(() => PickAvailabilityPage(isUpdateAvailability: false,));
 
     } catch (e) {
-      _showMessage('Error: Unable to connect to the server');
+      showSnackBarMessage('Failed!', 'Error: Unable to connect to the server');
     }
-  }
-
-  void _showMessage(String message, {bool success = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: success ? Colors.green : Colors.red,
-      ),
-    );
   }
 }

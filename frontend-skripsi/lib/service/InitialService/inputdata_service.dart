@@ -17,17 +17,17 @@ class InputDataService {
 
     if (isInitial) {
       if (height == null || height.isEmpty || weight == null || weight.isEmpty) {
-        showSnackBarMessage(context, 'Height and weight are required.');
+        showSnackBarMessage('Invalid Data!','Height and weight are required.');
         return;
       }
     }
 
     if (height != null && height.isNotEmpty && !intPattern.hasMatch(height)) {
-      showSnackBarMessage(context, 'Height must be a whole number (integer only).');
+      showSnackBarMessage('Invalid Data!', 'Height must be a whole number (integer only).');
       return;
     }
     if (weight != null && weight.isNotEmpty && !intPattern.hasMatch(weight)) {
-      showSnackBarMessage(context, 'Weight must be a whole number (integer only).');
+      showSnackBarMessage('Invalid Data!','Weight must be a whole number (integer only).');
       return;
     }
 
@@ -46,7 +46,7 @@ class InputDataService {
       }
 
       if (requestBody.isEmpty) {
-        showSnackBarMessage(context, 'No data to update.');
+        showSnackBarMessage('Error!','No data to update.');
         setLoading?.call(false);
         return;
       }
@@ -61,19 +61,19 @@ class InputDataService {
 
       if (response.statusCode == 200) {
         if (isInitial) {
-          showSnackBarMessage(context, 'Measurements updated successfully!', success: true);
+          showSnackBarMessage('Success!', 'Measurements updated successfully!', success: true);
           Get.off(() => PickGoalPage());
         } else {
           String text = (height != null && height.isNotEmpty) ? "Height" : "Weight";
-          showSnackBarMessage(context, '$text updated successfully!', success: true);
+          showSnackBarMessage('Success!','$text updated successfully!', success: true);
         }
       } else {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        showSnackBarMessage(context, responseData['message'] ?? 'Failed to update measurements');
+        showSnackBarMessage('Failed!',responseData['message'] ?? 'Failed to update measurements');
       }
     } catch (e) {
       setLoading?.call(false);
-      showSnackBarMessage(context, 'Error: Unable to connect to the server');
+      showSnackBarMessage('Error: Unable to connect to the server',  'There is an error when connecting to the server');
     }
   }
 }

@@ -15,8 +15,8 @@ class _MainPageState extends State<MainPage> {
 
   final List<Widget> _pages = [
     const HomePage(),
-    ProfilePage(),
-    HistoryPage()
+    HistoryPage(),
+    ProfilePage()
   ];
 
   void _onItemTapped(int index) {
@@ -40,8 +40,8 @@ class _MainPageState extends State<MainPage> {
         onTap: _onItemTapped, // Handle navigation
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Me"),
           BottomNavigationBarItem(icon: Icon(Icons.history), label: "History"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Me"),
         ],
       ),
     );

@@ -2,15 +2,21 @@ import 'package:flutter_application_1/service/CommonService/export_service.dart'
 import 'package:http/http.dart' as http;
 
 //ShowSnakbarMessage
-void showSnackBarMessage(BuildContext context, String message,
-    {bool success = false}) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(message),
-      backgroundColor: success ? Colors.green : Colors.red,
+void showSnackBarMessage(String title, String message, {bool success = false}) {
+  Get.snackbar(
+    title,
+    message,
+    icon: Icon(
+      success ? Icons.check_circle : Icons.error,
+      color: Colors.white,
     ),
+    snackPosition: SnackPosition.BOTTOM,
+    backgroundColor: success ? Colors.green : Colors.red,
+    colorText: Colors.white,
+    margin: const EdgeInsets.all(10),
   );
 }
+
 
 //Generate Workout Plan
 Future<http.Response> generateWorkoutPlan({required String userId}) async {

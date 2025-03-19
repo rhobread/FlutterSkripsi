@@ -4,7 +4,6 @@ import 'package:flutter_application_1/view/InitialView/picklocation_view.dart';
 
 class PickAvailabilityService {
   Future<List<Map<String, dynamic>>> getUserAvailability({
-    required BuildContext context,
     required String userId
   }) async {
     try {
@@ -24,18 +23,16 @@ class PickAvailabilityService {
 
         return availabilityList;
       } else {
-        showSnackBarMessage(context,
-            'Error getting user availability. (Status: ${response.statusCode})');
+        showSnackBarMessage('Error!','Error getting user availability. (Status: ${response.statusCode})');
         return [];
       }
     } catch (e) {
-      showSnackBarMessage(context, 'Error  getting user availability: $e');
+      showSnackBarMessage('Error!','Error  getting user availability: $e');
       return [];
     }
   }
 
   Future<void> submitAvailability({
-    required BuildContext context,
     required String userId,
     required Map<int, bool> selectedDays,
     required Map<int, TextEditingController> minutesControllers,
@@ -66,8 +63,7 @@ class PickAvailabilityService {
       setLoading(false);
 
       if (response.statusCode == 200) {
-        showSnackBarMessage(context, 'Availability updated successfully!',
-            success: true);
+        showSnackBarMessage('Success!','Availability updated successfully!', success: true);
 
         if(isUpdateAvailability){
           Get.back();
@@ -77,11 +73,11 @@ class PickAvailabilityService {
         }
         
       } else {
-        showSnackBarMessage(context, 'Failed to update availability');
+        showSnackBarMessage('Failed!','Failed to update availability');
       }
     } catch (e) {
       setLoading(false);
-      showSnackBarMessage(context, 'Error: Unable to connect to the server');
+      showSnackBarMessage('Error!','Error: Unable to connect to the server');
     }
   }
 }

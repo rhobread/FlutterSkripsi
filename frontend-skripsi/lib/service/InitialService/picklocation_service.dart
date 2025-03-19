@@ -3,7 +3,6 @@ import 'package:flutter_application_1/view/InitialView/pickequipment_view.dart';
 
 class PickLocationService {
   Future<void> continueNextPage({
-    required BuildContext context,
     required String userId,
     required int selectedLocation,
     required Function(bool) setLoading,
@@ -16,7 +15,7 @@ class PickLocationService {
       Get.off(() => PickEquipmentPage(isGymSelected: isGymSelected, isUpdateEquipment: false));
     } catch (e) {
       setLoading(false);
-      showSnackBarMessage(context, 'Error: Unable to connect to the server');
+      showSnackBarMessage('Failed!', 'Error: Unable to connect to the server');
     }
   }
 }

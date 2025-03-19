@@ -15,7 +15,7 @@ class _PickGoalPageState extends State<PickGoalPage> {
   @override
   void initState() {
     super.initState();
-    _controller = PickGoalController(userController.userId.value, context);
+    _controller = PickGoalController(userController.userId.value);
   }
 
   @override

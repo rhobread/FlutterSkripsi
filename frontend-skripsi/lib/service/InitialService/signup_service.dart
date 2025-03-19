@@ -4,7 +4,6 @@ import 'package:flutter_application_1/view/InitialView/inputdata_view.dart';
 
 class SignUpService {
   Future<void> signUp({
-    required BuildContext context,
     required TextEditingController emailController,
     required TextEditingController usernameController,
     required TextEditingController passwordController,
@@ -15,7 +14,7 @@ class SignUpService {
     final String password = passwordController.text.trim();
 
     if (email.isEmpty || username.isEmpty || password.isEmpty) {
-      showSnackBarMessage(context, 'All fields are required');
+      showSnackBarMessage('Invalid Data!','All fields are required');
       return;
     }
 
@@ -45,20 +44,19 @@ class SignUpService {
           final userController = Get.find<UserController>();
           userController.saveUser(userIdEntry, userNameEntry);
 
-          showSnackBarMessage(context, 'Sign up successful!', success: true);
+          showSnackBarMessage('Success!','Sign up successful!', success: true);
 
           Get.offAll(() => InputDataPage());
         } else {
-          showSnackBarMessage(context, 'User ID not found in response.');
+          showSnackBarMessage('Failed!', 'User ID not found in response.');
         }
       } else {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        showSnackBarMessage(
-            context, responseData['message'] ?? 'Sign up failed');
+        showSnackBarMessage('Failed!',responseData['message'] ?? 'Sign up failed');
       }
     } catch (e) {
       setLoading(false);
-      showSnackBarMessage(context, 'Error: Unable to connect to the server');
+      showSnackBarMessage( 'Failed!', 'Error: Unable to connect to the server');
     }
   }
 }

@@ -33,7 +33,6 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
       userId = userController.userId.value;;
 
       final userData = await profileService.getUserDetails(
-        context: context, 
         userId: userId,
       );
 
@@ -50,7 +49,7 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
       setState(() {
         _isLoading = false;
       });
-      showSnackBarMessage(context, e.toString());
+      showSnackBarMessage('Failed!', e.toString());
     }
   }
 

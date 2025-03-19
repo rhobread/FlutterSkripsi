@@ -40,7 +40,6 @@ class _HistoryPageState extends State<HistoryPage> {
       final String end = DateFormat('yyyyMM').format(_selectedEndMonth);
 
       final data = await historyService.getHistory(
-        context: context,
         userId: userController.userId.value,
         startMonth: start,
         endMonth: end,
@@ -56,7 +55,7 @@ class _HistoryPageState extends State<HistoryPage> {
       setState(() {
         _isLoading = false;
       });
-      showSnackBarMessage(context, e.toString());
+      showSnackBarMessage('Failed!', e.toString());
     }
   }
   /// Flattens the exercise history by grouping each history record by its date.
@@ -137,41 +136,33 @@ class _HistoryPageState extends State<HistoryPage> {
             padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
-                // Start Month Picker Button
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      final picked =
-                          await _pickMonth(_selectedStartMonth, 'Select Start Month');
-                      if (picked != null && picked != _selectedStartMonth) {
-                        setState(() {
-                          _selectedStartMonth = picked;
-                        });
-                        _loadHistoryData();
-                      }
+                  child: buildMonthPickerTile(
+                    context: context,
+                    selectedMonth: _selectedStartMonth,
+                    label: 'Start',
+                    pickMonth: _pickMonth,
+                    onMonthChanged: (newDate) {
+                      setState(() {
+                        _selectedStartMonth = newDate;
+                      });
+                      _loadHistoryData();
                     },
-                    child: Text(
-                      "Start: ${DateFormat('MMMM').format(_selectedStartMonth)}",
-                    ),
                   ),
                 ),
-                const SizedBox(width: 8),
-                // End Month Picker Button
+                const SizedBox(width: 8),  // <-- Add a space of 8 pixels
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      final picked =
-                          await _pickMonth(_selectedEndMonth, 'Select End Month');
-                      if (picked != null && picked != _selectedEndMonth) {
-                        setState(() {
-                          _selectedEndMonth = picked;
-                        });
-                        _loadHistoryData();
-                      }
+                  child: buildMonthPickerTile(
+                    context: context,
+                    selectedMonth: _selectedEndMonth,
+                    label: 'End',
+                    pickMonth: _pickMonth,
+                    onMonthChanged: (newDate) {
+                      setState(() {
+                        _selectedEndMonth = newDate;
+                      });
+                      _loadHistoryData();
                     },
-                    child: Text(
-                      "End: ${DateFormat('MMMM').format(_selectedEndMonth)}",
-                    ),
                   ),
                 ),
               ],

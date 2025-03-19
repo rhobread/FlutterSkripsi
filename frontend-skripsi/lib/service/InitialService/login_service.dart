@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 
 class LoginService {
   Future<void> Login({
-    required BuildContext context,
     required TextEditingController emailController,
     required TextEditingController passwordController,
     required Function(bool) setLoading,
@@ -13,7 +12,7 @@ class LoginService {
     final String password = passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      showSnackBarMessage(context, 'All fields are required');
+      showSnackBarMessage('Invalid Data!','All fields are required');
       return;
     }
 
@@ -45,23 +44,22 @@ class LoginService {
             final userController = Get.find<UserController>();
             userController.saveUser(userId, userName);
 
-            showSnackBarMessage(context, 'Log in successful!', success: true);
+            showSnackBarMessage('Success!','Log in successful!', success: true);
 
             Get.offAll(() => MainPage());
           } else {
-            showSnackBarMessage(context, 'User ID not found in response.');
+            showSnackBarMessage('Failed!','User ID not found in response.');
           }
         } else {
-          showSnackBarMessage(context, 'Invalid response format.');
+          showSnackBarMessage('Failed!','Invalid response format.');
         }
       } else {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        showSnackBarMessage(
-            context, responseData['message'] ?? 'Log In failed');
+        showSnackBarMessage('Failed!',responseData['message'] ?? 'Log In failed');
       }
     } catch (e) {
       setLoading(false);
-      showSnackBarMessage(context, 'Error: Unable to connect to the server');
+      showSnackBarMessage('Failed!','Error: Unable to connect to the server');
     }
   }
 }

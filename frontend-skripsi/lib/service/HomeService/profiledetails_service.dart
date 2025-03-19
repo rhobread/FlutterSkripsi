@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 
 class ProfileDetailsService {
   Future<Map<String, dynamic>?> getUserDetails({
-    required BuildContext context,
     required String userId,
   }) async {
     try {
@@ -16,12 +15,11 @@ class ProfileDetailsService {
         var data = jsonData['data'];
         return data;
       } else {
-        showSnackBarMessage(context,
-            'Error fetching user details. (Status: ${response.statusCode})');
+        showSnackBarMessage('Error fetching user details.', '(Status: ${response.statusCode})');
         return null;
       }
     } catch (e) {
-      showSnackBarMessage(context, 'Error fetching user details: $e');
+      showSnackBarMessage('Error fetching user details.', '$e');
       return null;
     }
   }

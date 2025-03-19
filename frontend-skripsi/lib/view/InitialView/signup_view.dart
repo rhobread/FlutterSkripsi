@@ -17,6 +17,8 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _isLoading = false;
   final SignUpService _signUpService = SignUpService();
 
+  bool _obscurePassword = true;
+
   void _setLoading(bool value) {
     if (!mounted) return;
     setState(() {
@@ -63,7 +65,13 @@ class _SignUpPageState extends State<SignUpPage> {
                       controller: _passwordController,
                       labelText: 'Password',
                       icon: Icons.lock,
-                      obscureText: true,
+                      obscureText: _obscurePassword,
+                      trailingIcon: _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      onIconTap: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
                     ),
                     const SizedBox(height: 20),
                     _buildSignUpButton(),
@@ -76,11 +84,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const LoginPage()),
-                            );
+                            Get.to(() => const LoginPage());
                           },
                           child: const Text(
                             'Log In',
@@ -113,7 +117,6 @@ class _SignUpPageState extends State<SignUpPage> {
           ? null
           : () {
               _signUpService.signUp(
-                context: context,
                 emailController: _emailController,
                 usernameController: _usernameController,
                 passwordController: _passwordController,

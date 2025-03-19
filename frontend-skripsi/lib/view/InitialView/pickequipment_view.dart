@@ -31,13 +31,11 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
   void _initializeEquipment() async {
     if (widget.isUpdateEquipment) {
       _userequipments = await _pickEquipmentService.getUserEquipments(
-        context: context, 
         userId: userController.userId.value
       );
     }
 
     List<Map<String, dynamic>> equipments = await _pickEquipmentService.fetchEquipments(
-      context: context,
       isGymSelected: widget.isGymSelected,
     );
 
@@ -76,7 +74,6 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
 
   void _submitSelection() {
     _pickEquipmentService.submitEquipmentSelection(
-      context: context,
       userId: userController.userId.value,
       selectedEquipment: _selectedEquipment,
       isUpdateEquipment: widget.isUpdateEquipment,

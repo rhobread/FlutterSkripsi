@@ -42,12 +42,6 @@ class ProfilePage extends StatelessWidget {
                   Colors.blue,
                   onTap: () => Get.to(() => const ProfileDetailsPage()),
                 ),
-                buildSettingsTile(
-                  context,
-                  Icons.history,
-                  "History",
-                  Colors.pink,
-                ),
               ],
             ),
           ),

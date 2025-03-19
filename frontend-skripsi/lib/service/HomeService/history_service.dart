@@ -3,7 +3,6 @@ import 'package:flutter_application_1/service/CommonService/export_service.dart'
 
 class HistoryService {
   Future<List<Map<String, dynamic>>> getHistory({
-    required BuildContext context,
     required String userId,
     required String startMonth,
     required String endMonth,
@@ -23,16 +22,15 @@ class HistoryService {
           final List<dynamic> data = jsonData['data'];
           return List<Map<String, dynamic>>.from(data);
         } else {
-          showSnackBarMessage(context, 'Error: ${jsonData['message']}');
+          showSnackBarMessage('Error fetching history.','Error: ${jsonData['message']}');
           return [];
         }
       } else {
-        showSnackBarMessage(
-            context, 'Error fetching history. (Status: ${response.statusCode})');
+        showSnackBarMessage('Error fetching history.','(Status: ${response.statusCode})');
         return [];
       }
     } catch (e) {
-      showSnackBarMessage(context, 'Error fetching history: $e');
+      showSnackBarMessage('Error fetching history: ','$e');
       return [];
     }
   }

@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_application_1/service/CommonService/export_service.dart';
 import 'package:flutter_application_1/service/HomeService/home_service.dart';
@@ -17,7 +15,7 @@ class _HomePageState extends State<HomePage> {
   final userController = Get.find<UserController>();
   Map<String, Map<String, dynamic>> _weekSchedule = {};
   bool _isLoading = true;
-  String _today = DateFormat('EEEE').format(DateTime.now()); // ✅ Get today's day
+  String _today = DateFormat('EEEE').format(DateTime.now()); 
 
   @override
   void initState() {
@@ -27,14 +25,10 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadInitialData() async {
     try {
-      print("DEBUG: User ID in HomePage = ${userController.userId.value}");
 
       final workouts = await homeService.fetchWorkouts(
-        context: context,
         userId: userController.userId.value,
       );
-
-      print("DEBUG: Fetched Workouts = $workouts");
 
       setState(() {
         _weekSchedule = _generateFullWeek(workouts);
@@ -44,8 +38,7 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         _isLoading = false;
       });
-      print("ERROR: Failed to fetch workouts: $e");
-      showSnackBarMessage(context, e.toString());
+      showSnackBarMessage('Failed!', e.toString());
     }
   }
 

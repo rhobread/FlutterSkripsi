@@ -1,4 +1,5 @@
 import 'package:flutter_application_1/service/CommonService/export_service.dart';
+import 'package:intl/intl.dart';
 
 Widget buildContainer({
   required Widget child,
@@ -228,6 +229,72 @@ Widget buildSelectOption({
           fontWeight: FontWeight.bold,
           color: isSelected ? Colors.white : Colors.black,
         ),
+      ),
+    ),
+  );
+}
+
+Widget buildMonthPickerTile({
+  required BuildContext context,
+  required DateTime selectedMonth,
+  required String label, // e.g. "Start" or "End"
+  required Future<DateTime?> Function(DateTime, String) pickMonth,
+  required ValueChanged<DateTime> onMonthChanged,
+  Color iconColor = Colors.red,
+  EdgeInsets margin = const EdgeInsets.all(0),
+}) {
+  return GestureDetector(
+    onTap: () async {
+      // Show your date picker
+      final picked = await pickMonth(selectedMonth, 'Select $label Month');
+      if (picked != null && picked != selectedMonth) {
+        onMonthChanged(picked);
+      }
+    },
+    child: Container(
+      margin: margin,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 3,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Icon + Text
+          Row(
+            children: [
+              // Circle icon background
+              Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: iconColor.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.calendar_month,
+                  color: iconColor,
+                  size: 18,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                "$label: ${DateFormat('MMMM').format(selectedMonth)}",
+                style: const TextStyle(fontSize: 16, color: Colors.black),
+              ),
+            ],
+          ),
+          // Right arrow
+          const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black54),
+        ],
       ),
     ),
   );

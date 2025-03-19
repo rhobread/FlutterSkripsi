@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 
 class HomeService {
   Future<List<Map<String, dynamic>>> fetchWorkouts({
-    required BuildContext context,
     required String userId,
   }) async {
     try {
@@ -21,12 +20,11 @@ class HomeService {
           };
         }).toList();
       } else {
-        showSnackBarMessage(context,
-            'Error fetching workouts. (Status: ${response.statusCode})');
+        showSnackBarMessage('Error fetching workouts. ', '(Status: ${response.statusCode})');
         return [];
       }
     } catch (e) {
-      showSnackBarMessage(context, 'Error fetching workouts: $e');
+      showSnackBarMessage('Error fetching workouts. ','$e');
       return [];
     }
   }

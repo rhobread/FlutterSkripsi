@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 
 class PickEquipmentService {
   Future<List<Map<String, dynamic>>> fetchEquipments({
-    required BuildContext context,
     required bool isGymSelected,
   }) async {
     try {
@@ -25,18 +24,16 @@ class PickEquipmentService {
 
         return equipmentList;
       } else {
-        showSnackBarMessage(context,
-            'Error fetching equipment. (Status: ${response.statusCode})');
+        showSnackBarMessage('Failed!', 'Error fetching equipment. (Status: ${response.statusCode})');
         return [];
       }
     } catch (e) {
-      showSnackBarMessage(context, 'Error fetching equipment: $e');
+      showSnackBarMessage('Failed!', 'Error fetching equipment: $e');
       return [];
     }
   }
 
   Future<List<Map<String, dynamic>>> getUserEquipments({
-    required BuildContext context,
     required String userId
   }) async {
     try {
@@ -55,18 +52,16 @@ class PickEquipmentService {
 
         return equipmentList;
       } else {
-        showSnackBarMessage(context,
-            'Error fetching equipment. (Status: ${response.statusCode})');
+        showSnackBarMessage( 'Failed!', 'Error fetching equipment. (Status: ${response.statusCode})');
         return [];
       }
     } catch (e) {
-      showSnackBarMessage(context, 'Error fetching equipment: $e');
+      showSnackBarMessage('Failed!', 'Error fetching equipment: $e');
       return [];
     }
   }
 
   Future<void> submitEquipmentSelection({
-    required BuildContext context,
     required String userId,
     required Set<int> selectedEquipment,
     required bool isUpdateEquipment,
@@ -84,20 +79,12 @@ class PickEquipmentService {
       );
 
       if (response.statusCode == 200) {
-        showSnackBarMessage(
-          context,
-          'Equipment saved successfully! Generating your workout...',
-          success: true,
-        );
+        showSnackBarMessage('Success!','Equipment saved successfully! Generating your workout...',success: true);
 
         final workoutResponse = await generateWorkoutPlan(userId: userId);
 
         if (workoutResponse.statusCode == 200) {
-          showSnackBarMessage(
-            context,
-            'Workout generated successfully!',
-            success: true,
-          );
+          showSnackBarMessage('Success!','Workout generated successfully!', success: true,);
           
           if(isUpdateEquipment){
             Get.back();
@@ -107,19 +94,13 @@ class PickEquipmentService {
           }
 
         } else {
-          showSnackBarMessage(
-            context,
-            'Error generating workout. (Status: ${workoutResponse.statusCode})',
-          );
+          showSnackBarMessage('Failed!','Error generating workout. (Status: ${workoutResponse.statusCode})');
         }
       } else {
-        showSnackBarMessage(
-          context,
-          'Error saving selection. (Status: ${response.statusCode})',
-        );
+        showSnackBarMessage('Failed!','Error saving selection. (Status: ${response.statusCode})',);
       }
     } catch (e) {
-      showSnackBarMessage(context, 'Network error: $e');
+      showSnackBarMessage('Failed!','Network error: $e');
     }
     setLoading(false);
   }

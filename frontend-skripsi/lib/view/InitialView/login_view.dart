@@ -15,6 +15,7 @@ class _LogInPageState extends State<LoginPage> {
 
   bool _isLoading = false;
   final LoginService _logInService = LoginService();
+  bool _obscurePassword = true;
 
   void _setLoading(bool value) {
     if (!mounted) return;
@@ -60,7 +61,13 @@ class _LogInPageState extends State<LoginPage> {
                       controller: _passwordController,
                       labelText: 'Password',
                       icon: Icons.lock,
-                      obscureText: true,
+                      obscureText: _obscurePassword,
+                      trailingIcon: _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      onIconTap: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
                     ),
                     const SizedBox(height: 25),
 
@@ -76,12 +83,7 @@ class _LogInPageState extends State<LoginPage> {
                     /// **Sign Up Navigation**
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SignUpPage(),
-                          ),
-                        );
+                        Get.to(() => const SignUpPage());
                       },
                       child: const Text(
                         'Sign Up',
@@ -112,7 +114,6 @@ class _LogInPageState extends State<LoginPage> {
           ? null
           : () {
               _logInService.Login(
-                context: context,
                 emailController: _emailController,
                 passwordController: _passwordController,
                 setLoading: _setLoading,

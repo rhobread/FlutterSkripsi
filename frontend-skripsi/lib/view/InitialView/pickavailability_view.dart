@@ -46,7 +46,6 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
 
   Future<void> _initializeAvailability() async {
     List<Map<String, dynamic>> availability = await _pickAvailabilityService.getUserAvailability(
-      context: context,
       userId: userController.userId.value,
     );
 
@@ -74,8 +73,26 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
   }
 
   void _submitAvailability() {
+    // For each day, if selected but no minutes are provided, unselect it.
+    for (int i = 0; i < _daysOfWeek.length; i++) {
+      if (_selectedDays[i] == true &&
+          _minutesControllers[i]?.text.trim().isEmpty == true) {
+        _selectedDays[i] = false;
+      }
+    }
+
+    // Validate that at least one availability is provided.
+    if (!_selectedDays.values.any((selected) => selected)) {
+      Get.snackbar(
+        'Validation Error',
+        'Please select at least one day and provide minutes.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    // Proceed with the submission using the original parameters.
     _pickAvailabilityService.submitAvailability(
-      context: context,
       userId: userController.userId.value,
       selectedDays: _selectedDays,
       minutesControllers: _minutesControllers,
@@ -122,7 +139,7 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
                                     onChanged: (bool? value) {
                                       setState(() {
                                         _selectedDays[index] = value ?? false;
-                                        if (!value!) {
+                                        if (value == false) {
                                           _minutesControllers[index]?.clear();
                                         }
                                       });
@@ -143,6 +160,9 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
                                       child: TextField(
                                         controller: _minutesControllers[index],
                                         keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.digitsOnly
+                                        ],
                                         enabled: _selectedDays[index],
                                         textAlign: TextAlign.center,
                                         decoration: const InputDecoration(

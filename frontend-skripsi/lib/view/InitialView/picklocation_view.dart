@@ -73,7 +73,6 @@ class _PickLocationPageState extends State<PickLocationPage> {
                     onPressed: _selectedLocation == -1 || _isLoading
                         ? null
                         : () => _pickLocationService.continueNextPage(
-                              context: context,
                               userId: userController.userId.value,
                               selectedLocation: _selectedLocation,
                               setLoading: _setLoading,
