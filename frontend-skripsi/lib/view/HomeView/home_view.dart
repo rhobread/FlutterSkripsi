@@ -15,9 +15,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final homeService = HomeService();
   final userController = Get.find<UserController>();
-  Map<String, Map<String, dynamic>> _weekSchedule = {};
+  List<Map<String, dynamic>> _orderedWeek = [];
   bool _isLoading = true;
-  String _today = DateFormat('EEEE').format(DateTime.now()); // ✅ Get today's day
+  String _today = DateFormat('EEEE').format(DateTime.now()); // ✅ Get today’s day
 
   @override
   void initState() {
@@ -27,30 +27,30 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadInitialData() async {
     try {
-      print("DEBUG: User ID in HomePage = ${userController.userId.value}");
 
       final workouts = await homeService.fetchWorkouts(
         context: context,
         userId: userController.userId.value,
       );
 
-      print("DEBUG: Fetched Workouts = $workouts");
 
       setState(() {
-        _weekSchedule = _generateFullWeek(workouts);
+        _orderedWeek = _generateOrderedWeek(workouts);
         _isLoading = false;
       });
     } catch (e) {
       setState(() {
         _isLoading = false;
       });
-      print("ERROR: Failed to fetch workouts: $e");
       showSnackBarMessage(context, e.toString());
     }
   }
 
-  /// ✅ Generate a full week with workouts & rest days
-  Map<String, Map<String, dynamic>> _generateFullWeek(List<Map<String, dynamic>> workouts) {
+  /// ✅ Generate ordered week with correct day sequence & rest days in between
+  List<Map<String, dynamic>> _generateOrderedWeek(List<Map<String, dynamic>> workouts) {
+    List<String> allDays = [
+      "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+    ];
     Map<String, Map<String, dynamic>> week = {};
 
     // ✅ Add workouts to their respective days
@@ -64,17 +64,17 @@ class _HomePageState extends State<HomePage> {
       };
     }
 
-    // ✅ Add rest days for any missing days
-    List<String> allDays = [
-      "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
-    ];
+    // ✅ Create an ordered list with rest days between workouts
+    List<Map<String, dynamic>> orderedWeek = [];
     for (var day in allDays) {
-      if (!week.containsKey(day)) {
-        week[day] = {"type": "rest"};
+      if (week.containsKey(day)) {
+        orderedWeek.add({"day": day, ...week[day]!});
+      } else {
+        orderedWeek.add({"day": day, "type": "rest"}); // ✅ Insert rest day
       }
     }
 
-    return week;
+    return orderedWeek;
   }
 
   @override
@@ -92,24 +92,24 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : _weekSchedule.isEmpty
+          : _orderedWeek.isEmpty
               ? const Center(
                   child: Text(
                     "No workouts available",
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                 )
-              : SingleChildScrollView( // ✅ Wrap with scrollable container
+              : SingleChildScrollView( // ✅ Enables scrolling
                   child: Column(
                     children: [
-                      const SizedBox(height: 10), // ✅ Adds spacing at the top
+                      const SizedBox(height: 10),
                       ListView.builder(
                         shrinkWrap: true, // ✅ Ensures it doesn't take full height
                         physics: const NeverScrollableScrollPhysics(), // ✅ Prevents conflicts
-                        itemCount: _weekSchedule.length,
+                        itemCount: _orderedWeek.length,
                         itemBuilder: (context, index) {
-                          String day = _weekSchedule.keys.elementAt(index);
-                          Map<String, dynamic> details = _weekSchedule[day]!;
+                          String day = _orderedWeek[index]["day"];
+                          Map<String, dynamic> details = _orderedWeek[index];
                           bool isWorkoutDay = details["type"] == "workout";
                           bool isToday = day == _today; // ✅ Highlight today
 
@@ -152,7 +152,7 @@ class _HomePageState extends State<HomePage> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        isWorkoutDay ? "Day ${_getDayIndex(day)}" : "Rest Day",
+                                        isWorkoutDay ? day : "Rest Day", // ✅ Show actual day name
                                         style: TextStyle(
                                           fontSize: 18,
                                           fontWeight: titleWeight,
@@ -212,13 +212,5 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
     );
-  }
-
-  /// ✅ Get numeric order of the day in the week
-  int _getDayIndex(String day) {
-    List<String> allDays = [
-      "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
-    ];
-    return allDays.indexOf(day) + 1;
   }
 }
