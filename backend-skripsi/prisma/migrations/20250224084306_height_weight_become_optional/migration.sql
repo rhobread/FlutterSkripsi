@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "users" ALTER COLUMN "height" DROP NOT NULL,
-ALTER COLUMN "weight" DROP NOT NULL;

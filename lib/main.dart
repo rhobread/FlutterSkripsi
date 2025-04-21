@@ -1,11 +1,5 @@
 import 'package:flutter_application_1/service/CommonService/export_service.dart';
 import 'package:flutter_application_1/view/HomeView/main_view.dart';
-// import 'package:flutter_application_1/view/HomeView/profile_view.dart';
-// import 'package:flutter_application_1/view/InitialView/inputdata_view.dart';
-// import 'package:flutter_application_1/view/InitialView/login_view.dart';
-// import 'package:flutter_application_1/view/InitialView/pickequipment_view.dart';
-// import 'package:flutter_application_1/view/InitialView/pickgoal_view.dart';
-// import 'package:flutter_application_1/view/InitialView/picklocation_view.dart';
 import 'package:flutter_application_1/view/InitialView/signup_view.dart';
 
 void main() async {
