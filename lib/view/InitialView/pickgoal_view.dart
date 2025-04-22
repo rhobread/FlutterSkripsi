@@ -1,5 +1,5 @@
 import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/service/InitialService/pickgoal_service.dart';
+import 'package:flutter_application_1/service/InitialService/pickGoal_service.dart';
 
 class PickGoalPage extends StatefulWidget {
   const PickGoalPage({super.key});

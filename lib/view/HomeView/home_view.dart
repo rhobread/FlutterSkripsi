@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:flutter_application_1/service/CommonService/export_service.dart';
 import 'package:flutter_application_1/service/HomeService/home_service.dart';
-import 'package:flutter_application_1/view/HomeView/workout_details.dart';
+import 'package:flutter_application_1/view/HomeView/workoutDetails_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -42,38 +42,41 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  /// ✅ Generate a full week with workouts & rest days
   Map<String, Map<String, dynamic>> _generateFullWeek(List<Map<String, dynamic>> workouts) {
-    Map<String, Map<String, dynamic>> week = {};
-
-    // ✅ Add workouts to their respective days
-    for (var workout in workouts) {
-      final dayOnly = workout['date'].split(",")[0]; // Extract day name
-      week[dayOnly] = {
-        "type": "workout",
-        "exercises": (workout['exercises'] as List<dynamic>)
-            .map((e) => Map<String, dynamic>.from(e))
-            .toList(),
-      };
-    }
-
-    // ✅ Add rest days for any missing days
-    List<String> allDays = [
-      "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
-    ];
-    for (var day in allDays) {
-      if (!week.containsKey(day)) {
-        week[day] = {"type": "rest"};
-      }
-    }
-
-    return week;
+  // 1) Build a lookup of workout-data by weekday name:
+  final Map<String, Map<String, dynamic>> workoutsByDay = {};
+  for (var workout in workouts) {
+    final dayOnly = workout['date'].split(',')[0];
+    workoutsByDay[dayOnly] = {
+      "workout_id": workout['workout_id'],
+      "type": "workout",
+      "status": workout['status'],
+      "totalWorkoutDuration": workout['totalWorkoutDuration'],
+    };
   }
+
+  // 2) Define the canonical order:
+  const List<String> allDays = [
+    "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+  ];
+
+  // 3) Build the week map *in* that exact order:
+  final Map<String, Map<String, dynamic>> week = {};
+  for (var day in allDays) {
+    if (workoutsByDay.containsKey(day)) {
+      week[day] = workoutsByDay[day]!;
+    } else {
+      week[day] = {"type": "rest"};
+    }
+  }
+
+  return week;
+}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5), // ✅ Light background
+      backgroundColor: const Color(0xFFF5F5F5), // Light background
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: buildCustomAppBar(dynamicTitle: userController.userName),
@@ -87,34 +90,36 @@ class _HomePageState extends State<HomePage> {
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                 )
-              : SingleChildScrollView( // ✅ Wrap with scrollable container
+              : SingleChildScrollView( // Wrap with scrollable container
                   child: Column(
                     children: [
-                      const SizedBox(height: 10), // ✅ Adds spacing at the top
+                      const SizedBox(height: 10), //  Adds spacing at the top
                       ListView.builder(
-                        shrinkWrap: true, // ✅ Ensures it doesn't take full height
-                        physics: const NeverScrollableScrollPhysics(), // ✅ Prevents conflicts
+                        shrinkWrap: true, // Ensures it doesn't take full height
+                        physics: const NeverScrollableScrollPhysics(), //  Prevents conflicts
                         itemCount: _weekSchedule.length,
                         itemBuilder: (context, index) {
                           String day = _weekSchedule.keys.elementAt(index);
                           Map<String, dynamic> details = _weekSchedule[day]!;
                           bool isWorkoutDay = details["type"] == "workout";
-                          bool isToday = day == _today; // ✅ Highlight today
-
-                          // ✅ Styling
+                          bool isToday = day == _today; 
+                          // Styling
                           final Color bgColor = isToday ? const Color(0xFF3757F7) : Colors.white;
                           final Color textColor = isToday ? Colors.white : Colors.black;
                           final FontWeight titleWeight = FontWeight.bold;
 
                           return GestureDetector(
                             onTap: () {
-                              if (!isWorkoutDay) return; // 🔒 Prevent tapping rest days
+                              if (!isWorkoutDay) return;
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => WorkoutDetailsPage(
                                     day: day,
-                                    exercises: details["exercises"],
+                                    workoutId: details['workout_id'],
+                                    isWorkoutDay: isWorkoutDay,
+                                    isToday: isToday,
+                                    
                                   ),
                                 ),
                               );
@@ -140,7 +145,7 @@ class _HomePageState extends State<HomePage> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        isWorkoutDay ? "Day ${_getDayIndex(day)}" : "Rest Day",
+                                        isWorkoutDay ? day : "Rest Day",
                                         style: TextStyle(
                                           fontSize: 18,
                                           fontWeight: titleWeight,
@@ -148,13 +153,27 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                       ),
                                       if (isWorkoutDay)
-                                        Text(
-                                          details["exercises"].isNotEmpty
-                                              ? details["exercises"][0]['group']['name'] ?? "Workout"
-                                              : "",
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: isToday ? Colors.white70 : Colors.black54,
+                                        Text.rich(
+                                          TextSpan(
+                                            style: TextStyle(
+                                              fontSize: 14,                            // default for status text
+                                              color: isToday ? Colors.white70 : Colors.black54,
+                                            ),
+                                            children: [
+                                              TextSpan(
+                                                text: details["status"].isNotEmpty 
+                                                    ? details["status"] 
+                                                    : "",
+                                              ),
+                                              if (details["status"].isNotEmpty)
+                                                TextSpan(
+                                                  text: ', (${details['totalWorkoutDuration']} Minutes)',
+                                                  style: TextStyle(
+                                                    fontSize: 12,                       // smaller size for duration
+                                                    fontWeight: FontWeight.normal,
+                                                  ),
+                                                ),
+                                            ],
                                           ),
                                         ),
                                     ],
@@ -168,7 +187,10 @@ class _HomePageState extends State<HomePage> {
                                                   MaterialPageRoute(
                                                     builder: (context) => WorkoutDetailsPage(
                                                       day: day,
-                                                      exercises: details["exercises"],
+                                                      workoutId: details['workout_id'],
+                                                      isWorkoutDay: isWorkoutDay,
+                                                      isToday: isToday,
+                                                      
                                                     ),
                                                   ),
                                                 );
@@ -195,7 +217,7 @@ class _HomePageState extends State<HomePage> {
                           );
                         },
                       ),
-                      const SizedBox(height: 20), // ✅ Adds bottom padding
+                      const SizedBox(height: 20), //  Adds bottom padding
                     ],
                   ),
                 ),
@@ -203,10 +225,5 @@ class _HomePageState extends State<HomePage> {
   }
 
   /// ✅ Get numeric order of the day in the week
-  int _getDayIndex(String day) {
-    List<String> allDays = [
-      "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
-    ];
-    return allDays.indexOf(day) + 1;
-  }
+
 }

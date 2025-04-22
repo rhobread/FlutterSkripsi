@@ -15,8 +15,10 @@ class HomeService {
 
         return workouts.map((workout) {
           return {
+            'workout_id': workout['workout_id'],
             'date': workout['date'],
-            'exercises': List<Map<String, dynamic>>.from(workout['exercises']),
+            'status': workout['status'],
+            'totalWorkoutDuration': workout['totalWorkoutDuration']
           };
         }).toList();
       } else {

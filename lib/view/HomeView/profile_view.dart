@@ -1,5 +1,5 @@
 import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/view/HomeView/profiledetails_view.dart';
+import 'package:flutter_application_1/view/HomeView/profileDetails_view.dart';
 import 'package:flutter_application_1/view/InitialView/login_view.dart';
 
 class ProfilePage extends StatelessWidget {

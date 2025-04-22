@@ -1,6 +1,6 @@
 import 'package:flutter_application_1/service/CommonService/export_service.dart';
 import 'package:flutter_application_1/service/HomeService/history_service.dart';
-import 'package:flutter_application_1/view/HomeView/workout_details.dart';
+import 'package:flutter_application_1/view/HomeView/workoutDetails_view.dart';
 import 'package:intl/intl.dart';
 
 class HistoryPage extends StatefulWidget {
@@ -185,7 +185,9 @@ class _HistoryPageState extends State<HistoryPage> {
                                 MaterialPageRoute(
                                   builder: (context) => WorkoutDetailsPage(
                                     day: dateKey,
-                                    exercises: exercises,
+                                    isToday: false,
+                                    isWorkoutDay: false,
+                                    workoutId: 10,
                                   ),
                                 ),
                               );

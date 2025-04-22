@@ -1,6 +1,6 @@
 import 'package:flutter_application_1/service/CommonService/export_service.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_application_1/view/InitialView/inputdata_view.dart';
+import 'package:flutter_application_1/view/InitialView/inputData_view.dart';
 
 class SignUpService {
   Future<void> signUp({

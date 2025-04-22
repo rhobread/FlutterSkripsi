@@ -1,5 +1,5 @@
 import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/service/InitialService/pickequipment_service.dart';
+import 'package:flutter_application_1/service/InitialService/pickEquipment_service.dart';
 
 class PickEquipmentPage extends StatefulWidget {
   final bool isGymSelected;

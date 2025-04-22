@@ -1,5 +1,5 @@
 import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/service/InitialService/pickavailability_service.dart';
+import 'package:flutter_application_1/service/InitialService/pickAvailability_service.dart';
 
 class PickAvailabilityPage extends StatefulWidget {
   final bool isUpdateAvailability;
