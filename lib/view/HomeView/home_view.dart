@@ -13,9 +13,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final homeService = HomeService();
   final userController = Get.find<UserController>();
+  final String _today = DateFormat('EEEE').format(DateTime.now()); 
   Map<String, Map<String, dynamic>> _weekSchedule = {};
   bool _isLoading = true;
-  String _today = DateFormat('EEEE').format(DateTime.now()); 
 
   @override
   void initState() {
@@ -44,34 +44,34 @@ class _HomePageState extends State<HomePage> {
 
   Map<String, Map<String, dynamic>> _generateFullWeek(List<Map<String, dynamic>> workouts) {
   // 1) Build a lookup of workout-data by weekday name:
-  final Map<String, Map<String, dynamic>> workoutsByDay = {};
-  for (var workout in workouts) {
-    final dayOnly = workout['date'].split(',')[0];
-    workoutsByDay[dayOnly] = {
-      "workout_id": workout['workout_id'],
-      "type": "workout",
-      "status": workout['status'],
-      "totalWorkoutDuration": workout['totalWorkoutDuration'],
-    };
-  }
-
-  // 2) Define the canonical order:
-  const List<String> allDays = [
-    "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
-  ];
-
-  // 3) Build the week map *in* that exact order:
-  final Map<String, Map<String, dynamic>> week = {};
-  for (var day in allDays) {
-    if (workoutsByDay.containsKey(day)) {
-      week[day] = workoutsByDay[day]!;
-    } else {
-      week[day] = {"type": "rest"};
+    final Map<String, Map<String, dynamic>> workoutsByDay = {};
+    for (var workout in workouts) {
+      final dayOnly = workout['date'].split(',')[0];
+      workoutsByDay[dayOnly] = {
+        "workout_id": workout['workout_id'],
+        "type": "workout",
+        "status": workout['status'],
+        "totalWorkoutDuration": workout['totalWorkoutDuration'],
+      };
     }
-  }
 
-  return week;
-}
+    // 2) Define the canonical order:
+    const List<String> allDays = [
+      "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+    ];
+
+    // 3) Build the week map *in* that exact order:
+    final Map<String, Map<String, dynamic>> week = {};
+    for (var day in allDays) {
+      if (workoutsByDay.containsKey(day)) {
+        week[day] = workoutsByDay[day]!;
+      } else {
+        week[day] = {"type": "rest"};
+      }
+    }
+
+    return week;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,18 +111,12 @@ class _HomePageState extends State<HomePage> {
                           return GestureDetector(
                             onTap: () {
                               if (!isWorkoutDay) return;
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => WorkoutDetailsPage(
-                                    day: day,
-                                    workoutId: details['workout_id'],
-                                    isWorkoutDay: isWorkoutDay,
-                                    isToday: isToday,
-                                    
-                                  ),
-                                ),
-                              );
+                              Get.to(() => WorkoutDetailsPage(
+                                day: day,
+                                workoutId: details['workout_id'],
+                                isWorkoutDay: isWorkoutDay,
+                                isToday: isToday,
+                              ));
                             },
                             child: Container(
                               margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -182,18 +176,12 @@ class _HomePageState extends State<HomePage> {
                                       ? (isToday
                                           ? ElevatedButton(
                                               onPressed: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) => WorkoutDetailsPage(
-                                                      day: day,
-                                                      workoutId: details['workout_id'],
-                                                      isWorkoutDay: isWorkoutDay,
-                                                      isToday: isToday,
-                                                      
-                                                    ),
-                                                  ),
-                                                );
+                                                Get.to(() => WorkoutDetailsPage(
+                                                  day: day,
+                                                  workoutId: details['workout_id'],
+                                                  isWorkoutDay: isWorkoutDay,
+                                                  isToday: isToday,
+                                                ));
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor: Colors.white,
@@ -223,7 +211,5 @@ class _HomePageState extends State<HomePage> {
                 ),
     );
   }
-
-  /// ✅ Get numeric order of the day in the week
 
 }
