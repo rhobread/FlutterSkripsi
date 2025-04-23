@@ -25,11 +25,9 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadInitialData() async {
     try {
-
       final workouts = await homeService.fetchWorkouts(
         userId: userController.userId.value,
       );
-
       setState(() {
         _weekSchedule = _generateFullWeek(workouts);
         _isLoading = false;
@@ -43,7 +41,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Map<String, Map<String, dynamic>> _generateFullWeek(List<Map<String, dynamic>> workouts) {
-  // 1) Build a lookup of workout-data by weekday name:
     final Map<String, Map<String, dynamic>> workoutsByDay = {};
     for (var workout in workouts) {
       final dayOnly = workout['date'].split(',')[0];
@@ -55,19 +52,13 @@ class _HomePageState extends State<HomePage> {
       };
     }
 
-    // 2) Define the canonical order:
     const List<String> allDays = [
       "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
     ];
 
-    // 3) Build the week map *in* that exact order:
     final Map<String, Map<String, dynamic>> week = {};
     for (var day in allDays) {
-      if (workoutsByDay.containsKey(day)) {
-        week[day] = workoutsByDay[day]!;
-      } else {
-        week[day] = {"type": "rest"};
-      }
+      week[day] = workoutsByDay[day] ?? {"type": "rest"};
     }
 
     return week;
@@ -76,7 +67,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5), // Light background
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: buildCustomAppBar(dynamicTitle: userController.userName),
@@ -90,32 +81,89 @@ class _HomePageState extends State<HomePage> {
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                 )
-              : SingleChildScrollView( // Wrap with scrollable container
+              : SingleChildScrollView(
                   child: Column(
                     children: [
-                      const SizedBox(height: 10), //  Adds spacing at the top
+                      const SizedBox(height: 10),
                       ListView.builder(
-                        shrinkWrap: true, // Ensures it doesn't take full height
-                        physics: const NeverScrollableScrollPhysics(), //  Prevents conflicts
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: _weekSchedule.length,
                         itemBuilder: (context, index) {
-                          String day = _weekSchedule.keys.elementAt(index);
-                          Map<String, dynamic> details = _weekSchedule[day]!;
-                          bool isWorkoutDay = details["type"] == "workout";
-                          bool isToday = day == _today; 
-                          // Styling
-                          final Color bgColor = isToday ? const Color(0xFF3757F7) : Colors.white;
-                          final Color textColor = isToday ? Colors.white : Colors.black;
-                          final FontWeight titleWeight = FontWeight.bold;
+                          final day = _weekSchedule.keys.elementAt(index);
+                          final details = _weekSchedule[day]!;
+                          final status = (details["status"] as String?)?.toLowerCase() ?? '';
+                          final isWorkoutDay = details["type"] == "workout";
+                          final isToday = day == _today;
+                          final isDone = status == 'done';
+
+                          // 1) Determine background
+                          Color bgColor;
+                          if (status == 'done') {
+                            bgColor = Colors.green;
+                          } else if (status == 'skipped') {
+                            bgColor = Colors.yellow;
+                          } else if (isToday) {
+                            bgColor = const Color(0xFF3757F7);
+                          } else {
+                            bgColor = Colors.white;
+                          }
+
+                          // 2) Determine text color
+                          Color textColor;
+                          if (status == 'done') {
+                            textColor = Colors.white;
+                          } else if (status == 'skipped') {
+                            textColor = Colors.black;
+                          } else if (isToday) {
+                            textColor = Colors.white;
+                          } else {
+                            textColor = Colors.black;
+                          }
+
+                          // 3) Right-side widget (icon/button)
+                          Widget trailing;
+                          if (!isWorkoutDay) {
+                            trailing = const SizedBox();
+                          } else if (status == 'done') {
+                            trailing = const Icon(Icons.check, color: Colors.white);
+                          } else if (status == 'skipped') {
+                            trailing = const Icon(Icons.block, color: Colors.black54);
+                          } else if (isToday) {
+                            trailing = ElevatedButton(
+                              onPressed: () {
+                                Get.to(() => WorkoutDetailsPage(
+                                  day: day,
+                                  workoutId: details['workout_id'],
+                                  isToday: isToday,
+                                  isDone: false,
+                                ));
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: const Color(0xFF3757F7),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: const Text(
+                                "Start",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            );
+                          } else {
+                            trailing = const Icon(Icons.lock, color: Colors.black54);
+                          }
 
                           return GestureDetector(
                             onTap: () {
+                              // Only navigate if it's a workout and NOT already done
                               if (!isWorkoutDay) return;
                               Get.to(() => WorkoutDetailsPage(
                                 day: day,
                                 workoutId: details['workout_id'],
-                                isWorkoutDay: isWorkoutDay,
                                 isToday: isToday,
+                                isDone: isDone,
                               ));
                             },
                             child: Container(
@@ -142,7 +190,7 @@ class _HomePageState extends State<HomePage> {
                                         isWorkoutDay ? day : "Rest Day",
                                         style: TextStyle(
                                           fontSize: 18,
-                                          fontWeight: titleWeight,
+                                          fontWeight: FontWeight.bold,
                                           color: textColor,
                                         ),
                                       ),
@@ -150,20 +198,18 @@ class _HomePageState extends State<HomePage> {
                                         Text.rich(
                                           TextSpan(
                                             style: TextStyle(
-                                              fontSize: 14,                            // default for status text
-                                              color: isToday ? Colors.white70 : Colors.black54,
+                                              fontSize: 14,
+                                              color: (isToday || status == 'done')
+                                                  ? Colors.white70
+                                                  : Colors.black54,
                                             ),
                                             children: [
-                                              TextSpan(
-                                                text: details["status"].isNotEmpty 
-                                                    ? details["status"] 
-                                                    : "",
-                                              ),
-                                              if (details["status"].isNotEmpty)
+                                              TextSpan(text: details["status"] ?? ""),
+                                              if ((details["status"] as String).isNotEmpty)
                                                 TextSpan(
                                                   text: ', (${details['totalWorkoutDuration']} Minutes)',
-                                                  style: TextStyle(
-                                                    fontSize: 12,                       // smaller size for duration
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
                                                     fontWeight: FontWeight.normal,
                                                   ),
                                                 ),
@@ -172,44 +218,17 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                     ],
                                   ),
-                                  isWorkoutDay
-                                      ? (isToday
-                                          ? ElevatedButton(
-                                              onPressed: () {
-                                                Get.to(() => WorkoutDetailsPage(
-                                                  day: day,
-                                                  workoutId: details['workout_id'],
-                                                  isWorkoutDay: isWorkoutDay,
-                                                  isToday: isToday,
-                                                ));
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.white,
-                                                foregroundColor: const Color(0xFF3757F7),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                ),
-                                              ),
-                                              child: const Text(
-                                                "Start",
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            )
-                                          : const Icon(Icons.lock, color: Colors.black54))
-                                      : const SizedBox(), // No lock icon for rest days
+                                  trailing,
                                 ],
                               ),
                             ),
                           );
                         },
                       ),
-                      const SizedBox(height: 20), //  Adds bottom padding
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ),
     );
   }
-
 }

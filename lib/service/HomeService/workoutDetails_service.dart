@@ -3,35 +3,43 @@ import 'package:http/http.dart' as http;
 
 class WorkoutdetailsService {
   Future<List<Map<String, dynamic>>> fetchWorkout({
-    required int workoutId,
-  }) async {
-    try {
-      final Uri fetchUrl = UrlConfig.getApiUrl('workout/detail/$workoutId');
-      final response = await http.get(fetchUrl);
+  required int workoutId,
+  required bool isDone,
+}) async {
+  try {
+    final uri = isDone
+      ? UrlConfig.getApiUrl('workout/history/detail/$workoutId')
+      : UrlConfig.getApiUrl('workout/detail/$workoutId');
+    final response = await http.get(uri);
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonData = jsonDecode(response.body);
-
-        // Extract exercises list
-        final List<dynamic> exercises = jsonData['exercises'] ?? [];
-
-        return exercises.map((exercise) {
-          return {
-            'workout_exercise_id': exercise['workout_exercise_id'],
-            'name': exercise['name'],
-            'type': exercise['type'],
-            'sets': exercise['sets'], // This is still a list of maps
-          };
-        }).toList();
-      } else {
-        showSnackBarMessage('Error fetching workout.', '(Status: ${response.statusCode})');
-        return [];
-      }
-    } catch (e) {
-      showSnackBarMessage('Error fetching workout.', '$e');
+    if (response.statusCode != 200) {
+      showSnackBarMessage(
+        'Error fetching workout.',
+        '(Status: ${response.statusCode})'
+      );
       return [];
     }
+
+    final Map<String, dynamic> raw = jsonDecode(response.body);
+
+    final Map<String, dynamic> payload = raw.containsKey('data')
+      ? Map<String, dynamic>.from(raw['data'])
+      : raw;
+
+    final List<dynamic> exercises = payload['exercises'] as List<dynamic>? ?? [];
+    return exercises.map((e) {
+      return {
+        'workout_exercise_id': e['workout_exercise_id'],
+        'name':                e['name'],
+        'type':                e['type'] ?? 'unknown',
+        'sets':                e['sets'] as List<dynamic>,
+      };
+    }).toList();
+  } catch (e) {
+    showSnackBarMessage('Error fetching workout.', '$e');
+    return [];
   }
+}
 
   Future<bool> finishWorkout({
     required int userId,

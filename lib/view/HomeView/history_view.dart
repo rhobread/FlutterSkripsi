@@ -186,8 +186,8 @@ class _HistoryPageState extends State<HistoryPage> {
                                   builder: (context) => WorkoutDetailsPage(
                                     day: dateKey,
                                     isToday: false,
-                                    isWorkoutDay: false,
                                     workoutId: 10,
+                                    isDone: true,
                                   ),
                                 ),
                               );
