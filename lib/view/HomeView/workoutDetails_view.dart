@@ -1,6 +1,6 @@
 import 'package:flutter_application_1/service/HomeService/workoutDetails_service.dart';
 import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/view/HomeView/home_view.dart';
+import 'package:flutter_application_1/view/HomeView/main_view.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 class WorkoutDetailsPage extends StatefulWidget {
@@ -14,7 +14,7 @@ class WorkoutDetailsPage extends StatefulWidget {
     required this.day,
     required this.workoutId,
     required this.isToday,
-    required this.isDone
+    required this.isDone,
   });
 
   @override
@@ -38,12 +38,17 @@ class _WorkoutDetailsState extends State<WorkoutDetailsPage> {
   }
 
   Future<void> _loadExercises() async {
-    final data = await workoutService.fetchWorkout(workoutId: widget.workoutId, isDone: widget.isDone);
+    final data = await workoutService.fetchWorkout(
+      workoutId: widget.workoutId,
+      isDone: widget.isDone,
+    );
     setState(() {
-      _exercises = data.map((e) => {
-            'exercise': e,
-            'sets': List<Map<String, dynamic>>.from(e['sets'] as List),
-          }).toList();
+      _exercises = data
+          .map((e) => {
+                'exercise': e,
+                'sets': List<Map<String, dynamic>>.from(e['sets'] as List),
+              })
+          .toList();
       _expanded = List.filled(_exercises.length, false);
       _isLoading = false;
     });
@@ -58,7 +63,7 @@ class _WorkoutDetailsState extends State<WorkoutDetailsPage> {
       exercises: _exercises,
     );
     setState(() => _isSaving = false);
-    if (success) Get.offAll(() => HomePage());
+    if (success) Get.offAll(() => MainPage());
   }
 
   bool get _canEdit => !widget.isDone && widget.isToday && _started;
@@ -67,7 +72,7 @@ class _WorkoutDetailsState extends State<WorkoutDetailsPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (_) {
@@ -77,7 +82,7 @@ class _WorkoutDetailsState extends State<WorkoutDetailsPage> {
             length: 2,
             child: Column(
               children: [
-                TabBar(
+                const TabBar(
                   tabs: [Tab(text: 'INSTRUCTIONS'), Tab(text: 'RECORDS')],
                   indicatorColor: Colors.blue,
                   labelColor: Colors.black,
@@ -118,41 +123,6 @@ class _WorkoutDetailsState extends State<WorkoutDetailsPage> {
     );
   }
 
-  Widget buildCustomButton({
-    required String label,
-    required VoidCallback? onPressed,
-    bool isLoading = false,
-  }) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.black,
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 15),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          elevation: 4,
-        ),
-        child: isLoading
-            ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                ),
-              )
-            : Text(
-                label,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -161,7 +131,10 @@ class _WorkoutDetailsState extends State<WorkoutDetailsPage> {
         backgroundColor: const Color(0xFFF5F5F5),
         elevation: 0,
         leading: const BackButton(color: Colors.black),
-        title: Text(widget.day, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        title: Text(
+          widget.day,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -196,9 +169,15 @@ class _WorkoutDetailsState extends State<WorkoutDetailsPage> {
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(ex['name'], style: const TextStyle(fontWeight: FontWeight.bold)),
+                                          Text(
+                                            ex['name'],
+                                            style: const TextStyle(fontWeight: FontWeight.bold),
+                                          ),
                                           const SizedBox(height: 4),
-                                          Text('Type: ${ex['type']}', style: const TextStyle(color: Colors.grey)),
+                                          Text(
+                                            'Type: ${ex['type']}',
+                                            style: const TextStyle(color: Colors.grey),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -217,28 +196,40 @@ class _WorkoutDetailsState extends State<WorkoutDetailsPage> {
                             ),
                             if (_expanded[i])
                               Column(
-                                children: sets.map((s) {
-                                  return Container(
-                                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.shade200,
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Text(s['set_number'].toString(), style: const TextStyle(fontWeight: FontWeight.bold)),
-                                        if (isWeight) ...[
-                                          _buildBox(s['weight_used'], (v) => s['weight_used'] = v),
-                                          const Text('KG', style: TextStyle(fontWeight: FontWeight.bold)),
+                                children: [
+                                  ...sets.map((s) {
+                                    return Container(
+                                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Text(
+                                            s['set_number'].toString(),
+                                            style: const TextStyle(fontWeight: FontWeight.bold),
+                                          ),
+                                          if (isWeight) ...[
+                                            _buildBox(s['weight_used'], (v) => s['weight_used'] = v),
+                                            const Text(
+                                              'KG',
+                                              style: TextStyle(fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                          _buildBox(s['reps'], (v) => s['reps'] = v),
+                                          const Text(
+                                            'Reps',
+                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                          ),
                                         ],
-                                        _buildBox(s['reps'], (v) => s['reps'] = v),
-                                        const Text('Reps', style: TextStyle(fontWeight: FontWeight.bold)),
-                                      ],
-                                    ),
-                                  );
-                                }).toList(),
+                                      ),
+                                    );
+                                  }),
+                                  const SizedBox(height: 12),
+                                ],
                               ),
                           ],
                         ),
@@ -283,7 +274,11 @@ class _WorkoutDetailsState extends State<WorkoutDetailsPage> {
         initialValue: initial?.toString() ?? '',
         textAlign: TextAlign.center,
         style: TextStyle(color: enabled ? Colors.black : Colors.grey[600]),
-        decoration: const InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.symmetric(vertical: 8)),
+        decoration: const InputDecoration(
+          border: InputBorder.none,
+          isDense: true,
+          contentPadding: EdgeInsets.symmetric(vertical: 8),
+        ),
         keyboardType: TextInputType.number,
         onChanged: (v) => onChanged(int.tryParse(v)),
       ),

@@ -6,39 +6,53 @@ class WorkoutdetailsService {
   required int workoutId,
   required bool isDone,
 }) async {
-  try {
-    final uri = isDone
+  final uri = isDone
       ? UrlConfig.getApiUrl('workout/history/detail/$workoutId')
       : UrlConfig.getApiUrl('workout/detail/$workoutId');
-    final response = await http.get(uri);
+  final response = await http.get(uri);
 
-    if (response.statusCode != 200) {
-      showSnackBarMessage(
-        'Error fetching workout.',
-        '(Status: ${response.statusCode})'
-      );
-      return [];
-    }
-
-    final Map<String, dynamic> raw = jsonDecode(response.body);
-
-    final Map<String, dynamic> payload = raw.containsKey('data')
-      ? Map<String, dynamic>.from(raw['data'])
-      : raw;
-
-    final List<dynamic> exercises = payload['exercises'] as List<dynamic>? ?? [];
-    return exercises.map((e) {
-      return {
-        'workout_exercise_id': e['workout_exercise_id'],
-        'name':                e['name'],
-        'type':                e['type'] ?? 'unknown',
-        'sets':                e['sets'] as List<dynamic>,
-      };
-    }).toList();
-  } catch (e) {
-    showSnackBarMessage('Error fetching workout.', '$e');
+  if (response.statusCode != 200) {
+    showSnackBarMessage(
+      'Error fetching workout.',
+      '(Status: ${response.statusCode})'
+    );
     return [];
   }
+
+  final raw = jsonDecode(response.body) as Map<String, dynamic>;
+
+  // 1) Unwrap the "data" key, if it exists:
+  final payload = raw.containsKey('data')
+      ? raw['data'] as Map<String, dynamic>
+      : raw;
+
+  final List<dynamic> list = payload['exercises'] as List<dynamic>? ?? [];
+
+  // 2) Normalize every exercise:
+  return list.map((e) {
+    final exMap = e as Map<String, dynamic>;
+    final setsRaw = (exMap['sets'] as List<dynamic>).cast<Map<String, dynamic>>();
+
+    // build a normalized List<Map> of sets
+    final normalizedSets = setsRaw.map((s) {
+      return {
+        'set_number':  s['set_number'],
+        'reps':        s['reps'],
+        'weight_used': s.containsKey('weight_used') ? s['weight_used'] : null,
+      };
+    }).toList();
+
+    final isWeight = normalizedSets.any((s) => s['weight_used'] != null);
+
+    return {
+      'workout_exercise_id': exMap['workout_exercise_id'],
+      'name':                exMap['name'] ?? '',
+      'type':                exMap['type'] ?? (isWeight ? 'weight' : 'bodyweight'),
+      'sets':                normalizedSets,
+      'exercise_cd':         exMap['exercise_cd'] ?? null,
+      'description':         exMap['description'] ?? '',
+    };
+  }).toList();
 }
 
   Future<bool> finishWorkout({
@@ -50,7 +64,6 @@ class WorkoutdetailsService {
     final body = {
       "user_id": userId,
       "workout_id": workoutId,
-      // ISO8601 UTC timestamp
       "date": DateTime.now().toUtc().toIso8601String(),
       "exercises": exercises.map((item) {
         final ex = item['exercise'] as Map<String, dynamic>;
