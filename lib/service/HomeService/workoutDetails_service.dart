@@ -61,42 +61,47 @@ class WorkoutdetailsService {
     }
   }
 
-  Future<Map<String, dynamic>?> getDescription({
-    required int exerciseId,
-  }) async {
-    final uri = UrlConfig.getApiUrl('exercise/description/$exerciseId');
+Future<Map<String, dynamic>?> getDescription({
+  required int exerciseId,
+}) async {
+  final uri = UrlConfig.getApiUrl('exercise/description/$exerciseId');
 
-    try {
-      final response = await http.get(uri);
-
-      if (response.statusCode != 200) {
-        showSnackBarMessage(
-          'Error getting description.',
-          'Server responded with status ${response.statusCode}',
-        );
-        return null;
-      }
-
-      final raw = jsonDecode(response.body) as Map<String, dynamic>;
-
-      final data = raw.containsKey('data') ? raw['data'] as Map<String, dynamic> : raw;
-
-      return {
-        'id':           data['id'],
-        'exercise_cd':  data['exercise_cd'],
-        'name':         data['name'],
-        'intensity':    data['intensity'],
-        'duration':     data['duration'],
-        'types':        data['types'],
-        'max_rep':      data['max_rep'],
-        'image':        data['image'],
-        'description':  data['description'] ?? '',
-      };
-    } catch (e) {
-      showSnackBarMessage('Error getting description.', e.toString());
+  try {
+    final response = await http.get(uri);
+    if (response.statusCode != 200) {
+      showSnackBarMessage(
+        'Error getting description.',
+        'Server responded with status ${response.statusCode}',
+      );
       return null;
     }
+
+    final raw = jsonDecode(response.body) as Map<String, dynamic>;
+    final data = raw['data'] as Map<String, dynamic>;
+
+    final typesRaw = data['types'];
+    final List<String> typesList = typesRaw is List
+        ? typesRaw.cast<String>()
+        : (typesRaw is String ? [typesRaw] : []);
+
+    return {
+      'id': data['id'],
+      'exercise_cd': data['exercise_cd'],
+      'name': data['name'],
+      'intensity': data['intensity'],
+      'duration': data['duration'],
+      'types': typesList,
+      'max_rep': data['max_rep'],
+      'image': data['image'] != null
+          ? 'lib/assets/exercise/${data['image']}'
+          : 'lib/assets/exercise/barbell-deadlift.gif',
+      'description': (data['description'] as String?)?.trim() ?? '',
+    };
+  } catch (e) {
+    showSnackBarMessage('Error getting description.', e.toString());
+    return null;
   }
+}
 
   Future<bool> finishWorkout({
     required int userId,

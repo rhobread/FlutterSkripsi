@@ -68,60 +68,149 @@ class _WorkoutDetailsState extends State<WorkoutDetailsPage> {
 
   bool get _canEdit => !widget.isDone && widget.isToday && _started;
 
-  void _showDetailSheet(Map<String, dynamic> ex) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) {
-        return SizedBox(
-          height: MediaQuery.of(context).size.height * 0.75,
-          child: DefaultTabController(
-            length: 2,
-            child: Column(
+  Future<void> _showDetailSheet(int exerciseId) {
+  return showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => FractionallySizedBox(
+      heightFactor: 0.75,
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: FutureBuilder<Map<String, dynamic>?>(
+          future: workoutService.getDescription(exerciseId: exerciseId),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (!snapshot.hasData || snapshot.data == null) {
+              return const Center(child: Text('Error loading details'));
+            }
+
+            final ex = snapshot.data!;
+            final List<String> types = (ex['types'] as List).cast<String>();
+            final String description = (ex['description'] ?? '').toString();
+            final String imagePath = ex['image'] ?? '';
+            final String name = ex['name'] ?? '';
+            final String equipment = types.contains('weight') ? 'Dumbbell' : 'Bodyweight';
+
+            final bool hasDescription = description.trim().isNotEmpty;
+
+            return Column(
               children: [
-                const TabBar(
-                  tabs: [Tab(text: 'INSTRUCTIONS'), Tab(text: 'RECORDS')],
-                  indicatorColor: Colors.blue,
-                  labelColor: Colors.black,
-                  unselectedLabelColor: Colors.grey,
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
                 Expanded(
-                  child: TabBarView(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Markdown(
-                          data: ex['description'] ?? '',
-                          styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-                            h1: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                            h2: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                            p: const TextStyle(fontSize: 16),
+                  child: DefaultTabController(
+                    length: 2,
+                    child: Column(
+                      children: [
+                        const TabBar(
+                          tabs: [
+                            Tab(text: 'INSTRUCTIONS'),
+                            Tab(text: 'RECORDS'),
+                          ],
+                        ),
+                        Expanded(
+                          child: TabBarView(
+                            children: [
+                              // INSTRUCTIONS TAB
+                              SingleChildScrollView(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (imagePath.isNotEmpty)
+                                      Center(
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(12),
+                                          child: Image.asset(
+                                            imagePath,
+                                            fit: BoxFit.contain,
+                                            height: MediaQuery.of(context).size.height * 0.2,
+                                          ),
+                                        ),
+                                      ),
+                                    const SizedBox(height: 16),
+
+                                    if (hasDescription)
+                                      MarkdownBody(
+                                        data: description,
+                                        styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                                          h1: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                                          h2: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                          p: const TextStyle(fontSize: 16),
+                                        ),
+                                      )
+                                    else ...[
+                                      Text(
+                                        name,
+                                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      if (types.isNotEmpty) ...[
+                                        const Text(
+                                          'FOCUS AREA',
+                                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                                        ),
+                                        Text(
+                                          types.join(', '),
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                        const SizedBox(height: 12),
+                                      ],
+                                      const Text(
+                                        'EQUIPMENT',
+                                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                                      ),
+                                      Text(
+                                        equipment,
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
+
+                              // RECORDS TAB
+                              Center(
+                                child: Text(
+                                  'Records for $name',
+                                  style: const TextStyle(color: Colors.grey),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                      Center(child: Text('Records for ${ex['name']}')),
-                    ],
-                  ),
-                ),
-                if (_canEdit)
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: buildCustomButton(
-                      label: 'DONE',
-                      isLoading: _isSaving,
-                      onPressed: _isSaving ? null : _finishWorkout,
+                      ],
                     ),
                   ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: buildCustomButton(
+                    label: 'DONE',
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ),
               ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+            );
+          },
+        ),
+      ),
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -148,6 +237,7 @@ class _WorkoutDetailsState extends State<WorkoutDetailsPage> {
                       final ex = _exercises[i]['exercise'] as Map<String, dynamic>;
                       final sets = _exercises[i]['sets'] as List<Map<String, dynamic>>;
                       final isWeight = ex['type'] == 'weight';
+                      final int exerciseId = ex['exercise_id'];
 
                       return Container(
                         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -163,7 +253,7 @@ class _WorkoutDetailsState extends State<WorkoutDetailsPage> {
                               child: Row(
                                 children: [
                                   GestureDetector(
-                                    onTap: () => _showDetailSheet(ex),
+                                    onTap: () => _showDetailSheet(exerciseId),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(12),
                                       child: Image.asset(
