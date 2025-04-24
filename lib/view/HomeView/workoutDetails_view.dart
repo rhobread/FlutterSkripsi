@@ -158,14 +158,27 @@ class _WorkoutDetailsState extends State<WorkoutDetailsPage> {
                         ),
                         child: Column(
                           children: [
-                            InkWell(
-                              borderRadius: BorderRadius.circular(20),
-                              onTap: () => _showDetailSheet(ex),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                                child: Row(
-                                  children: [
-                                    Expanded(
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              child: Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () => _showDetailSheet(ex),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.asset(
+                                        ex['image'],
+                                        width: 60,
+                                        height: 60,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      behavior: HitTestBehavior.opaque,
+                                      onTap: () => setState(() => _expanded[i] = !_expanded[i]),
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
@@ -181,17 +194,15 @@ class _WorkoutDetailsState extends State<WorkoutDetailsPage> {
                                         ],
                                       ),
                                     ),
-                                    GestureDetector(
-                                      onTap: () => setState(() => _expanded[i] = !_expanded[i]),
-                                      child: Icon(
-                                        _expanded[i]
-                                            ? Icons.keyboard_arrow_up
-                                            : Icons.keyboard_arrow_down,
-                                        color: Colors.grey,
-                                      ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () => setState(() => _expanded[i] = !_expanded[i]),
+                                    child: Icon(
+                                      _expanded[i] ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                                      color: Colors.grey,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                             if (_expanded[i])
@@ -214,16 +225,10 @@ class _WorkoutDetailsState extends State<WorkoutDetailsPage> {
                                           ),
                                           if (isWeight) ...[
                                             _buildBox(s['weight_used'], (v) => s['weight_used'] = v),
-                                            const Text(
-                                              'KG',
-                                              style: TextStyle(fontWeight: FontWeight.bold),
-                                            ),
+                                            const Text('KG', style: TextStyle(fontWeight: FontWeight.bold)),
                                           ],
                                           _buildBox(s['reps'], (v) => s['reps'] = v),
-                                          const Text(
-                                            'Reps',
-                                            style: TextStyle(fontWeight: FontWeight.bold),
-                                          ),
+                                          const Text('Reps', style: TextStyle(fontWeight: FontWeight.bold)),
                                         ],
                                       ),
                                     );
