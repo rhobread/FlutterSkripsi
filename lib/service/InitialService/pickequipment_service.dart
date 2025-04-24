@@ -18,7 +18,7 @@ class PickEquipmentService {
           return {
             'id': item['id'],
             'name': item['name'],
-            'image': 'lib/assets/${item['image']}',
+            'image': 'lib/assets/equipments/${item['image']}',
           };
         }).toList();
 

@@ -28,6 +28,7 @@ dev_dependencies:
 
 flutter:
   assets:
-    - lib/assets/
+    - lib/assets/exercise/
+    - lib/assets/equipments/
 
   uses-material-design: true
