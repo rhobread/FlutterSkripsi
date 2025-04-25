@@ -24,7 +24,7 @@ class HistoryService {
 
           return data.map<Map<String, dynamic>>((exercise) {
             return {
-              'exercise_id': 22, //need to update to id when api retrn
+              'exercise_id': 81, //need to update to id when api retrn
               'exercise_cd': exercise['exercise_cd'],
               'exercise_name': exercise['exercise_name'],
               'exercise_image': exercise['exercise_image'] != null

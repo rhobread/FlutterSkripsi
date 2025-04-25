@@ -72,7 +72,7 @@ class _HistoryExercisePageState extends State<HistoryExercisePage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => DetailSheetContent(exerciseId: exerciseId),
+      builder: (_) => DetailSheetContent(exerciseId: exerciseId, isHistory: true,),
     );
   }
 
@@ -82,7 +82,7 @@ class _HistoryExercisePageState extends State<HistoryExercisePage> {
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: buildCustomAppBar(title: "Workout History"),
+        child: buildCustomAppBar(title: "Exercise History"),
       ),
       body: Column(
         children: [
@@ -135,7 +135,9 @@ class _HistoryExercisePageState extends State<HistoryExercisePage> {
                         itemCount: _exercises.length,
                         itemBuilder: (context, index) {
                           final ex = _exercises[index];
-                          final String name = ex['exercise_name'] ?? 'Unnamed';
+                          final String rawName =
+                              ex['exercise_name'] ?? 'Unnamed';
+                          final String name = rawName.split('(').first.trim();
                           final String? assetPath =
                               ex['exercise_image'] as String?;
                           final int exerciseId = ex['exercise_id'] is int

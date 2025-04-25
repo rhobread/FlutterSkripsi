@@ -61,7 +61,8 @@ class _HistoryPageState extends State<HistoryPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => DetailSheetContent(exerciseId: exerciseId),
+      builder: (_) =>
+          DetailSheetContent(exerciseId: exerciseId, isHistory: true),
     );
   }
 
@@ -124,7 +125,8 @@ class _HistoryPageState extends State<HistoryPage> {
                 separatorBuilder: (_, __) => divider,
                 itemBuilder: (context, i) {
                   final ex = _exercises[i];
-                  final name = ex['exercise_name'] as String? ?? 'Unnamed';
+                  final String rawName = ex['exercise_name'] ?? 'Unnamed';
+                  final String name = rawName.split('(').first.trim();
                   final img = ex['exercise_image'] as String? ?? '';
                   final id = ex['exercise_id']?.hashCode ?? i;
 

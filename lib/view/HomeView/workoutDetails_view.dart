@@ -270,7 +270,9 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
 // Detail Sheet Content
 class DetailSheetContent extends StatefulWidget {
   final int exerciseId;
-  const DetailSheetContent({Key? key, required this.exerciseId})
+  final bool isHistory;
+  const DetailSheetContent(
+      {Key? key, required this.exerciseId, this.isHistory = false})
       : super(key: key);
 
   @override
@@ -316,7 +318,10 @@ class _DetailSheetContentState extends State<DetailSheetContent> {
 
             final types = (ex['types'] as List).cast<String>();
             final description = (ex['description'] ?? '').toString();
-            final name = ex['name'] ?? '';
+
+            final rawName = ex['name'] ?? '';
+            final name =
+                widget.isHistory ? rawName.split('(').first.trim() : rawName;
             final imagePath = ex['image'] ?? '';
             final equipment =
                 types.contains('weight') ? 'Dumbbell' : 'Bodyweight';
