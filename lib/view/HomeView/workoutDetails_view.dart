@@ -388,7 +388,7 @@ class _DetailSheetContentState extends State<DetailSheetContent> {
                                               fontWeight: FontWeight.bold)),
                                       const SizedBox(height: 8),
                                       if (types.isNotEmpty) ...[
-                                        const Text('FOCUS AREA',
+                                        const Text('TYPE',
                                             style: TextStyle(
                                                 fontSize: 12,
                                                 color: Colors.grey)),

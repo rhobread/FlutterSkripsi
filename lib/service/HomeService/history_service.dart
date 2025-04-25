@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_application_1/service/CommonService/export_service.dart';
 
 class HistoryService {
-  Future<List<Map<String, dynamic>>> getHistory({
+  Future<List<Map<String, dynamic>>> getExerciseHistory({
     required String userId,
     required String startMonth,
     required String endMonth,
@@ -14,23 +14,72 @@ class HistoryService {
         'start_date': startMonth,
         'end_date': endMonth,
       });
+
       final response = await http.get(uriWithParams);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = jsonDecode(response.body);
         if (jsonData['statusCode'] == 200) {
           final List<dynamic> data = jsonData['data'];
-          return List<Map<String, dynamic>>.from(data);
+
+          return data.map<Map<String, dynamic>>((exercise) {
+            return {
+              'exercise_id': 22, //need to update to id when api retrn
+              'exercise_cd': exercise['exercise_cd'],
+              'exercise_name': exercise['exercise_name'],
+              'exercise_image': exercise['exercise_image'] != null
+                  ? 'lib/assets/exercise/${exercise['exercise_image']}'
+                  : 'lib/assets/exercise/barbell-deadlift.gif',
+            };
+          }).toList();
         } else {
-          showSnackBarMessage('Error fetching history.','Error: ${jsonData['message']}');
+          showSnackBarMessage(
+              'Error fetching history.', 'Error: ${jsonData['message']}');
           return [];
         }
       } else {
-        showSnackBarMessage('Error fetching history.','(Status: ${response.statusCode})');
+        showSnackBarMessage(
+            'Error fetching history.', '(Status: ${response.statusCode})');
         return [];
       }
     } catch (e) {
-      showSnackBarMessage('Error fetching history: ','$e');
+      showSnackBarMessage('Error fetching history: ', '$e');
+      return [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getCompletedWorkouts({
+    required String userId,
+  }) async {
+    try {
+      final Uri baseUrl = UrlConfig.getApiUrl('workout/progress/get/$userId');
+
+      final response = await http.get(baseUrl);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = jsonDecode(response.body);
+        if (jsonData['statusCode'] == 200) {
+          final List<dynamic> data = jsonData['data'];
+
+          // Extract only workout_id and date
+          return data.map<Map<String, dynamic>>((workout) {
+            return {
+              'workout_id': workout['workout_id'],
+              'date': workout['date'],
+            };
+          }).toList();
+        } else {
+          showSnackBarMessage(
+              'Error fetching workouts.', 'Error: ${jsonData['message']}');
+          return [];
+        }
+      } else {
+        showSnackBarMessage(
+            'Error fetching workouts.', '(Status: ${response.statusCode})');
+        return [];
+      }
+    } catch (e) {
+      showSnackBarMessage('Error fetching workouts: ', '$e');
       return [];
     }
   }
