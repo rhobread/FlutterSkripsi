@@ -44,6 +44,7 @@ class WorkoutdetailsService {
         final isWeight = normalizedSets.any((s) => s['weight_used'] != null);
 
         return {
+          'workout_exercise_id': exMap['workout_exercise_id'],
           'exercise_id':         exMap['exercise_id'],
           'name':                exMap['name'] ?? '',
           'type':                exMap['type'] ?? (isWeight ? 'weight' : 'bodyweight'),
@@ -66,40 +67,103 @@ Future<Map<String, dynamic>?> getDescription({
 }) async {
   final uri = UrlConfig.getApiUrl('exercise/description/$exerciseId');
 
+    try {
+      final response = await http.get(uri);
+      if (response.statusCode != 200) {
+        showSnackBarMessage(
+          'Error getting description.',
+          'Server responded with status ${response.statusCode}',
+        );
+        return null;
+      }
+
+      final raw = jsonDecode(response.body) as Map<String, dynamic>;
+      final data = raw['data'] as Map<String, dynamic>;
+
+      final typesRaw = data['types'];
+      final List<String> typesList = typesRaw is List
+          ? typesRaw.cast<String>()
+          : (typesRaw is String ? [typesRaw] : []);
+
+      return {
+        'id': data['id'],
+        'exercise_cd': data['exercise_cd'],
+        'name': data['name'],
+        'intensity': data['intensity'],
+        'duration': data['duration'],
+        'types': typesList,
+        'max_rep': data['max_rep'],
+        'image': data['image'] != null
+            ? 'lib/assets/exercise/${data['image']}'
+            : 'lib/assets/exercise/barbell-deadlift.gif',
+        'description': (data['description'] as String?)?.trim() ?? '',
+      };
+    } catch (e) {
+      showSnackBarMessage('Error getting description.', e.toString());
+      return null;
+    }
+  }
+
+ Future<List<Map<String, dynamic>>> getExerciseRecords({
+  required int userId,
+  required String exerciseCd,
+}) async {
   try {
+    // Build the URL with string parameters
+    final uri = UrlConfig
+        .getApiUrl('workout/exercise-history')
+        .replace(queryParameters: {
+      'user_id': userId.toString(),
+      'exercise_cd': exerciseCd,
+    });
+
     final response = await http.get(uri);
     if (response.statusCode != 200) {
       showSnackBarMessage(
-        'Error getting description.',
-        'Server responded with status ${response.statusCode}',
+        'Error fetching records.',
+        '(HTTP ${response.statusCode})',
       );
-      return null;
+      return [];
     }
 
-    final raw = jsonDecode(response.body) as Map<String, dynamic>;
-    final data = raw['data'] as Map<String, dynamic>;
+    final Map<String, dynamic> jsonData = jsonDecode(response.body);
+    if (jsonData['statusCode'] != 200) {
+      showSnackBarMessage(
+        'Error fetching records.',
+        'API error: ${jsonData['message']}',
+      );
+      return [];
+    }
 
-    final typesRaw = data['types'];
-    final List<String> typesList = typesRaw is List
-        ? typesRaw.cast<String>()
-        : (typesRaw is String ? [typesRaw] : []);
+    final List<dynamic> rawList = jsonData['data'] as List<dynamic>? ?? [];
+    return rawList.map((e) {
+      final item = Map<String, dynamic>.from(e);
 
-    return {
-      'id': data['id'],
-      'exercise_cd': data['exercise_cd'],
-      'name': data['name'],
-      'intensity': data['intensity'],
-      'duration': data['duration'],
-      'types': typesList,
-      'max_rep': data['max_rep'],
-      'image': data['image'] != null
-          ? 'lib/assets/exercise/${data['image']}'
-          : 'lib/assets/exercise/barbell-deadlift.gif',
-      'description': (data['description'] as String?)?.trim() ?? '',
-    };
+      // Safely parse reps & weights (may be null for bodyweight)
+      final reps = (item['reps'] as List<dynamic>?)
+            ?.map((v) => (v as num).toInt())
+            .toList() ?? <int>[];
+      final weights = (item['weight_used'] as List<dynamic>?)
+            ?.map((v) => (v as num).toInt())
+            .toList() ?? <int>[];
+
+      // If sets_done is missing, fall back to number of reps
+      final setsDone = (item['sets_done'] is int)
+          ? item['sets_done'] as int
+          : reps.length;
+
+      return {
+        'date':          item['date']           as String? ?? '',
+        'exercise_name': item['exercise_name']  as String? ?? '',
+        'sets_done':     setsDone,
+        'reps':          reps,
+        'totalDuration': item['totalDuration']  as int?    ?? 0,
+        'weight_used':   weights,
+      };
+    }).toList();
   } catch (e) {
-    showSnackBarMessage('Error getting description.', e.toString());
-    return null;
+    showSnackBarMessage('Error fetching records:', '$e');
+    return [];
   }
 }
 
