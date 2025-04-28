@@ -23,11 +23,11 @@ class HomeService {
         }).toList();
       } else {
         showSnackBarMessage(
-            'Error fetching workouts. ', '(Status: ${response.statusCode})');
+            'error_fetching_workouts'.tr, ' (Status: ${response.statusCode})');
         return [];
       }
     } catch (e) {
-      showSnackBarMessage('Error fetching workouts. ', '$e');
+      showSnackBarMessage('error_fetching_workouts'.tr, ' $e');
       return [];
     }
   }

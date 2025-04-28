@@ -12,7 +12,7 @@ class LoginService {
     final String password = passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      showSnackBarMessage('Invalid Data!', 'All fields are required');
+      showSnackBarMessage('invalid_data'.tr, 'all_required'.tr);
       return;
     }
 
@@ -44,24 +44,24 @@ class LoginService {
             final userController = Get.find<UserController>();
             userController.saveUser(userId, userName);
 
-            showSnackBarMessage('Success!', 'Log in successful!',
+            showSnackBarMessage('success'.tr, 'login_success!'.tr,
                 success: true);
 
             Get.offAll(() => MainPage());
           } else {
-            showSnackBarMessage('Failed!', 'User ID not found in response.');
+            showSnackBarMessage('failed'.tr, 'user_id_notfound'.tr);
           }
         } else {
-          showSnackBarMessage('Failed!', 'Invalid response format.');
+          showSnackBarMessage('failed'.tr, 'invalid_data'.tr);
         }
       } else {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         showSnackBarMessage(
-            'Failed!', responseData['message'] ?? 'Log In failed');
+            'failed'.tr, responseData['message'] ?? 'login_fail'.tr);
       }
     } catch (e) {
       setLoading(false);
-      showSnackBarMessage('Failed!', 'Error: Unable to connect to the server');
+      showSnackBarMessage('failed'.tr, 'server_error_b.'.tr);
     }
   }
 }

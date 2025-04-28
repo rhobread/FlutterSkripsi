@@ -16,7 +16,7 @@ class PickLocationService {
           isGymSelected: isGymSelected, isUpdateEquipment: false));
     } catch (e) {
       setLoading(false);
-      showSnackBarMessage('Failed!', 'Error: Unable to connect to the server');
+      showSnackBarMessage('failed'.tr, 'server_connect_error'.tr);
     }
   }
 }

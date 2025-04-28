@@ -24,12 +24,12 @@ class PickEquipmentService {
 
         return equipmentList;
       } else {
-        showSnackBarMessage('Failed!',
-            'Error fetching equipment. (Status: ${response.statusCode})');
+        showSnackBarMessage(
+            'failed'.tr, 'error_get_equipment'.tr + ' ${response.statusCode})');
         return [];
       }
     } catch (e) {
-      showSnackBarMessage('Failed!', 'Error fetching equipment: $e');
+      showSnackBarMessage('failed'.tr, 'error_get_equipment'.tr + ' $e');
       return [];
     }
   }
@@ -52,12 +52,12 @@ class PickEquipmentService {
 
         return equipmentList;
       } else {
-        showSnackBarMessage('Failed!',
-            'Error fetching equipment. (Status: ${response.statusCode})');
+        showSnackBarMessage(
+            'failed'.tr, 'error_get_equipment'.tr + ' ${response.statusCode})');
         return [];
       }
     } catch (e) {
-      showSnackBarMessage('Failed!', 'Error fetching equipment: $e');
+      showSnackBarMessage('failed'.tr, 'error_get_equipment' + ' $e');
       return [];
     }
   }
@@ -80,16 +80,15 @@ class PickEquipmentService {
       );
 
       if (response.statusCode == 200) {
-        showSnackBarMessage('Success!',
-            'Equipment saved successfully! Generating your workout...',
+        showSnackBarMessage('success'.tr, 'success_save_equipment'.tr,
             success: true);
 
         final workoutResponse = await generateWorkoutPlan(userId: userId);
 
         if (workoutResponse.statusCode == 200) {
           showSnackBarMessage(
-            'Success!',
-            'Workout generated successfully!',
+            'success'.tr,
+            'success_generate_wo'.tr,
             success: true,
           );
 
@@ -99,17 +98,19 @@ class PickEquipmentService {
             Get.off(() => MainPage());
           }
         } else {
-          showSnackBarMessage('Failed!',
-              'Error generating workout. (Status: ${workoutResponse.statusCode})');
+          showSnackBarMessage(
+              'failed'.tr,
+              'failed_generate_wo'.tr +
+                  ' (Status: ${workoutResponse.statusCode})');
         }
       } else {
         showSnackBarMessage(
-          'Failed!',
-          'Error saving selection. (Status: ${response.statusCode})',
+          'failed'.tr,
+          'error_save_equipment' + ' (Status: ${response.statusCode})',
         );
       }
     } catch (e) {
-      showSnackBarMessage('Failed!', 'Network error: $e');
+      showSnackBarMessage('failed'.tr, 'server_connect_error'.tr + ' $e');
     }
     setLoading(false);
   }

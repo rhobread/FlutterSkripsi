@@ -15,12 +15,12 @@ class ProfileDetailsService {
         var data = jsonData['data'];
         return data;
       } else {
-        showSnackBarMessage(
-            'Error fetching user details.', '(Status: ${response.statusCode})');
+        showSnackBarMessage('error_fetching_userDetails'.tr,
+            '(Status: ${response.statusCode})');
         return null;
       }
     } catch (e) {
-      showSnackBarMessage('Error fetching user details.', '$e');
+      showSnackBarMessage('error_fetching_userDetails'.tr, ' $e');
       return null;
     }
   }

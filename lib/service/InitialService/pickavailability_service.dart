@@ -22,12 +22,11 @@ class PickAvailabilityService {
 
         return availabilityList;
       } else {
-        showSnackBarMessage('Error!',
-            'Error getting user availability. (Status: ${response.statusCode})');
+        showSnackBarMessage('Error!', 'error_getting_user_availability'.tr);
         return [];
       }
     } catch (e) {
-      showSnackBarMessage('Error!', 'Error  getting user availability: $e');
+      showSnackBarMessage('Error!', 'error_getting_user_availability' + ' $e');
       return [];
     }
   }
@@ -63,7 +62,7 @@ class PickAvailabilityService {
       setLoading(false);
 
       if (response.statusCode == 200) {
-        showSnackBarMessage('Success!', 'Availability updated successfully!',
+        showSnackBarMessage('success'.tr, 'success_update_availability'.tr,
             success: true);
 
         if (isUpdateAvailability) {
@@ -72,11 +71,11 @@ class PickAvailabilityService {
           Get.off(() => PickLocationPage());
         }
       } else {
-        showSnackBarMessage('Failed!', 'Failed to update availability');
+        showSnackBarMessage('failed'.tr, 'failed_update_availability'.tr);
       }
     } catch (e) {
       setLoading(false);
-      showSnackBarMessage('Error!', 'Error: Unable to connect to the server');
+      showSnackBarMessage('Error!', 'server_connect_error'.tr);
     }
   }
 }

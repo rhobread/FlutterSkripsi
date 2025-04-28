@@ -15,8 +15,8 @@ class WorkoutdetailsService {
 
       if (response.statusCode != 200) {
         showSnackBarMessage(
-          'Error fetching workout.',
-          'Server responded with status ${response.statusCode}',
+          'error_fetching_workouts'.tr,
+          'server_status_respond'.tr + ' ${response.statusCode}',
         );
         return [];
       }
@@ -58,7 +58,7 @@ class WorkoutdetailsService {
         };
       }).toList();
     } catch (e) {
-      showSnackBarMessage('Error fetching workout.', e.toString());
+      showSnackBarMessage('error_fetching_workouts'.tr + ' ', e.toString());
       return [];
     }
   }
@@ -72,8 +72,8 @@ class WorkoutdetailsService {
       final response = await http.get(uri);
       if (response.statusCode != 200) {
         showSnackBarMessage(
-          'Error getting description.',
-          'Server responded with status ${response.statusCode}',
+          'error_fetching_description'.tr,
+          'server_status_respond'.tr + ' ${response.statusCode}',
         );
         return null;
       }
@@ -100,7 +100,7 @@ class WorkoutdetailsService {
         'description': (data['description'] as String?)?.trim() ?? '',
       };
     } catch (e) {
-      showSnackBarMessage('Error getting description.', e.toString());
+      showSnackBarMessage('error_fetching_description'.tr + " ", e.toString());
       return null;
     }
   }
@@ -171,7 +171,7 @@ class WorkoutdetailsService {
       final response = await http.get(uri);
       if (response.statusCode != 200) {
         showSnackBarMessage(
-          'Error fetching records.',
+          'error_fetching_records'.tr,
           '(HTTP ${response.statusCode})',
         );
         return [];
@@ -180,7 +180,7 @@ class WorkoutdetailsService {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
       if (jsonData['statusCode'] != 200) {
         showSnackBarMessage(
-          'Error fetching records.',
+          'error_fetching_records'.tr,
           'API error: ${jsonData['message']}',
         );
         return [];
@@ -214,7 +214,7 @@ class WorkoutdetailsService {
         };
       }).toList();
     } catch (e) {
-      showSnackBarMessage('Error fetching records:', '$e');
+      showSnackBarMessage('error_fetching_records'.tr, ' $e');
       return [];
     }
   }
@@ -260,13 +260,13 @@ class WorkoutdetailsService {
         return true;
       } else {
         showSnackBarMessage(
-          'Error finishing workout',
-          'Server responded ${response.statusCode}',
+          'error_finishing_workout'.tr,
+          ' server_status_respond'.tr + ' ${response.statusCode}',
         );
         return false;
       }
     } catch (e) {
-      showSnackBarMessage('Error finishing workout', e.toString());
+      showSnackBarMessage('error_finishing_workout'.tr + ' ', e.toString());
       return false;
     }
   }

@@ -14,7 +14,7 @@ class SignUpService {
     final String password = passwordController.text.trim();
 
     if (email.isEmpty || username.isEmpty || password.isEmpty) {
-      showSnackBarMessage('Invalid Data!', 'All fields are required');
+      showSnackBarMessage('invalid_data'.tr, 'all_required'.tr);
       return;
     }
 
@@ -44,20 +44,20 @@ class SignUpService {
           final userController = Get.find<UserController>();
           userController.saveUser(userIdEntry, userNameEntry);
 
-          showSnackBarMessage('Success!', 'Sign up successful!', success: true);
+          showSnackBarMessage('success'.tr, 'signup_success'.tr, success: true);
 
           Get.offAll(() => InputDataPage());
         } else {
-          showSnackBarMessage('Failed!', 'User ID not found in response.');
+          showSnackBarMessage('failed'.tr, 'user_id_notfound'.tr);
         }
       } else {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         showSnackBarMessage(
-            'Failed!', responseData['message'] ?? 'Sign up failed');
+            'failed'.tr, responseData['message'] ?? 'signup_error'.tr);
       }
     } catch (e) {
       setLoading(false);
-      showSnackBarMessage('Failed!', 'Error: Unable to connect to the server');
+      showSnackBarMessage('failed'.tr, 'server_connect_error'.tr);
     }
   }
 }

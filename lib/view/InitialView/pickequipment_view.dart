@@ -96,7 +96,7 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
         children: [
           const SizedBox(height: 30),
           Text(
-            'select_equipement'.tr,
+            'select_equipment'.tr,
             style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),

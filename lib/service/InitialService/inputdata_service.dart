@@ -19,19 +19,17 @@ class InputDataService {
           height.isEmpty ||
           weight == null ||
           weight.isEmpty) {
-        showSnackBarMessage('Invalid Data!', 'Height and weight are required.');
+        showSnackBarMessage('invalid_data'.tr, 'mandatory_hw'.tr);
         return;
       }
     }
 
     if (height != null && height.isNotEmpty && !intPattern.hasMatch(height)) {
-      showSnackBarMessage(
-          'Invalid Data!', 'Height must be a whole number (integer only).');
+      showSnackBarMessage('invalid_data'.tr, 'weight_number_val'.tr);
       return;
     }
     if (weight != null && weight.isNotEmpty && !intPattern.hasMatch(weight)) {
-      showSnackBarMessage(
-          'Invalid Data!', 'Weight must be a whole number (integer only).');
+      showSnackBarMessage('invalid_data'.tr, 'height_number_val'.tr);
       return;
     }
 
@@ -50,7 +48,7 @@ class InputDataService {
       }
 
       if (requestBody.isEmpty) {
-        showSnackBarMessage('Error!', 'No data to update.');
+        showSnackBarMessage('Error!', 'no_data_update'.tr);
         setLoading?.call(false);
         return;
       }
@@ -65,24 +63,23 @@ class InputDataService {
 
       if (response.statusCode == 200) {
         if (isInitial) {
-          showSnackBarMessage('Success!', 'Measurements updated successfully!',
+          showSnackBarMessage('success'.tr, 'success_update_measurments'.tr,
               success: true);
           Get.off(() => PickAvailabilityPage(isUpdateAvailability: false));
         } else {
           String text =
-              (height != null && height.isNotEmpty) ? "Height" : "Weight";
-          showSnackBarMessage('Success!', '$text updated successfully!',
+              (height != null && height.isNotEmpty) ? 'height'.tr : 'weight'.tr;
+          showSnackBarMessage('success'.tr, '$text' + 'updated_successfully'.tr,
               success: true);
         }
       } else {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         showSnackBarMessage('Failed!',
-            responseData['message'] ?? 'Failed to update measurements');
+            responseData['message'] ?? 'failed_update_measurments'.tr);
       }
     } catch (e) {
       setLoading?.call(false);
-      showSnackBarMessage('Error: Unable to connect to the server',
-          'There is an error when connecting to the server');
+      showSnackBarMessage('server_connect_error'.tr, 'server_error_b'.tr);
     }
   }
 }
@@ -105,8 +102,8 @@ void showHeightBottomSheet(BuildContext context, String UserId, String height,
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                const Text(
-                  "Select Height (cm)",
+                Text(
+                  'select_height'.tr + "(cm)",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Expanded(
@@ -163,7 +160,7 @@ void showHeightBottomSheet(BuildContext context, String UserId, String height,
                     await onHeightSelected("$selectedMainHeight");
                     Navigator.pop(context);
                   },
-                  child: const Text("Save"),
+                  child: Text('save'.tr),
                 ),
               ],
             ),
@@ -193,8 +190,8 @@ void showWeightBottomSheet(BuildContext context, String UserId, String weight,
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                const Text(
-                  "Select Weight (kg)",
+                Text(
+                  'select_weight'.tr + "(kg)",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Expanded(
@@ -251,7 +248,7 @@ void showWeightBottomSheet(BuildContext context, String UserId, String weight,
                     await onWeightSelected("$selectedMainWeight");
                     Navigator.pop(context);
                   },
-                  child: const Text("Save"),
+                  child: Text('save'.tr),
                 ),
               ],
             ),

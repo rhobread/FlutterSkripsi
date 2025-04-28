@@ -35,16 +35,16 @@ class HistoryService {
           }).toList();
         } else {
           showSnackBarMessage(
-              'Error fetching history.', 'Error: ${jsonData['message']}');
+              'error_fetching_history'.tr, 'Error: ${jsonData['message']}');
           return [];
         }
       } else {
         showSnackBarMessage(
-            'Error fetching history.', '(Status: ${response.statusCode})');
+            'error_fetching_history'.tr, '(Status: ${response.statusCode})');
         return [];
       }
     } catch (e) {
-      showSnackBarMessage('Error fetching history: ', '$e');
+      showSnackBarMessage('error_fetching_history'.tr + ' : ', '$e');
       return [];
     }
   }
@@ -71,16 +71,16 @@ class HistoryService {
           }).toList();
         } else {
           showSnackBarMessage(
-              'Error fetching workouts.', 'Error: ${jsonData['message']}');
+              'error_fetching_workouts'.tr, 'Error: ${jsonData['message']}');
           return [];
         }
       } else {
         showSnackBarMessage(
-            'Error fetching workouts.', '(Status: ${response.statusCode})');
+            'error_fetching_workouts'.tr, '(Status: ${response.statusCode})');
         return [];
       }
     } catch (e) {
-      showSnackBarMessage('Error fetching workouts: ', '$e');
+      showSnackBarMessage('error_fetching_workouts'.tr + ' : ', '$e');
       return [];
     }
   }
