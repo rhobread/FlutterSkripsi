@@ -1,6 +1,6 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/service/HomeService/history_service.dart';
-import 'package:flutter_application_1/view/HomeView/workoutDetails_view.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/HomeService/history_service.dart';
+import 'package:workout_skripsi_app/view/HomeView/workoutDetails_view.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:intl/intl.dart';
 
@@ -59,12 +59,10 @@ class _HistoryExercisePageState extends State<HistoryExercisePage> {
 
   Future<DateTime?> _pickMonth(DateTime initialDate, String helpText) async {
     return showMonthPicker(
-      context: context,
-      initialDate: initialDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-      locale: const Locale("en"),
-    );
+        context: context,
+        initialDate: initialDate,
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2100));
   }
 
   void _showDetailSheet(int exerciseId) {
@@ -72,7 +70,10 @@ class _HistoryExercisePageState extends State<HistoryExercisePage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => DetailSheetContent(exerciseId: exerciseId, isHistory: true,),
+      builder: (_) => DetailSheetContent(
+        exerciseId: exerciseId,
+        isHistory: true,
+      ),
     );
   }
 
@@ -82,7 +83,7 @@ class _HistoryExercisePageState extends State<HistoryExercisePage> {
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: buildCustomAppBar(title: "Exercise History"),
+        child: buildCustomAppBar(title: 'exercise_history'.tr),
       ),
       body: Column(
         children: [
@@ -95,7 +96,7 @@ class _HistoryExercisePageState extends State<HistoryExercisePage> {
                   child: buildMonthPickerTile(
                     context: context,
                     selectedMonth: _selectedStartMonth,
-                    label: 'Start',
+                    label: 'start_date'.tr,
                     pickMonth: _pickMonth,
                     onMonthChanged: (newDate) {
                       setState(() => _selectedStartMonth = newDate);
@@ -108,7 +109,7 @@ class _HistoryExercisePageState extends State<HistoryExercisePage> {
                   child: buildMonthPickerTile(
                     context: context,
                     selectedMonth: _selectedEndMonth,
-                    label: 'End',
+                    label: 'end_date'.tr,
                     pickMonth: _pickMonth,
                     onMonthChanged: (newDate) {
                       setState(() => _selectedEndMonth = newDate);
@@ -125,9 +126,9 @@ class _HistoryExercisePageState extends State<HistoryExercisePage> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _exercises.isEmpty
-                    ? const Center(
+                    ? Center(
                         child: Text(
-                          "No exercises available",
+                          'no_exercises_found'.tr,
                           style: TextStyle(fontSize: 16, color: Colors.grey),
                         ),
                       )

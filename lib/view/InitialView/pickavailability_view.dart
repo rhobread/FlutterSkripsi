@@ -1,5 +1,5 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/service/InitialService/pickAvailability_service.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/InitialService/pickAvailability_service.dart';
 
 class PickAvailabilityPage extends StatefulWidget {
   final bool isUpdateAvailability;
@@ -14,13 +14,13 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
   List<Map<String, dynamic>> _useravailability = [];
 
   final List<String> _daysOfWeek = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday'
+    'sunday.'.tr,
+    'monday'.tr,
+    'tuesday'.tr,
+    'wednesday'.tr,
+    'thursday'.tr,
+    'friday'.tr,
+    'saturday'.tr
   ];
 
   final Map<int, bool> _selectedDays = {};
@@ -28,7 +28,8 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
   bool _isLoading = false;
   bool _isDataLoaded = false;
 
-  final PickAvailabilityService _pickAvailabilityService = PickAvailabilityService();
+  final PickAvailabilityService _pickAvailabilityService =
+      PickAvailabilityService();
 
   @override
   void initState() {
@@ -40,12 +41,13 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
     if (widget.isUpdateAvailability) {
       _initializeAvailability();
     } else {
-      _isDataLoaded = true; 
+      _isDataLoaded = true;
     }
   }
 
   Future<void> _initializeAvailability() async {
-    List<Map<String, dynamic>> availability = await _pickAvailabilityService.getUserAvailability(
+    List<Map<String, dynamic>> availability =
+        await _pickAvailabilityService.getUserAvailability(
       userId: userController.userId.value,
     );
 
@@ -55,13 +57,14 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
         String day = entry["day"];
         int minutes = entry["minutes"];
 
-        int index = _daysOfWeek.indexWhere((d) => d.toLowerCase() == day.toLowerCase());
+        int index =
+            _daysOfWeek.indexWhere((d) => d.toLowerCase() == day.toLowerCase());
         if (index != -1) {
           _selectedDays[index] = true;
           _minutesControllers[index]?.text = minutes.toString();
         }
       }
-      _isDataLoaded = true; 
+      _isDataLoaded = true;
     });
   }
 
@@ -84,8 +87,8 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
     // Validate that at least one availability is provided.
     if (!_selectedDays.values.any((selected) => selected)) {
       Get.snackbar(
-        'Validation Error',
-        'Please select at least one day and provide minutes.',
+        'validation_error'.tr,
+        'day_val_error'.tr,
         snackPosition: SnackPosition.BOTTOM,
       );
       return;
@@ -106,24 +109,27 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
     List<int> displayOrder = [1, 2, 3, 4, 5, 6, 0];
 
     return Scaffold(
-      appBar: buildMainHeader(showBackButton: widget.isUpdateAvailability, context: context),
+      appBar: buildMainHeader(
+          showBackButton: widget.isUpdateAvailability, context: context),
       backgroundColor: Colors.white,
       body: _isDataLoaded
           ? Column(
               children: [
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 15),
                     child: Column(
                       children: [
-                        const Text(
-                          'Select Your Availability',
-                          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                        Text(
+                          'select_avail'.tr,
+                          style: TextStyle(
+                              fontSize: 28, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 10),
-                        const Text(
-                          'Used to plan your training schedule, won\'t be shared!',
+                        Text(
+                          'used_for_schedule'.tr,
                           style: TextStyle(fontSize: 14, color: Colors.grey),
                           textAlign: TextAlign.center,
                         ),
@@ -165,10 +171,11 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
                                         ],
                                         enabled: _selectedDays[index],
                                         textAlign: TextAlign.center,
-                                        decoration: const InputDecoration(
-                                          labelText: 'Minutes',
+                                        decoration: InputDecoration(
+                                          labelText: 'minutes'.tr,
                                           border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(8)),
                                           ),
                                         ),
                                       ),
@@ -181,7 +188,7 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
                         ),
                         const SizedBox(height: 20),
                         buildCustomButton(
-                          label: 'Submit',
+                          label: 'submit'.tr,
                           isLoading: _isLoading,
                           onPressed: _isLoading ? null : _submitAvailability,
                         ),
@@ -194,7 +201,7 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
               ],
             )
           : const Center(
-              child: CircularProgressIndicator(), 
+              child: CircularProgressIndicator(),
             ),
     );
   }

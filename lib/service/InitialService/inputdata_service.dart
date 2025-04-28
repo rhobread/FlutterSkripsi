@@ -1,37 +1,41 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_application_1/view/InitialView/pickgoal_view.dart';
+import 'package:workout_skripsi_app/view/InitialView/pickAvailability_view.dart';
 
 class InputDataService {
   Future<void> submitMeasurements({
-  required BuildContext context,
-  required String userId,
-  String? height,
-  String? weight,
-  String? selectedGender,
-  required bool isInitial,
-  Function(bool)? setLoading, // Make it optional
-}) 
-  async {
+    required BuildContext context,
+    required String userId,
+    String? height,
+    String? weight,
+    String? selectedGender,
+    required bool isInitial,
+    Function(bool)? setLoading, // Make it optional
+  }) async {
     final RegExp intPattern = RegExp(r'^\d+$');
 
     if (isInitial) {
-      if (height == null || height.isEmpty || weight == null || weight.isEmpty) {
-        showSnackBarMessage('Invalid Data!','Height and weight are required.');
+      if (height == null ||
+          height.isEmpty ||
+          weight == null ||
+          weight.isEmpty) {
+        showSnackBarMessage('Invalid Data!', 'Height and weight are required.');
         return;
       }
     }
 
     if (height != null && height.isNotEmpty && !intPattern.hasMatch(height)) {
-      showSnackBarMessage('Invalid Data!', 'Height must be a whole number (integer only).');
+      showSnackBarMessage(
+          'Invalid Data!', 'Height must be a whole number (integer only).');
       return;
     }
     if (weight != null && weight.isNotEmpty && !intPattern.hasMatch(weight)) {
-      showSnackBarMessage('Invalid Data!','Weight must be a whole number (integer only).');
+      showSnackBarMessage(
+          'Invalid Data!', 'Weight must be a whole number (integer only).');
       return;
     }
 
-    setLoading?.call(true); 
+    setLoading?.call(true);
 
     final Uri fetchUrl = UrlConfig.getApiUrl('user/measurements/$userId');
 
@@ -46,7 +50,7 @@ class InputDataService {
       }
 
       if (requestBody.isEmpty) {
-        showSnackBarMessage('Error!','No data to update.');
+        showSnackBarMessage('Error!', 'No data to update.');
         setLoading?.call(false);
         return;
       }
@@ -61,28 +65,34 @@ class InputDataService {
 
       if (response.statusCode == 200) {
         if (isInitial) {
-          showSnackBarMessage('Success!', 'Measurements updated successfully!', success: true);
-          Get.off(() => PickGoalPage());
+          showSnackBarMessage('Success!', 'Measurements updated successfully!',
+              success: true);
+          Get.off(() => PickAvailabilityPage(isUpdateAvailability: false));
         } else {
-          String text = (height != null && height.isNotEmpty) ? "Height" : "Weight";
-          showSnackBarMessage('Success!','$text updated successfully!', success: true);
+          String text =
+              (height != null && height.isNotEmpty) ? "Height" : "Weight";
+          showSnackBarMessage('Success!', '$text updated successfully!',
+              success: true);
         }
       } else {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        showSnackBarMessage('Failed!',responseData['message'] ?? 'Failed to update measurements');
+        showSnackBarMessage('Failed!',
+            responseData['message'] ?? 'Failed to update measurements');
       }
     } catch (e) {
       setLoading?.call(false);
-      showSnackBarMessage('Error: Unable to connect to the server',  'There is an error when connecting to the server');
+      showSnackBarMessage('Error: Unable to connect to the server',
+          'There is an error when connecting to the server');
     }
   }
 }
 
-void showHeightBottomSheet(BuildContext context, String UserId, String height, Function(String) onHeightSelected, bool updateOnSave) {
+void showHeightBottomSheet(BuildContext context, String UserId, String height,
+    Function(String) onHeightSelected, bool updateOnSave) {
   int currentHeight = int.tryParse(height.split(" ")[0]) ?? 170;
 
   FixedExtentScrollController mainController =
-      FixedExtentScrollController(initialItem: currentHeight - 140); 
+      FixedExtentScrollController(initialItem: currentHeight - 140);
   int selectedMainHeight = currentHeight;
 
   showModalBottomSheet(
@@ -131,7 +141,7 @@ void showHeightBottomSheet(BuildContext context, String UserId, String height, F
                                 ),
                               );
                             },
-                            childCount: 61, 
+                            childCount: 61,
                           ),
                         ),
                       ),
@@ -141,12 +151,16 @@ void showHeightBottomSheet(BuildContext context, String UserId, String height, F
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    if (updateOnSave == true){
+                    if (updateOnSave == true) {
                       final inputDataService = InputDataService();
 
-                      await inputDataService.submitMeasurements(context: context, userId: UserId, height: selectedMainHeight.toString(), isInitial: false);
+                      await inputDataService.submitMeasurements(
+                          context: context,
+                          userId: UserId,
+                          height: selectedMainHeight.toString(),
+                          isInitial: false);
                     }
-                    await onHeightSelected("$selectedMainHeight"); 
+                    await onHeightSelected("$selectedMainHeight");
                     Navigator.pop(context);
                   },
                   child: const Text("Save"),
@@ -160,7 +174,8 @@ void showHeightBottomSheet(BuildContext context, String UserId, String height, F
   );
 }
 
-void showWeightBottomSheet(BuildContext context, String UserId, String weight, Function(String) onWeightSelected, bool updateOnSave) {
+void showWeightBottomSheet(BuildContext context, String UserId, String weight,
+    Function(String) onWeightSelected, bool updateOnSave) {
   int currentWeight = int.tryParse(weight.split(" ")[0]) ?? 70;
 
   FixedExtentScrollController mainController =
@@ -224,12 +239,16 @@ void showWeightBottomSheet(BuildContext context, String UserId, String weight, F
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    if (updateOnSave == true){
+                    if (updateOnSave == true) {
                       final inputDataService = InputDataService();
 
-                      await inputDataService.submitMeasurements(context: context, userId: UserId, weight: selectedMainWeight.toString(), isInitial: false);
+                      await inputDataService.submitMeasurements(
+                          context: context,
+                          userId: UserId,
+                          weight: selectedMainWeight.toString(),
+                          isInitial: false);
                     }
-                    await onWeightSelected("$selectedMainWeight"); 
+                    await onWeightSelected("$selectedMainWeight");
                     Navigator.pop(context);
                   },
                   child: const Text("Save"),

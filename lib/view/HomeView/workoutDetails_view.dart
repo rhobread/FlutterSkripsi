@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:flutter_application_1/service/HomeService/workoutDetails_service.dart';
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/view/HomeView/main_view.dart';
+import 'package:workout_skripsi_app/service/HomeService/workoutDetails_service.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/view/HomeView/main_view.dart';
 
 // Main Workout Details Page
 class WorkoutDetailsPage extends StatefulWidget {
@@ -154,7 +154,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            'Type: ${ex['type']}',
+                                            'type'.tr + ': ${ex['type']}',
                                             style: const TextStyle(
                                                 color: Colors.grey),
                                           ),
@@ -222,7 +222,9 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: buildCustomButton(
-                      label: _started ? 'Finish Workout' : 'Start Workout',
+                      label: _started
+                          ? 'finish_workout'.tr
+                          : 'start_workout_session'.tr,
                       isLoading: _isSaving,
                       onPressed: _isSaving
                           ? null
@@ -272,8 +274,7 @@ class DetailSheetContent extends StatefulWidget {
   final int exerciseId;
   final bool isHistory;
   const DetailSheetContent(
-      {Key? key, required this.exerciseId, this.isHistory = false})
-      : super(key: key);
+      {super.key, required this.exerciseId, this.isHistory = false});
 
   @override
   _DetailSheetContentState createState() => _DetailSheetContentState();
@@ -310,11 +311,13 @@ class _DetailSheetContentState extends State<DetailSheetContent> {
         child: FutureBuilder<Map<String, dynamic>?>(
           future: descriptionFuture,
           builder: (c, snap) {
-            if (snap.connectionState != ConnectionState.done)
+            if (snap.connectionState != ConnectionState.done) {
               return const Center(child: CircularProgressIndicator());
+            }
             final ex = snap.data;
-            if (ex == null)
+            if (ex == null) {
               return const Center(child: Text('Error loading details'));
+            }
 
             final types = (ex['types'] as List).cast<String>();
             final description = (ex['description'] ?? '').toString();
@@ -324,7 +327,7 @@ class _DetailSheetContentState extends State<DetailSheetContent> {
                 widget.isHistory ? rawName.split('(').first.trim() : rawName;
             final imagePath = ex['image'] ?? '';
             final equipment =
-                types.contains('weight') ? 'Dumbbell' : 'Bodyweight';
+                types.contains('weight') ? 'item_weight'.tr : 'body_weight'.tr;
             final hasDescription = description.trim().isNotEmpty;
 
             return Column(
@@ -341,13 +344,13 @@ class _DetailSheetContentState extends State<DetailSheetContent> {
                     length: 2,
                     child: Column(
                       children: [
-                        const TabBar(
+                        TabBar(
                             indicatorColor: Colors.black,
                             labelColor: Colors.black,
                             unselectedLabelColor: Colors.grey,
                             tabs: [
-                              Tab(text: 'INSTRUCTIONS'),
-                              Tab(text: 'RECORDS')
+                              Tab(text: 'instructions'.tr),
+                              Tab(text: 'records'.tr)
                             ]),
                         Expanded(
                           child: TabBarView(
@@ -393,7 +396,7 @@ class _DetailSheetContentState extends State<DetailSheetContent> {
                                               fontWeight: FontWeight.bold)),
                                       const SizedBox(height: 8),
                                       if (types.isNotEmpty) ...[
-                                        const Text('TYPE',
+                                        Text('type'.tr,
                                             style: TextStyle(
                                                 fontSize: 12,
                                                 color: Colors.grey)),
@@ -402,7 +405,7 @@ class _DetailSheetContentState extends State<DetailSheetContent> {
                                                 const TextStyle(fontSize: 16)),
                                         const SizedBox(height: 12),
                                       ],
-                                      const Text('EQUIPMENT',
+                                      Text('equipments'.tr,
                                           style: TextStyle(
                                               fontSize: 12,
                                               color: Colors.grey)),
@@ -416,15 +419,17 @@ class _DetailSheetContentState extends State<DetailSheetContent> {
                                 future: recordsFuture,
                                 builder: (c2, rsnap) {
                                   if (rsnap.connectionState !=
-                                      ConnectionState.done)
+                                      ConnectionState.done) {
                                     return const Center(
                                         child: CircularProgressIndicator());
+                                  }
                                   final records = rsnap.data;
-                                  if (records == null || records.isEmpty)
-                                    return const Center(
-                                        child: Text('No records yet',
+                                  if (records == null || records.isEmpty) {
+                                    return Center(
+                                        child: Text('no_records_yet'.tr,
                                             style:
                                                 TextStyle(color: Colors.grey)));
+                                  }
 
                                   return ListView.builder(
                                     padding: const EdgeInsets.all(16),
@@ -483,7 +488,7 @@ class _DetailSheetContentState extends State<DetailSheetContent> {
                                                 final isBodyweight =
                                                     weights.isEmpty;
                                                 final mainText = isBodyweight
-                                                    ? '${reps[i]} repetition${reps[i] > 1 ? 's' : ''}'
+                                                    ? '${reps[i]} ${'repetition'.tr}${reps[i] > 1 ? 's' : ''}'
                                                     : '${weights[i]} kg × ${reps[i]}';
                                                 final oneRm = isBodyweight
                                                     ? null
@@ -552,7 +557,7 @@ class _DetailSheetContentState extends State<DetailSheetContent> {
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: buildCustomButton(
-                      label: 'DONE',
+                      label: 'done_capital'.tr,
                       onPressed: () => Navigator.of(context).pop()),
                 ),
               ],

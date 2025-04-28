@@ -1,6 +1,6 @@
-import 'package:flutter_application_1/service/InitialService/signup_service.dart';
-import 'package:flutter_application_1/view/InitialView/login_view.dart';
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/InitialService/signup_service.dart';
+import 'package:workout_skripsi_app/view/InitialView/login_view.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -41,8 +41,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 30),
-                    const Text(
-                      'Sign Up',
+                    Text(
+                      'sign_up'.tr,
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -57,16 +57,18 @@ class _SignUpPageState extends State<SignUpPage> {
                     const SizedBox(height: 15),
                     buildTextField(
                       controller: _usernameController,
-                      labelText: 'Username',
+                      labelText: 'username'.tr,
                       icon: Icons.person,
                     ),
                     const SizedBox(height: 15),
                     buildTextField(
                       controller: _passwordController,
-                      labelText: 'Password',
+                      labelText: 'password'.tr,
                       icon: Icons.lock,
                       obscureText: _obscurePassword,
-                      trailingIcon: _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      trailingIcon: _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                       onIconTap: () {
                         setState(() {
                           _obscurePassword = !_obscurePassword;
@@ -78,16 +80,16 @@ class _SignUpPageState extends State<SignUpPage> {
                     const SizedBox(height: 20),
                     Column(
                       children: [
-                        const Text(
-                          'Already have an account?',
+                        Text(
+                          'have_account'.tr,
                           style: TextStyle(fontSize: 14),
                         ),
                         GestureDetector(
                           onTap: () {
                             Get.to(() => const LoginPage());
                           },
-                          child: const Text(
-                            'Log In',
+                          child: Text(
+                            'log_in'.tr,
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
@@ -111,7 +113,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _buildSignUpButton() {
     return buildCustomButton(
-      label: 'Sign Up',
+      label: 'sign_up'.tr,
       isLoading: _isLoading,
       onPressed: _isLoading
           ? null

@@ -1,4 +1,4 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
 import 'package:intl/intl.dart';
 
 Widget buildContainer({
@@ -86,8 +86,8 @@ Widget buildTextField({
   required IconData icon,
   bool obscureText = false,
   bool isNumeric = false,
-  IconData? trailingIcon, 
-  VoidCallback? onIconTap, 
+  IconData? trailingIcon,
+  VoidCallback? onIconTap,
 }) {
   return TextField(
     controller: controller,
@@ -103,7 +103,7 @@ Widget buildTextField({
       suffixIcon: trailingIcon != null
           ? IconButton(
               icon: Icon(trailingIcon, color: Colors.black54),
-              onPressed: onIconTap, 
+              onPressed: onIconTap,
             )
           : null,
       filled: true,
@@ -175,13 +175,16 @@ Widget buildMainHeaderBackup() {
   );
 }
 
-PreferredSizeWidget buildMainHeader({bool showBackButton = false, required BuildContext context}) {
+PreferredSizeWidget buildMainHeader({
+  bool showBackButton = false,
+  required BuildContext context,
+}) {
   return AppBar(
     backgroundColor: Colors.black,
     centerTitle: true,
-    title: const Text(
-      'GymTest',
-      style: TextStyle(
+    title: Text(
+      'GymTest'.tr,
+      style: const TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.bold,
         color: Colors.white,
@@ -193,6 +196,33 @@ PreferredSizeWidget buildMainHeader({bool showBackButton = false, required Build
             onPressed: () => Navigator.pop(context),
           )
         : null,
+    actions: [
+      PopupMenuButton<Locale>(
+        icon: const Icon(Icons.language, color: Colors.white),
+        onSelected: (locale) {
+          Get.updateLocale(locale);
+        },
+        itemBuilder: (ctx) => [
+          PopupMenuItem(
+            value: const Locale('en', 'US'),
+            child: Container(
+              color: Colors.white,
+              child: Text('lang_en'.tr,
+                  style: const TextStyle(color: Colors.black)),
+            ),
+          ),
+          PopupMenuItem(
+            value: const Locale('id', 'ID'),
+            child: Container(
+              color: Colors.white,
+              child: Text('lang_id'.tr,
+                  style: const TextStyle(color: Colors.black)),
+            ),
+          ),
+        ],
+        color: Colors.white, // <-- set the popup itself to white too
+      ),
+    ],
   );
 }
 
@@ -301,21 +331,43 @@ Widget buildMonthPickerTile({
 }
 
 Widget buildCustomAppBar({
-  String? title, // Make title optional
+  String? title,
   RxString? dynamicTitle,
+  List<Widget>? extraActions,
+  double elevation = 0,
 }) {
   return AppBar(
     title: dynamicTitle != null
         ? Obx(() => Text(
               "Welcome, ${dynamicTitle.value}",
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold, color: Colors.black),
             ))
         : Text(
-            title ?? '', // Use title if provided, otherwise empty string
-            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+            title ?? '',
+            style: const TextStyle(
+                fontWeight: FontWeight.bold, color: Colors.black),
           ),
     backgroundColor: Colors.white,
-    elevation: 0,
+    elevation: elevation,
     foregroundColor: Colors.black,
+    actions: [
+      if (extraActions != null) ...extraActions,
+      PopupMenuButton<Locale>(
+        icon: const Icon(Icons.language, color: Colors.black),
+        onSelected: Get.updateLocale,
+        itemBuilder: (ctx) => [
+          PopupMenuItem(
+            value: const Locale('en', 'US'),
+            child: Text('lang_en'.tr),
+          ),
+          PopupMenuItem(
+            value: const Locale('id', 'ID'),
+            child: Text('lang_id'.tr),
+          ),
+        ],
+        color: Colors.white,
+      ),
+    ],
   );
 }

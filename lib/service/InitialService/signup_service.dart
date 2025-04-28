@@ -1,6 +1,6 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_application_1/view/InitialView/inputData_view.dart';
+import 'package:workout_skripsi_app/view/InitialView/inputData_view.dart';
 
 class SignUpService {
   Future<void> signUp({
@@ -14,7 +14,7 @@ class SignUpService {
     final String password = passwordController.text.trim();
 
     if (email.isEmpty || username.isEmpty || password.isEmpty) {
-      showSnackBarMessage('Invalid Data!','All fields are required');
+      showSnackBarMessage('Invalid Data!', 'All fields are required');
       return;
     }
 
@@ -44,7 +44,7 @@ class SignUpService {
           final userController = Get.find<UserController>();
           userController.saveUser(userIdEntry, userNameEntry);
 
-          showSnackBarMessage('Success!','Sign up successful!', success: true);
+          showSnackBarMessage('Success!', 'Sign up successful!', success: true);
 
           Get.offAll(() => InputDataPage());
         } else {
@@ -52,11 +52,12 @@ class SignUpService {
         }
       } else {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        showSnackBarMessage('Failed!',responseData['message'] ?? 'Sign up failed');
+        showSnackBarMessage(
+            'Failed!', responseData['message'] ?? 'Sign up failed');
       }
     } catch (e) {
       setLoading(false);
-      showSnackBarMessage( 'Failed!', 'Error: Unable to connect to the server');
+      showSnackBarMessage('Failed!', 'Error: Unable to connect to the server');
     }
   }
 }

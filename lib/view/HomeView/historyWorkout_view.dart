@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/service/HomeService/history_service.dart';
-import 'package:flutter_application_1/view/HomeView/workoutDetails_view.dart';
-import 'package:flutter_application_1/controller/user_controller.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/HomeService/history_service.dart';
+import 'package:workout_skripsi_app/view/HomeView/workoutDetails_view.dart';
+import 'package:workout_skripsi_app/controller/user_controller.dart';
 
 class HistoryWorkoutPage extends StatefulWidget {
   const HistoryWorkoutPage({super.key});
@@ -89,19 +89,17 @@ class _HistoryWorkoutPageState extends State<HistoryWorkoutPage> {
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: AppBar(
-          title: const Text("Workout History"),
-          backgroundColor: Colors.white,
+        child: buildCustomAppBar(
+          title: 'workout_history'.tr,
           elevation: 1,
-          foregroundColor: Colors.black,
-          actions: [
+          extraActions: [
             IconButton(
               onPressed: _toggleSortOrder,
               icon: Icon(
                 _isAscending ? Icons.arrow_upward : Icons.arrow_downward,
                 color: Colors.black,
               ),
-              tooltip: "Sort by Date",
+              tooltip: 'sort_by_date'.tr,
             ),
           ],
         ),
@@ -112,9 +110,9 @@ class _HistoryWorkoutPageState extends State<HistoryWorkoutPage> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _exercises.isEmpty
-                    ? const Center(
+                    ? Center(
                         child: Text(
-                          "No exercises available",
+                          'no_workouts_yet'.tr,
                           style: TextStyle(fontSize: 16, color: Colors.grey),
                         ),
                       )

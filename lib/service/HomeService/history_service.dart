@@ -1,5 +1,5 @@
 import 'package:http/http.dart' as http;
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
 
 class HistoryService {
   Future<List<Map<String, dynamic>>> getExerciseHistory({
@@ -24,7 +24,8 @@ class HistoryService {
 
           return data.map<Map<String, dynamic>>((exercise) {
             return {
-              'exercise_id': 81, //need to update to id when api retrn
+              'exercise_id':
+                  exercise['exercise_id'], //need to update to id when api retrn
               'exercise_cd': exercise['exercise_cd'],
               'exercise_name': exercise['exercise_name'],
               'exercise_image': exercise['exercise_image'] != null

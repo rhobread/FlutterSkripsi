@@ -1,11 +1,10 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_application_1/view/InitialView/picklocation_view.dart';
+import 'package:workout_skripsi_app/view/InitialView/picklocation_view.dart';
 
 class PickAvailabilityService {
-  Future<List<Map<String, dynamic>>> getUserAvailability({
-    required String userId
-  }) async {
+  Future<List<Map<String, dynamic>>> getUserAvailability(
+      {required String userId}) async {
     try {
       final Uri fetchUrl = UrlConfig.getApiUrl('user/availability/$userId');
       final response = await http.get(fetchUrl);
@@ -23,11 +22,12 @@ class PickAvailabilityService {
 
         return availabilityList;
       } else {
-        showSnackBarMessage('Error!','Error getting user availability. (Status: ${response.statusCode})');
+        showSnackBarMessage('Error!',
+            'Error getting user availability. (Status: ${response.statusCode})');
         return [];
       }
     } catch (e) {
-      showSnackBarMessage('Error!','Error  getting user availability: $e');
+      showSnackBarMessage('Error!', 'Error  getting user availability: $e');
       return [];
     }
   }
@@ -63,21 +63,20 @@ class PickAvailabilityService {
       setLoading(false);
 
       if (response.statusCode == 200) {
-        showSnackBarMessage('Success!','Availability updated successfully!', success: true);
+        showSnackBarMessage('Success!', 'Availability updated successfully!',
+            success: true);
 
-        if(isUpdateAvailability){
+        if (isUpdateAvailability) {
           Get.back();
-        }
-        else{
+        } else {
           Get.off(() => PickLocationPage());
         }
-        
       } else {
-        showSnackBarMessage('Failed!','Failed to update availability');
+        showSnackBarMessage('Failed!', 'Failed to update availability');
       }
     } catch (e) {
       setLoading(false);
-      showSnackBarMessage('Error!','Error: Unable to connect to the server');
+      showSnackBarMessage('Error!', 'Error: Unable to connect to the server');
     }
   }
 }

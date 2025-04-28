@@ -1,5 +1,5 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/service/InitialService/pickGoal_service.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/InitialService/NOTUSEDpickGoal_service.dart';
 
 class PickGoalPage extends StatefulWidget {
   const PickGoalPage({super.key});

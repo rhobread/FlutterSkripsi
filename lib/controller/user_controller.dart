@@ -1,4 +1,4 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
 
 class UserController extends GetxController {
   var userId = "".obs; // 🔄 Reactive userId
@@ -22,14 +22,14 @@ class UserController extends GetxController {
 
   // 3️ Clear userId on logout
   Future<void> clearUserId() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  
-  await Future.wait([
-    prefs.remove('userId'),
-    prefs.remove('userName'),
-  ]);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  userId.value = "";
-  userName.value = "";
-}
+    await Future.wait([
+      prefs.remove('userId'),
+      prefs.remove('userName'),
+    ]);
+
+    userId.value = "";
+    userName.value = "";
+  }
 }

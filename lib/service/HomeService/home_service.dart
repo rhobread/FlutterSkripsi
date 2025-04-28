@@ -1,4 +1,4 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
 import 'package:http/http.dart' as http;
 
 class HomeService {
@@ -11,7 +11,7 @@ class HomeService {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = jsonDecode(response.body);
-        final List<dynamic> workouts = jsonData['workouts']; // Extract list
+        final List<dynamic> workouts = jsonData['data']; // Extract list
 
         return workouts.map((workout) {
           return {

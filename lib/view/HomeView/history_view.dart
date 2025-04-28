@@ -1,9 +1,9 @@
-import 'package:flutter_application_1/view/HomeView/historyExercise_view.dart';
-import 'package:flutter_application_1/view/HomeView/historyWorkout_view.dart';
+import 'package:workout_skripsi_app/view/HomeView/historyExercise_view.dart';
+import 'package:workout_skripsi_app/view/HomeView/historyWorkout_view.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_application_1/service/HomeService/history_service.dart';
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/view/HomeView/workoutDetails_view.dart';
+import 'package:workout_skripsi_app/service/HomeService/history_service.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/view/HomeView/workoutDetails_view.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -74,7 +74,7 @@ class _HistoryPageState extends State<HistoryPage> {
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: buildCustomAppBar(title: "History"),
+        child: buildCustomAppBar(title: 'history'.tr),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -85,10 +85,10 @@ class _HistoryPageState extends State<HistoryPage> {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'Exercise History',
-                      style: TextStyle(
+                      'exercise_history'.tr, // No const here
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
@@ -101,8 +101,10 @@ class _HistoryPageState extends State<HistoryPage> {
                       MaterialPageRoute(
                           builder: (_) => const HistoryExercisePage()),
                     ),
-                    child: const Text('View all',
-                        style: TextStyle(color: Colors.blue)),
+                    child: Text(
+                      'view_all'.tr, // No const here
+                      style: TextStyle(color: Colors.blue),
+                    ),
                   ),
                 ],
               ),
@@ -112,10 +114,12 @@ class _HistoryPageState extends State<HistoryPage> {
             if (_loadingExercises)
               const Center(child: CircularProgressIndicator())
             else if (_exercises.isEmpty)
-              const Padding(
-                padding: EdgeInsets.all(16),
-                child: Text('No exercises found',
-                    style: TextStyle(color: Colors.grey)),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  'no_exercises_found'.tr, // Localized text
+                  style: TextStyle(color: Colors.grey),
+                ),
               )
             else
               ListView.separated(
@@ -179,10 +183,10 @@ class _HistoryPageState extends State<HistoryPage> {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
               child: Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'Workout History',
-                      style: TextStyle(
+                      'workout_history'.tr, // Localized text
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
@@ -195,7 +199,7 @@ class _HistoryPageState extends State<HistoryPage> {
                       MaterialPageRoute(
                           builder: (_) => const HistoryWorkoutPage()),
                     ),
-                    child: const Text('View all',
+                    child: Text('view_all'.tr,
                         style: TextStyle(color: Colors.blue)),
                   ),
                 ],
@@ -206,10 +210,12 @@ class _HistoryPageState extends State<HistoryPage> {
             if (_loadingWorkouts)
               const Center(child: CircularProgressIndicator())
             else if (_workouts.isEmpty)
-              const Padding(
-                padding: EdgeInsets.all(16),
-                child: Text('No workouts yet',
-                    style: TextStyle(color: Colors.grey)),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  'no_workouts_yet'.tr, // Localized text
+                  style: TextStyle(color: Colors.grey),
+                ),
               )
             else
               ListView.separated(

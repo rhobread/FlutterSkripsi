@@ -1,6 +1,6 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/view/HomeView/profileDetails_view.dart';
-import 'package:flutter_application_1/view/InitialView/login_view.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/view/HomeView/profileDetails_view.dart';
+import 'package:workout_skripsi_app/view/InitialView/login_view.dart';
 
 class ProfilePage extends StatelessWidget {
   ProfilePage({super.key});
@@ -12,7 +12,7 @@ class ProfilePage extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: buildCustomAppBar(title: "Me"),
+        child: buildCustomAppBar(title: 'profile'.tr),
       ),
       body: Column(
         children: [
@@ -23,7 +23,8 @@ class ProfilePage extends StatelessWidget {
             child: ListTile(
               title: const Text("Hello",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              subtitle: Text(userController.userName.value, style: const TextStyle(color: Colors.grey)),
+              subtitle: Text(userController.userName.value,
+                  style: const TextStyle(color: Colors.grey)),
             ),
           ),
 
@@ -36,7 +37,7 @@ class ProfilePage extends StatelessWidget {
                 buildSettingsTile(
                   context,
                   Icons.person,
-                  "My Profile",
+                  'my_profile'.tr,
                   Colors.blue,
                   onTap: () => Get.to(() => const ProfileDetailsPage()),
                 ),
@@ -53,7 +54,7 @@ class ProfilePage extends StatelessWidget {
             child: buildSettingsTile(
               context,
               Icons.logout,
-              "Log Out",
+              'log_out'.tr,
               Colors.red,
               onTap: () => _showLogoutConfirmation(context),
             ),
@@ -70,10 +71,10 @@ class ProfilePage extends StatelessWidget {
 
   void _showLogoutConfirmation(BuildContext context) {
     Get.defaultDialog(
-      title: "Confirm Logout",
-      middleText: "Are you sure you want to log out?",
-      textCancel: "No",
-      textConfirm: "Yes",
+      title: 'confirm_logout'.tr,
+      middleText: 'logout_confirmation'.tr,
+      textCancel: 'no'.tr,
+      textConfirm: 'yes'.tr,
       confirmTextColor: Colors.white,
       onConfirm: () async {
         await UserController().clearUserId();

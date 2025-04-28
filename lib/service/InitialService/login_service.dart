@@ -1,5 +1,5 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/view/HomeView/main_view.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/view/HomeView/main_view.dart';
 import 'package:http/http.dart' as http;
 
 class LoginService {
@@ -12,7 +12,7 @@ class LoginService {
     final String password = passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      showSnackBarMessage('Invalid Data!','All fields are required');
+      showSnackBarMessage('Invalid Data!', 'All fields are required');
       return;
     }
 
@@ -44,22 +44,24 @@ class LoginService {
             final userController = Get.find<UserController>();
             userController.saveUser(userId, userName);
 
-            showSnackBarMessage('Success!','Log in successful!', success: true);
+            showSnackBarMessage('Success!', 'Log in successful!',
+                success: true);
 
             Get.offAll(() => MainPage());
           } else {
-            showSnackBarMessage('Failed!','User ID not found in response.');
+            showSnackBarMessage('Failed!', 'User ID not found in response.');
           }
         } else {
-          showSnackBarMessage('Failed!','Invalid response format.');
+          showSnackBarMessage('Failed!', 'Invalid response format.');
         }
       } else {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        showSnackBarMessage('Failed!',responseData['message'] ?? 'Log In failed');
+        showSnackBarMessage(
+            'Failed!', responseData['message'] ?? 'Log In failed');
       }
     } catch (e) {
       setLoading(false);
-      showSnackBarMessage('Failed!','Error: Unable to connect to the server');
+      showSnackBarMessage('Failed!', 'Error: Unable to connect to the server');
     }
   }
 }

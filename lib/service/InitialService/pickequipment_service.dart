@@ -1,5 +1,5 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/view/HomeView/main_view.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/view/HomeView/main_view.dart';
 import 'package:http/http.dart' as http;
 
 class PickEquipmentService {
@@ -24,7 +24,8 @@ class PickEquipmentService {
 
         return equipmentList;
       } else {
-        showSnackBarMessage('Failed!', 'Error fetching equipment. (Status: ${response.statusCode})');
+        showSnackBarMessage('Failed!',
+            'Error fetching equipment. (Status: ${response.statusCode})');
         return [];
       }
     } catch (e) {
@@ -33,9 +34,8 @@ class PickEquipmentService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getUserEquipments({
-    required String userId
-  }) async {
+  Future<List<Map<String, dynamic>>> getUserEquipments(
+      {required String userId}) async {
     try {
       final Uri fetchUrl = UrlConfig.getApiUrl('user/equipments/$userId');
       final response = await http.get(fetchUrl);
@@ -52,7 +52,8 @@ class PickEquipmentService {
 
         return equipmentList;
       } else {
-        showSnackBarMessage( 'Failed!', 'Error fetching equipment. (Status: ${response.statusCode})');
+        showSnackBarMessage('Failed!',
+            'Error fetching equipment. (Status: ${response.statusCode})');
         return [];
       }
     } catch (e) {
@@ -79,28 +80,36 @@ class PickEquipmentService {
       );
 
       if (response.statusCode == 200) {
-        showSnackBarMessage('Success!','Equipment saved successfully! Generating your workout...',success: true);
+        showSnackBarMessage('Success!',
+            'Equipment saved successfully! Generating your workout...',
+            success: true);
 
         final workoutResponse = await generateWorkoutPlan(userId: userId);
 
         if (workoutResponse.statusCode == 200) {
-          showSnackBarMessage('Success!','Workout generated successfully!', success: true,);
-          
-          if(isUpdateEquipment){
+          showSnackBarMessage(
+            'Success!',
+            'Workout generated successfully!',
+            success: true,
+          );
+
+          if (isUpdateEquipment) {
             Get.back();
-          }
-          else{
+          } else {
             Get.off(() => MainPage());
           }
-
         } else {
-          showSnackBarMessage('Failed!','Error generating workout. (Status: ${workoutResponse.statusCode})');
+          showSnackBarMessage('Failed!',
+              'Error generating workout. (Status: ${workoutResponse.statusCode})');
         }
       } else {
-        showSnackBarMessage('Failed!','Error saving selection. (Status: ${response.statusCode})',);
+        showSnackBarMessage(
+          'Failed!',
+          'Error saving selection. (Status: ${response.statusCode})',
+        );
       }
     } catch (e) {
-      showSnackBarMessage('Failed!','Network error: $e');
+      showSnackBarMessage('Failed!', 'Network error: $e');
     }
     setLoading(false);
   }

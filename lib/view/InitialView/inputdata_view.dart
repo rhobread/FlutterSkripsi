@@ -1,5 +1,5 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/service/InitialService/inputdata_service.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/InitialService/inputdata_service.dart';
 
 class InputDataPage extends StatefulWidget {
   const InputDataPage({super.key});
@@ -29,14 +29,13 @@ class _InputDataPageState extends State<InputDataPage> {
     final String weight = _weightController.text.trim();
 
     _inputDataService.submitMeasurements(
-      context: context,
-      userId: userController.userId.value,
-      height: height,
-      weight: weight,
-      selectedGender: _selectedGender,
-      setLoading: _setLoading,
-      isInitial: true
-    );
+        context: context,
+        userId: userController.userId.value,
+        height: height,
+        weight: weight,
+        selectedGender: _selectedGender,
+        setLoading: _setLoading,
+        isInitial: true);
   }
 
   @override
@@ -45,7 +44,7 @@ class _InputDataPageState extends State<InputDataPage> {
       appBar: buildMainHeader(context: context),
       backgroundColor: Colors.white,
       body: Column(
-        children: [ 
+        children: [
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -53,16 +52,16 @@ class _InputDataPageState extends State<InputDataPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 30),
-                  const Text(
-                    'Input Your Data',
+                  Text(
+                    'input_your_data'.tr,
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 10),
-                  const Text(
-                    'Used to generate your routines, won\'t be shared!',
+                  Text(
+                    'used_for_routines'.tr,
                     style: TextStyle(fontSize: 14, color: Colors.grey),
                     textAlign: TextAlign.center,
                   ),
@@ -71,42 +70,51 @@ class _InputDataPageState extends State<InputDataPage> {
                   // Weight Field
                   buildTextField(
                     controller: _weightController,
-                    labelText: 'Weight (kg)',
+                    labelText: 'weight'.tr + ' (kg)',
                     icon: Icons.fitness_center,
                     isNumeric: true,
-                    trailingIcon: Icons.edit, 
+                    trailingIcon: Icons.edit,
                     onIconTap: () {
-                      showWeightBottomSheet(context, userController.userId.value, _weightController.text, (newWeight) {
-                        setState(() {
-                          _weightController.text = newWeight; 
-                        });
-                      } as Function(String p1), false);
+                      showWeightBottomSheet(
+                          context,
+                          userController.userId.value,
+                          _weightController.text,
+                          (newWeight) {
+                            setState(() {
+                              _weightController.text = newWeight;
+                            });
+                          } as Function(String p1),
+                          false);
                     },
                   ),
                   const SizedBox(height: 15),
 
                   // Height Field
                   buildTextField(
-                    controller: _heightController,
-                    labelText: 'Height (cm)',
-                    icon: Icons.height,
-                    isNumeric: true,
-                    trailingIcon: Icons.edit, 
-                    onIconTap: () {
-                      showHeightBottomSheet(context, userController.userId.value, _heightController.text, (newWeight) {
-                        setState(() {
-                          _heightController.text = newWeight; 
-                        });
-                      } as Function(String p1), false);
-                    }
-                  ),
+                      controller: _heightController,
+                      labelText: 'height'.tr + ' (cm)',
+                      icon: Icons.height,
+                      isNumeric: true,
+                      trailingIcon: Icons.edit,
+                      onIconTap: () {
+                        showHeightBottomSheet(
+                            context,
+                            userController.userId.value,
+                            _heightController.text,
+                            (newWeight) {
+                              setState(() {
+                                _heightController.text = newWeight;
+                              });
+                            } as Function(String p1),
+                            false);
+                      }),
                   const SizedBox(height: 15),
 
                   // Gender Dropdown
                   DropdownButtonFormField<String>(
                     value: _selectedGender,
                     decoration: InputDecoration(
-                      labelText: 'Gender',
+                      labelText: 'gender'.tr,
                       prefixIcon:
                           const Icon(Icons.person, color: Colors.black54),
                       filled: true,
@@ -122,7 +130,8 @@ class _InputDataPageState extends State<InputDataPage> {
                       ),
                       contentPadding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    items: ['Male', 'Female'].map((String gender) {
+                    items: ['gender_male'.tr, 'gender_female'.tr]
+                        .map((String gender) {
                       return DropdownMenuItem<String>(
                         value: gender,
                         child: Text(gender),
@@ -138,7 +147,7 @@ class _InputDataPageState extends State<InputDataPage> {
 
                   // Submit Button using common widget
                   buildCustomButton(
-                    label: 'Continue',
+                    label: 'continue'.tr,
                     isLoading: _isLoading,
                     onPressed: _isLoading ? null : _submitMeasurements,
                   ),

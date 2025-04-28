@@ -1,6 +1,6 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/service/InitialService/login_service.dart';
-import 'package:flutter_application_1/view/InitialView/signup_view.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/InitialService/login_service.dart';
+import 'package:workout_skripsi_app/view/InitialView/signup_view.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -39,8 +39,8 @@ class _LogInPageState extends State<LoginPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 30),
-                    const Text(
-                      'Log In',
+                    Text(
+                      'log_in'.tr,
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -59,10 +59,12 @@ class _LogInPageState extends State<LoginPage> {
                     /// **Password Field**
                     buildTextField(
                       controller: _passwordController,
-                      labelText: 'Password',
+                      labelText: 'password'.tr,
                       icon: Icons.lock,
                       obscureText: _obscurePassword,
-                      trailingIcon: _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      trailingIcon: _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                       onIconTap: () {
                         setState(() {
                           _obscurePassword = !_obscurePassword;
@@ -75,8 +77,8 @@ class _LogInPageState extends State<LoginPage> {
                     _buildLoginButton(),
 
                     const SizedBox(height: 20),
-                    const Text(
-                      'Don’t have an account?',
+                    Text(
+                      'dont_have_account'.tr,
                       style: TextStyle(fontSize: 14),
                     ),
 
@@ -85,8 +87,8 @@ class _LogInPageState extends State<LoginPage> {
                       onTap: () {
                         Get.to(() => const SignUpPage());
                       },
-                      child: const Text(
-                        'Sign Up',
+                      child: Text(
+                        'sign_up'.tr,
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -108,7 +110,7 @@ class _LogInPageState extends State<LoginPage> {
 
   Widget _buildLoginButton() {
     return buildCustomButton(
-      label: 'Log In',
+      label: 'log_in'.tr,
       isLoading: _isLoading,
       onPressed: _isLoading
           ? null

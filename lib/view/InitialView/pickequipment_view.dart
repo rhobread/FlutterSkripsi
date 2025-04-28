@@ -1,11 +1,14 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/service/InitialService/pickEquipment_service.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/InitialService/pickEquipment_service.dart';
 
 class PickEquipmentPage extends StatefulWidget {
   final bool isGymSelected;
   final bool isUpdateEquipment;
 
-  const PickEquipmentPage({super.key, required this.isGymSelected, required this.isUpdateEquipment});
+  const PickEquipmentPage(
+      {super.key,
+      required this.isGymSelected,
+      required this.isUpdateEquipment});
 
   @override
   _PickEquipmentPageState createState() => _PickEquipmentPageState();
@@ -31,11 +34,11 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
   void _initializeEquipment() async {
     if (widget.isUpdateEquipment) {
       _userequipments = await _pickEquipmentService.getUserEquipments(
-        userId: userController.userId.value
-      );
+          userId: userController.userId.value);
     }
 
-    List<Map<String, dynamic>> equipments = await _pickEquipmentService.fetchEquipments(
+    List<Map<String, dynamic>> equipments =
+        await _pickEquipmentService.fetchEquipments(
       isGymSelected: widget.isGymSelected,
     );
 
@@ -44,11 +47,13 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
       _filteredEquipmentList = equipments;
 
       if (widget.isGymSelected) {
-        _selectedEquipment = _equipmentList.map<int>((e) => e['id'] as int).toSet();
+        _selectedEquipment =
+            _equipmentList.map<int>((e) => e['id'] as int).toSet();
       }
 
       if (widget.isUpdateEquipment) {
-        _selectedEquipment.addAll(_userequipments.map<int>((e) => e['id'] as int));
+        _selectedEquipment
+            .addAll(_userequipments.map<int>((e) => e['id'] as int));
       }
     });
   }
@@ -84,18 +89,19 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildMainHeader(showBackButton: widget.isUpdateEquipment, context: context),
+      appBar: buildMainHeader(
+          showBackButton: widget.isUpdateEquipment, context: context),
       backgroundColor: Colors.white,
       body: Column(
         children: [
           const SizedBox(height: 30),
-          const Text(
-            'Select Your Equipment',
+          Text(
+            'select_equipement'.tr,
             style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
-          const Text(
-            'Tap to select/unselect equipment',
+          Text(
+            'tap_select_equipment'.tr,
             style: TextStyle(fontSize: 14, color: Colors.black),
             textAlign: TextAlign.center,
           ),
@@ -105,7 +111,7 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search Equipment...',
+                hintText: 'search_equipment'.tr + '...',
                 prefixIcon: Icon(Icons.search, color: Colors.black),
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -179,7 +185,7 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
           Padding(
             padding: const EdgeInsets.all(20),
             child: buildCustomButton(
-              label: 'Continue',
+              label: 'continue'.tr,
               isLoading: _isLoading,
               onPressed: _isLoading ? null : _submitSelection,
             ),

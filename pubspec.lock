@@ -94,6 +94,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.0"
+  flutter_localizations:
+    dependency: "direct main"
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_markdown:
     dependency: "direct main"
     description:
@@ -140,10 +145,10 @@ packages:
     dependency: "direct main"
     description:
       name: intl
-      sha256: "3bc132a9dbce73a7e4a21a17d06e1878839ffbf975568bc875c60537824b0c4d"
+      sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
       url: "https://pub.dev"
     source: hosted
-    version: "0.18.1"
+    version: "0.19.0"
   leak_tracker:
     dependency: transitive
     description:
@@ -212,10 +217,10 @@ packages:
     dependency: "direct main"
     description:
       name: month_picker_dialog
-      sha256: f77a42b2f738dc3e44cb0c838a9606e5a046cb7d14b549df1c5d92515bf6ec68
+      sha256: "9a9a626907b0c54f1c7f4b68d27971f6df5c100411b79357161cd6a5629bfeac"
       url: "https://pub.dev"
     source: hosted
-    version: "2.12.0"
+    version: "6.0.3"
   nested:
     dependency: transitive
     description:

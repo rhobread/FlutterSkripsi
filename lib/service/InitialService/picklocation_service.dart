@@ -1,5 +1,5 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/view/InitialView/pickequipment_view.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/view/InitialView/pickequipment_view.dart';
 
 class PickLocationService {
   Future<void> continueNextPage({
@@ -12,7 +12,8 @@ class PickLocationService {
       bool isGymSelected = selectedLocation == 0;
       setLoading(false);
 
-      Get.off(() => PickEquipmentPage(isGymSelected: isGymSelected, isUpdateEquipment: false));
+      Get.off(() => PickEquipmentPage(
+          isGymSelected: isGymSelected, isUpdateEquipment: false));
     } catch (e) {
       setLoading(false);
       showSnackBarMessage('Failed!', 'Error: Unable to connect to the server');

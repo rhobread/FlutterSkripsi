@@ -1,4 +1,4 @@
-# flutter_application_1
+# workout_skripsi_app
 
 A new Flutter project.
 

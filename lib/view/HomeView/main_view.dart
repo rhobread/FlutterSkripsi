@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/view/HomeView/history_view.dart';
-import 'package:flutter_application_1/view/HomeView/home_view.dart';
-import 'package:flutter_application_1/view/HomeView/profile_view.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/view/HomeView/history_view.dart';
+import 'package:workout_skripsi_app/view/HomeView/home_view.dart';
+import 'package:workout_skripsi_app/view/HomeView/profile_view.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -13,11 +14,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0; // Track current page index
 
-  final List<Widget> _pages = [
-    const HomePage(),
-    HistoryPage(),
-    ProfilePage()
-  ];
+  final List<Widget> _pages = [const HomePage(), HistoryPage(), ProfilePage()];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -36,7 +33,8 @@ class _MainPageState extends State<MainPage> {
         decoration: BoxDecoration(
           color: const Color(0xFFFDFDFD), // Light background
           border: Border(
-            top: BorderSide(color: Colors.grey.shade300, width: 0.8), // Soft top border
+            top: BorderSide(
+                color: Colors.grey.shade300, width: 0.8), // Soft top border
           ),
         ),
         child: BottomNavigationBar(
@@ -50,10 +48,12 @@ class _MainPageState extends State<MainPage> {
           iconSize: 24, // Adjust icon size
           currentIndex: _selectedIndex,
           onTap: _onItemTapped, // Handle navigation
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-            BottomNavigationBarItem(icon: Icon(Icons.history), label: "History"),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Me"),
+          items: [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'.tr),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.history), label: 'history'.tr),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.person), label: 'profile'.tr),
           ],
         ),
       ),

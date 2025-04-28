@@ -1,8 +1,8 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/service/HomeService/profiledetails_service.dart';
-import 'package:flutter_application_1/service/InitialService/inputdata_service.dart';
-import 'package:flutter_application_1/view/InitialView/pickequipment_view.dart';
-import 'package:flutter_application_1/view/InitialView/pickavailability_view.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/HomeService/profiledetails_service.dart';
+import 'package:workout_skripsi_app/service/InitialService/inputdata_service.dart';
+import 'package:workout_skripsi_app/view/InitialView/pickequipment_view.dart';
+import 'package:workout_skripsi_app/view/InitialView/pickavailability_view.dart';
 
 class ProfileDetailsPage extends StatefulWidget {
   const ProfileDetailsPage({super.key});
@@ -30,22 +30,19 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
 
   Future<void> _loadInitialData() async {
     try {
-      userId = userController.userId.value;;
-
-      final userData = await profileService.getUserDetails(
-        userId: userId,
-      );
-
-      if (!mounted) return; 
+      userId = userController.userId.value;
+      final userData = await profileService.getUserDetails(userId: userId);
+      if (!mounted) return;
       setState(() {
-        _userData = userData; 
-        gender = "Male";
+        _userData = userData;
+        // initialize gender with localized first option
+        gender = genders.isNotEmpty ? genders[0] : '';
         weight = _userData['weight'].toString();
         height = _userData['height'].toString();
         _isLoading = false;
       });
     } catch (e) {
-      if (!mounted) return; 
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
@@ -53,23 +50,26 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
     }
   }
 
+  // runtime getter for localized gender options
+  List<String> get genders => [
+        'gender_male'.tr,
+        'gender_female'.tr,
+      ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text("ME",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        foregroundColor: Colors.black,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: buildCustomAppBar(title: 'profile'.tr),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _userData == null
-              ? const Center(
+              ? Center(
                   child: Text(
-                    "Failed to load profile data",
+                    'failed_load_profile'.tr,
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                 )
@@ -77,60 +77,92 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                   padding: const EdgeInsets.all(16.0),
                   child: ListView(
                     children: [
-                      buildSection("Available Days", [
-                        buildSettingsTile(
-                          context,
-                          Icons.calendar_today,
-                          "Available Days",
-                          Colors.blue,
-                          onTap: () => Get.to(() => const PickAvailabilityPage(isUpdateAvailability: true))
-                        ),
-                      ]),
-                      buildSection("Available Equipment", [
-                        buildSettingsTile(
-                          context,
-                          Icons.fitness_center,
-                          "Available Equipment",
-                          Colors.red,
-                          onTap: () => Get.to(() => const PickEquipmentPage(isGymSelected: false, isUpdateEquipment: true,))
-                        ),
-                      ]),
-                      buildSection("Basic Info", [
-                        buildProfileItem(
-                            context, 
-                            Icons.wc, 
-                            "Gender", 
+                      buildSection(
+                        'available_days'.tr,
+                        [
+                          buildSettingsTile(
+                            context,
+                            Icons.calendar_today,
+                            'available_days'.tr,
+                            Colors.blue,
+                            onTap: () => Get.to(
+                              () => const PickAvailabilityPage(
+                                isUpdateAvailability: true,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      buildSection(
+                        'available_equipments'.tr,
+                        [
+                          buildSettingsTile(
+                            context,
+                            Icons.fitness_center,
+                            'available_equipments'.tr,
+                            Colors.red,
+                            onTap: () => Get.to(
+                              () => const PickEquipmentPage(
+                                isGymSelected: false,
+                                isUpdateEquipment: true,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      buildSection(
+                        'basic_info'.tr,
+                        [
+                          buildProfileItem(
+                            context,
+                            Icons.wc,
+                            'gender'.tr,
                             gender,
-                            Colors.deepOrangeAccent, _showGenderBottomSheet),
-                        buildProfileItem(
+                            Colors.deepOrangeAccent,
+                            _showGenderBottomSheet,
+                          ),
+                          buildProfileItem(
                             context,
                             Icons.monitor_weight,
-                            "Current Weight",
-                            weight + " kg",
+                            'weight'.tr,
+                            '$weight kg',
                             Colors.green,
                             () {
-                            showWeightBottomSheet(context, userId , weight, (newWeight) {
-                              setState(() {
-                                weight = newWeight; 
-                              });
-                            }, true);
-                          }
-                        ),
-                        buildProfileItem(
-                          context,
-                          Icons.height,
-                          "Height",
-                          height,
-                          Colors.lightBlueAccent,
-                          () {
-                            showHeightBottomSheet(context, userId, height, (newHeight) {
-                              setState(() {
-                                height = newHeight; 
-                              });
-                            }, true);
-                          },
-                        ),
-                      ]),
+                              showWeightBottomSheet(
+                                context,
+                                userId,
+                                weight,
+                                (newWeight) {
+                                  setState(() {
+                                    weight = newWeight;
+                                  });
+                                },
+                                true,
+                              );
+                            },
+                          ),
+                          buildProfileItem(
+                            context,
+                            Icons.height,
+                            'height'.tr,
+                            height,
+                            Colors.lightBlueAccent,
+                            () {
+                              showHeightBottomSheet(
+                                context,
+                                userId,
+                                height,
+                                (newHeight) {
+                                  setState(() {
+                                    height = newHeight;
+                                  });
+                                },
+                                true,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -138,14 +170,13 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
   }
 
   void _showGenderBottomSheet() {
-    List<String> genders = ["Male", "Female"];
-    int selectedIndex = genders.indexOf(gender); // Get current selection index
-    FixedExtentScrollController scrollController =
+    int selectedIndex = genders.indexOf(gender);
+    final FixedExtentScrollController scrollController =
         FixedExtentScrollController(initialItem: selectedIndex);
 
     showModalBottomSheet(
       context: context,
-      builder: (BuildContext context) {
+      builder: (_) {
         return StatefulBuilder(
           builder: (context, setModalState) {
             return Container(
@@ -153,9 +184,12 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  const Text(
-                    "Select Gender",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  Text(
+                    'select_gender'.tr,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Expanded(
                     child: ListWheelScrollView.useDelegate(
@@ -165,7 +199,7 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                       physics: const FixedExtentScrollPhysics(),
                       onSelectedItemChanged: (index) {
                         setModalState(() {
-                          selectedIndex = index; // Update selected index
+                          selectedIndex = index;
                         });
                       },
                       childDelegate: ListWheelChildBuilderDelegate(
@@ -183,18 +217,18 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                             ),
                           );
                         },
-                        childCount: genders.length, 
+                        childCount: genders.length,
                       ),
                     ),
                   ),
                   ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        gender = genders[selectedIndex]; 
+                        gender = genders[selectedIndex];
                       });
                       Navigator.pop(context);
                     },
-                    child: const Text("Save"),
+                    child: Text('save'.tr),
                   ),
                 ],
               ),

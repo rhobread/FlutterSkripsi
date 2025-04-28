@@ -1,5 +1,5 @@
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/service/InitialService/pickLocation_service.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/InitialService/pickLocation_service.dart';
 
 class PickLocationPage extends StatefulWidget {
   const PickLocationPage({super.key});
@@ -14,7 +14,7 @@ class _PickLocationPageState extends State<PickLocationPage> {
   bool _isLoading = false;
   int _selectedLocation = -1;
 
-  final List<String> location = ["Gym", "Home"];
+  final List<String> location = ["Gym", 'home_loc'.tr];
 
   void _setLoading(bool value) {
     if (!mounted) return;
@@ -43,16 +43,16 @@ class _PickLocationPageState extends State<PickLocationPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 30),
-                  const Text(
-                    'Pick your location!',
+                  Text(
+                    'pick_location'.tr,
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 10),
-                  const Text(
-                    'Used to generate your routines, won\'t be shared!',
+                  Text(
+                    'used_for_routines'.tr,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey,
@@ -68,7 +68,7 @@ class _PickLocationPageState extends State<PickLocationPage> {
                     ),
                   const SizedBox(height: 20),
                   buildCustomButton(
-                    label: 'Continue',
+                    label: 'continue'.tr,
                     isLoading: _isLoading,
                     onPressed: _selectedLocation == -1 || _isLoading
                         ? null

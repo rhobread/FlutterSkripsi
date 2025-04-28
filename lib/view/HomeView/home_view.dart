@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
-import 'package:flutter_application_1/service/CommonService/export_service.dart';
-import 'package:flutter_application_1/service/HomeService/home_service.dart';
-import 'package:flutter_application_1/view/HomeView/workoutDetails_view.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/HomeService/home_service.dart';
+import 'package:workout_skripsi_app/view/HomeView/workoutDetails_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,7 +13,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final homeService = HomeService();
   final userController = Get.find<UserController>();
-  final String _today = DateFormat('EEEE').format(DateTime.now());
+  // _today remains in English for logic comparison
+  final String _today = DateFormat('EEEE', 'en_US').format(DateTime.now());
   Map<String, Map<String, dynamic>> _weekSchedule = {};
   bool _isLoading = true;
 
@@ -71,6 +72,23 @@ class _HomePageState extends State<HomePage> {
     return week;
   }
 
+  // Helper to localize English weekday names
+  String _localizeWeekday(String engDay) {
+    if (Get.locale?.languageCode == 'id') {
+      const idMap = {
+        'Monday': 'Senin',
+        'Tuesday': 'Selasa',
+        'Wednesday': 'Rabu',
+        'Thursday': 'Kamis',
+        'Friday': 'Jumat',
+        'Saturday': 'Sabtu',
+        'Sunday': 'Minggu',
+      };
+      return idMap[engDay] ?? engDay;
+    }
+    return engDay; // default English
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,9 +100,9 @@ class _HomePageState extends State<HomePage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _weekSchedule.isEmpty
-              ? const Center(
+              ? Center(
                   child: Text(
-                    "No workouts available",
+                    'no_workouts_yet'.tr,
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                 )
@@ -94,10 +112,10 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       const SizedBox(height: 16),
                       // Title for the week
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                          'This Week Workout',
+                          'this_week_workout'.tr,
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -111,13 +129,14 @@ class _HomePageState extends State<HomePage> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: _weekSchedule.length,
                         itemBuilder: (context, index) {
-                          final day = _weekSchedule.keys.elementAt(index);
-                          final details = _weekSchedule[day]!;
+                          final engDay = _weekSchedule.keys.elementAt(index);
+                          final day = _localizeWeekday(engDay);
+                          final details = _weekSchedule[engDay]!;
                           final status =
                               (details["status"] as String?)?.toLowerCase() ??
                                   '';
                           final isWorkoutDay = details["type"] == "workout";
-                          final isToday = day == _today;
+                          final isToday = engDay == _today;
                           final isDone = status == 'done';
 
                           // 1) Determine background
@@ -165,7 +184,7 @@ class _HomePageState extends State<HomePage> {
                             trailing = ElevatedButton(
                               onPressed: () {
                                 Get.to(() => WorkoutDetailsPage(
-                                      day: day,
+                                      day: engDay,
                                       workoutId: details['workout_id'],
                                       isToday: isToday,
                                       isDone: false,
@@ -178,8 +197,8 @@ class _HomePageState extends State<HomePage> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                              child: const Text(
-                                "Start",
+                              child: Text(
+                                'start_workout'.tr,
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                             );
@@ -194,7 +213,7 @@ class _HomePageState extends State<HomePage> {
                             onTap: () {
                               if (!isWorkoutDay) return;
                               Get.to(() => WorkoutDetailsPage(
-                                    day: day,
+                                    day: engDay,
                                     workoutId: details['workout_id'],
                                     isToday: isToday,
                                     isDone: isDone,
@@ -226,7 +245,7 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       // Day name always
                                       Text(
-                                        day,
+                                        isToday? 'today'.tr : day,
                                         style: TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
@@ -253,7 +272,7 @@ class _HomePageState extends State<HomePage> {
                                                   .isNotEmpty)
                                                 TextSpan(
                                                   text:
-                                                      ', (${details['totalWorkoutDuration']} Minutes)',
+                                                      ', (${details['totalWorkoutDuration']} ${'minutes'.tr})',
                                                   style: const TextStyle(
                                                     fontSize: 12,
                                                     fontWeight:
@@ -265,7 +284,7 @@ class _HomePageState extends State<HomePage> {
                                         )
                                       else
                                         Text(
-                                          'Rest Day',
+                                          'no_workout_day'.tr,
                                           style: TextStyle(
                                             fontSize: 14,
                                             color: Colors.black54,
