@@ -69,7 +69,7 @@ class InputDataService {
         } else {
           String text =
               (height != null && height.isNotEmpty) ? 'height'.tr : 'weight'.tr;
-          showSnackBarMessage('success'.tr, '$text' + 'updated_successfully'.tr,
+          showSnackBarMessage('success'.tr, '$text${'updated_successfully'.tr}',
               success: true);
         }
       } else {

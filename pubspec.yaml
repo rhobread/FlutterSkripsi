@@ -24,6 +24,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.10.0
 
   flutter_lints: ^5.0.0
 
@@ -31,5 +32,11 @@ flutter:
   assets:
     - lib/assets/exercise/
     - lib/assets/equipments/
+    - lib/assets/icon/
 
   uses-material-design: true
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "lib/assets/icon/appicon.jpeg"

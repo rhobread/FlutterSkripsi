@@ -14,6 +14,10 @@ analyzer:
     library_private_types_in_public_api: ignore
     non_constant_identifier_names: ignore
     prefer_interpolation_to_compose_strings: ignore
+    deprecated_member_use: ignore
+    file_names: ignore
+    unnecessary_null_in_if_null_operators: ignore
+    prefer_adjacent_string_concatenation: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:
