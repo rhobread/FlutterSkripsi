@@ -44,7 +44,7 @@ class LoginService {
             final userController = Get.find<UserController>();
             userController.saveUser(userId, userName);
 
-            showSnackBarMessage('success'.tr, 'login_success!'.tr,
+            showSnackBarMessage('success'.tr, 'login_success'.tr,
                 success: true);
 
             Get.offAll(() => MainPage());

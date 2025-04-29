@@ -1,45 +1,137 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
+# ──────────── Miscellaneous ────────────
+# OS generated
 .DS_Store
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
-.swiftpm/
-migrate_working_dir/
+Thumbs.db
+desktop.ini
 
-# IntelliJ related
+# Logs, temp files
+*.log
+*.tmp
+*.swp
+*.class
+
+# Key stores (if you ever generate them under source tree)
+/**/*.jks
+/**/*.keystore
+
+# ──────────── IDE / Editor ────────────
+# IntelliJ / Android Studio
 *.iml
 *.ipr
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+# VS Code
+.vscode/
 
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
+# Sublime
+*.sublime-workspace
+*.sublime-project
+
+# Vim
+*~
+.*.swp
+
+# ──────────── Flutter / Dart / Pub ────────────
+# Tool directories
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
+.packages
+
+# Pub cache (you don’t usually want to check in your global cache)
 .pub-cache/
 .pub/
+
+# Build outputs
 /build/
+/**/build/
 
-# Symbolication related
-app.*.symbols
+# Generated plugin registrant (can be remade)
+**/GeneratedPluginRegistrant.*
 
-# Obfuscation related
-app.*.map.json
+# ──────────── Android ────────────
+# Local config (SDK paths, keystore passwords)
+android/local.properties
+**/local.properties
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# Gradle
+android/.gradle/
+/.gradle/
+gradlew*
+/android/gradlew*
+/android/gradlew.bat
+**/gradle-wrapper.jar
+**/gradle-wrapper.properties
+
+# Android build outputs
+android/app/build/
+/android/build/
+/**/intermediates/
+/**/captured_views/
+/**/transforms/
+/**/output.json
+
+# Android native/CMake
+android/app/.cxx/
+/**/CMakeFiles/
+/**/build.ninja
+/**/cmake_install.cmake
+/**/CMakeCache.txt
+/**/build_file_index.txt
+/**/cache-*
+/**/metadata_generation_command.txt
+/**/configure_fingerprint.bin
+/**/prefab_config.json
+/**/symbol_folder_index.txt
+
+# Keystores (if you put them here)
+android/app/debug.keystore
+android/app/profile.keystore
+android/app/release.keystore
+
+# ──────────── iOS / CocoaPods ────────────
+# Xcode
+*.xcworkspace
+*.xcuserdatad
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+
+# CocoaPods
+ios/Pods/
+/ios/Pods/
+/ios/Podfile.lock
+ios/.symlinks/
+/ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+
+# Build outputs
+ios/Runner.xcworkspace/
+ios/build/
+DerivedData/
+
+# Generated plugin registrant
+ios/Runner/GeneratedPluginRegistrant.*
+
+# ──────────── Other Platforms ────────────
+# Web build
+/web/build/
+/build/web/
+
+# macOS
+macos/Flutter/ephemeral/
+/macos/Flutter/Flutter.framework
+macos/Runner/GeneratedPluginRegistrant.*
+
+# Linux
+linux/flutter/ephemeral/
+/linux/flutter/Flutter.framework
+linux/Build/
+
+# Windows
+windows/flutter/ephemeral/
+/windows/Flutter/Flutter.framework
+windows/runner/GeneratedPluginRegistrant.*
+
+# ──────────── End ────────────
