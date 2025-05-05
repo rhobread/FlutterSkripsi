@@ -156,25 +156,6 @@ Widget buildCustomButton({
   );
 }
 
-Widget buildMainHeaderBackup() {
-  return Container(
-    color: Colors.black,
-    height: 100,
-    width: double.infinity,
-    alignment: Alignment.center,
-    child: const SafeArea(
-      child: Text(
-        'GymTest',
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      ),
-    ),
-  );
-}
-
 PreferredSizeWidget buildMainHeader({
   bool showBackButton = false,
   required BuildContext context,
@@ -182,13 +163,10 @@ PreferredSizeWidget buildMainHeader({
   return AppBar(
     backgroundColor: Colors.black,
     centerTitle: true,
-    title: Text(
-      'GymTest'.tr,
-      style: const TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.bold,
-        color: Colors.white,
-      ),
+    title: Image.asset(
+      'lib/assets/icon/mainIcon.png',
+      height: 70,
+      fit: BoxFit.contain,
     ),
     leading: showBackButton
         ? IconButton(
@@ -205,22 +183,20 @@ PreferredSizeWidget buildMainHeader({
         itemBuilder: (ctx) => [
           PopupMenuItem(
             value: const Locale('en', 'US'),
-            child: Container(
-              color: Colors.white,
-              child: Text('lang_en'.tr,
-                  style: const TextStyle(color: Colors.black)),
+            child: Text(
+              'lang_en'.tr,
+              style: const TextStyle(color: Colors.black),
             ),
           ),
           PopupMenuItem(
             value: const Locale('id', 'ID'),
-            child: Container(
-              color: Colors.white,
-              child: Text('lang_id'.tr,
-                  style: const TextStyle(color: Colors.black)),
+            child: Text(
+              'lang_id'.tr,
+              style: const TextStyle(color: Colors.black),
             ),
           ),
         ],
-        color: Colors.white, // <-- set the popup itself to white too
+        color: Colors.white, // popup background
       ),
     ],
   );

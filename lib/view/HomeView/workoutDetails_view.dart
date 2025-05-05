@@ -65,8 +65,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
       exercises: _exercises,
     );
     setState(() => _isSaving = false);
-    showSnackBarMessage('success'.tr, 'workout_done'.tr,
-                success: true);
+    showSnackBarMessage('success'.tr, 'workout_done'.tr, success: true);
     if (success) Get.offAll(() => MainPage());
   }
 

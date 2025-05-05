@@ -245,7 +245,7 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       // Day name always
                                       Text(
-                                        isToday? 'today'.tr : day,
+                                        isToday ? 'today'.tr : day,
                                         style: TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
