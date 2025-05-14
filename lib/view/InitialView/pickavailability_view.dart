@@ -14,7 +14,7 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
   List<Map<String, dynamic>> _useravailability = [];
 
   final List<String> _daysOfWeek = [
-    'sunday.'.tr,
+    'sunday'.tr,
     'monday'.tr,
     'tuesday'.tr,
     'wednesday'.tr,
