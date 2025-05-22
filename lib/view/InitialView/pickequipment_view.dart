@@ -77,8 +77,8 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
     });
   }
 
-  void _submitSelection() {
-    _pickEquipmentService.submitEquipmentSelection(
+  void _submitSelection() async {
+    await _pickEquipmentService.submitEquipmentSelection(
       userId: userController.userId.value,
       selectedEquipment: _selectedEquipment,
       isUpdateEquipment: widget.isUpdateEquipment,

@@ -80,28 +80,29 @@ class PickEquipmentService {
       );
 
       if (response.statusCode == 200) {
-        showSnackBarMessage('success'.tr, 'success_save_equipment'.tr,
-            success: true);
+        if (!isUpdateEquipment) {
+          showSnackBarMessage('success'.tr, 'success_save_equipment'.tr,
+              success: true);
+          final workoutResponse = await generateWorkoutPlan(userId: userId);
 
-        final workoutResponse = await generateWorkoutPlan(userId: userId);
-
-        if (workoutResponse.statusCode == 200) {
-          showSnackBarMessage(
-            'success'.tr,
-            'success_generate_wo'.tr,
-            success: true,
-          );
-
-          if (isUpdateEquipment) {
-            Get.back();
-          } else {
+          if (workoutResponse.statusCode == 200) {
+            showSnackBarMessage(
+              'success'.tr,
+              'success_generate_wo'.tr,
+              success: true,
+            );
             Get.off(() => MainPage());
-          }
-        } else {
-          showSnackBarMessage(
+          } else {
+            showSnackBarMessage(
               'failed'.tr,
               'failed_generate_wo'.tr +
-                  ' (Status: ${workoutResponse.statusCode})');
+                  ' (Status: ${workoutResponse.statusCode})',
+            );
+          }
+        } else {
+          Get.back();
+          showSnackBarMessage('success'.tr, 'success_update_equipment'.tr,
+              success: true);
         }
       } else {
         showSnackBarMessage(

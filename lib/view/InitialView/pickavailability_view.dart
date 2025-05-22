@@ -1,5 +1,6 @@
 import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
 import 'package:workout_skripsi_app/service/InitialService/pickAvailability_service.dart';
+import 'package:workout_skripsi_app/view/InitialView/picklocation_view.dart';
 
 class PickAvailabilityPage extends StatefulWidget {
   final bool isUpdateAvailability;
@@ -11,29 +12,34 @@ class PickAvailabilityPage extends StatefulWidget {
 
 class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
   final userController = Get.find<UserController>();
-  List<Map<String, dynamic>> _useravailability = [];
+  final PickAvailabilityService _pickAvailabilityService =
+      PickAvailabilityService();
 
-  final List<String> _daysOfWeek = [
-    'sunday'.tr,
-    'monday'.tr,
-    'tuesday'.tr,
-    'wednesday'.tr,
-    'thursday'.tr,
-    'friday'.tr,
-    'saturday'.tr
+  // 1) Keys in English for backend matching
+  final List<String> _dayKeys = [
+    'sunday',
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
   ];
 
+  // 2) Localized labels for display
+  late final List<String> _daysOfWeek = _dayKeys.map((k) => k.tr).toList();
+
+  // State
+  List<Map<String, dynamic>> _userAvailability = [];
   final Map<int, bool> _selectedDays = {};
   final Map<int, TextEditingController> _minutesControllers = {};
   bool _isLoading = false;
   bool _isDataLoaded = false;
 
-  final PickAvailabilityService _pickAvailabilityService =
-      PickAvailabilityService();
-
   @override
   void initState() {
     super.initState();
+    // initialize maps
     for (int i = 0; i < 7; i++) {
       _selectedDays[i] = false;
       _minutesControllers[i] = TextEditingController();
@@ -46,19 +52,16 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
   }
 
   Future<void> _initializeAvailability() async {
-    List<Map<String, dynamic>> availability =
-        await _pickAvailabilityService.getUserAvailability(
+    final availability = await _pickAvailabilityService.getUserAvailability(
       userId: userController.userId.value,
     );
 
     setState(() {
-      _useravailability = availability;
-      for (var entry in _useravailability) {
-        String day = entry["day"];
-        int minutes = entry["minutes"];
-
-        int index =
-            _daysOfWeek.indexWhere((d) => d.toLowerCase() == day.toLowerCase());
+      _userAvailability = availability;
+      for (var entry in _userAvailability) {
+        final dayKey = (entry['day'] as String).toLowerCase();
+        final minutes = entry['minutes'] as int;
+        final index = _dayKeys.indexWhere((k) => k == dayKey);
         if (index != -1) {
           _selectedDays[index] = true;
           _minutesControllers[index]?.text = minutes.toString();
@@ -70,22 +73,20 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
 
   void _setLoading(bool value) {
     if (!mounted) return;
-    setState(() {
-      _isLoading = value;
-    });
+    setState(() => _isLoading = value);
   }
 
-  void _submitAvailability() {
-    // For each day, if selected but no minutes are provided, unselect it.
-    for (int i = 0; i < _daysOfWeek.length; i++) {
+  Future<void> _submitAvailability() async {
+    // Clean up any selected day without minutes
+    for (int i = 0; i < _dayKeys.length; i++) {
       if (_selectedDays[i] == true &&
           _minutesControllers[i]?.text.trim().isEmpty == true) {
         _selectedDays[i] = false;
       }
     }
 
-    // Validate that at least one availability is provided.
-    if (!_selectedDays.values.any((selected) => selected)) {
+    // Validate at least one day selected
+    if (!_selectedDays.values.any((sel) => sel)) {
       Get.snackbar(
         'validation_error'.tr,
         'day_val_error'.tr,
@@ -94,23 +95,32 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
       return;
     }
 
-    // Proceed with the submission using the original parameters.
-    _pickAvailabilityService.submitAvailability(
+    await _pickAvailabilityService.submitAvailability(
       userId: userController.userId.value,
       selectedDays: _selectedDays,
       minutesControllers: _minutesControllers,
       isUpdateAvailability: widget.isUpdateAvailability,
       setLoading: _setLoading,
     );
+
+    if (widget.isUpdateAvailability) {
+      Get.back();
+      showSnackBarMessage('success'.tr, 'success_update_availability'.tr,
+          success: true);
+    } else {
+      Get.off(() => PickLocationPage());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    List<int> displayOrder = [1, 2, 3, 4, 5, 6, 0];
+    final displayOrder = [1, 2, 3, 4, 5, 6, 0];
 
     return Scaffold(
       appBar: buildMainHeader(
-          showBackButton: widget.isUpdateAvailability, context: context),
+        showBackButton: widget.isUpdateAvailability,
+        context: context,
+      ),
       backgroundColor: Colors.white,
       body: _isDataLoaded
           ? Column(
@@ -124,7 +134,9 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
                         Text(
                           'select_avail'.tr,
                           style: TextStyle(
-                              fontSize: 28, fontWeight: FontWeight.bold),
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 10),
@@ -142,10 +154,10 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
                                 children: [
                                   Checkbox(
                                     value: _selectedDays[index],
-                                    onChanged: (bool? value) {
+                                    onChanged: (bool? val) {
                                       setState(() {
-                                        _selectedDays[index] = value ?? false;
-                                        if (value == false) {
+                                        _selectedDays[index] = val ?? false;
+                                        if (val == false) {
                                           _minutesControllers[index]?.clear();
                                         }
                                       });
@@ -200,9 +212,7 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
                 buildMainFooter(),
               ],
             )
-          : const Center(
-              child: CircularProgressIndicator(),
-            ),
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 }

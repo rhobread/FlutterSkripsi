@@ -116,6 +116,7 @@ class MyTranslations extends Translations {
           'signup_success': 'Sign up successful!',
           'signup_error': 'Sign up failed',
           'workout_done': 'Today\'s workout is complete!',
+          'success_update_equipment' : 'Succesfully update equipment!'
         },
         'id_ID': {
           'lang_en': 'English',
@@ -231,7 +232,8 @@ class MyTranslations extends Translations {
           'error_save_equipment': 'Gagal menyimpan pilihan.',
           'signup_success': 'Pendaftaran berhasil!',
           'signup_error': 'Pendaftaran gagal.',
-          'workout_done': 'Latihan hari ini selesai!'
+          'workout_done': 'Latihan hari ini selesai!',
+          'success_update_equipment' : 'Berhasil memperbarui peralatan!'
         },
       };
 }

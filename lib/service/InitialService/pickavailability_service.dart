@@ -1,6 +1,5 @@
 import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
 import 'package:http/http.dart' as http;
-import 'package:workout_skripsi_app/view/InitialView/picklocation_view.dart';
 
 class PickAvailabilityService {
   Future<List<Map<String, dynamic>>> getUserAvailability(
@@ -64,12 +63,6 @@ class PickAvailabilityService {
       if (response.statusCode == 200) {
         showSnackBarMessage('success'.tr, 'success_update_availability'.tr,
             success: true);
-
-        if (isUpdateAvailability) {
-          Get.back();
-        } else {
-          Get.off(() => PickLocationPage());
-        }
       } else {
         showSnackBarMessage('failed'.tr, 'failed_update_availability'.tr);
       }
