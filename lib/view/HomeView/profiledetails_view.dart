@@ -115,14 +115,6 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                         [
                           buildProfileItem(
                             context,
-                            Icons.wc,
-                            'gender'.tr,
-                            gender,
-                            Colors.deepOrangeAccent,
-                            _showGenderBottomSheet,
-                          ),
-                          buildProfileItem(
-                            context,
                             Icons.monitor_weight,
                             'weight'.tr,
                             '$weight kg',
