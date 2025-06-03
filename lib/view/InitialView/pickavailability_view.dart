@@ -199,17 +199,20 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
                           }).toList(),
                         ),
                         const SizedBox(height: 20),
-                        buildCustomButton(
-                          label: 'submit'.tr,
-                          isLoading: _isLoading,
-                          onPressed: _isLoading ? null : _submitAvailability,
-                        ),
-                        const SizedBox(height: 20),
                       ],
                     ),
                   ),
                 ),
-                buildMainFooter(),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: buildCustomButton(
+                    label: widget.isUpdateAvailability
+                        ? 'update'.tr
+                        : 'continue'.tr,
+                    isLoading: _isLoading,
+                    onPressed: _isLoading ? null : _submitAvailability,
+                  ),
+                ),
               ],
             )
           : const Center(child: CircularProgressIndicator()),

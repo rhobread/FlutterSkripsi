@@ -237,8 +237,10 @@ class WorkoutdetailsService {
           "name": ex['name'],
           "sets": sets.map((s) {
             final m = {
-              "set_number": s['set_number'],
-              "reps": s['reps'],
+              "set_number": s['set_number'] ?? 0,
+              "reps": (s['reps'] is int)
+                  ? s['reps']
+                  : int.tryParse('${s['reps']}') ?? 0,
             };
             if (s.containsKey('weight_used') && s['weight_used'] != null) {
               m["weight_used"] = s['weight_used'];

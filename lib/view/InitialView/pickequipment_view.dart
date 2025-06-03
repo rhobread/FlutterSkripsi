@@ -185,7 +185,9 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
           Padding(
             padding: const EdgeInsets.all(20),
             child: buildCustomButton(
-              label: 'continue'.tr,
+              label: widget.isUpdateEquipment
+                              ? 'update'.tr
+                              : 'continue'.tr,
               isLoading: _isLoading,
               onPressed: _isLoading ? null : _submitSelection,
             ),
