@@ -98,6 +98,7 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
           Text(
             'select_equipment'.tr,
             style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 10),
           Text(
@@ -185,9 +186,7 @@ class _PickEquipmentPageState extends State<PickEquipmentPage> {
           Padding(
             padding: const EdgeInsets.all(20),
             child: buildCustomButton(
-              label: widget.isUpdateEquipment
-                              ? 'update'.tr
-                              : 'continue'.tr,
+              label: widget.isUpdateEquipment ? 'update'.tr : 'continue'.tr,
               isLoading: _isLoading,
               onPressed: _isLoading ? null : _submitSelection,
             ),
