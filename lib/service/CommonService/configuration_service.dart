@@ -7,17 +7,14 @@ class UrlConfig {
   static String _initBaseUrl() {
     if (kDebugMode) {
       if (kIsWeb || Platform.isIOS) {
-        return 'http://localhost:3005'; 
-      } 
-      else if (Platform.isAndroid) {
+        return 'http://localhost:3005';
+      } else if (Platform.isAndroid) {
         return 'http://10.0.2.2:3005';
-      } 
-      else {
-        return 'http://localhost:3005'; 
+      } else {
+        return 'http://localhost:3005';
       }
-    } 
-    else {
-      return 'https://buat-prod.com';
+    } else {
+      return 'https://movix-backend-production.up.railway.app';
     }
   }
 

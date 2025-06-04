@@ -61,7 +61,7 @@ class LoginService {
       }
     } catch (e) {
       setLoading(false);
-      showSnackBarMessage('failed'.tr, 'server_error_b.'.tr);
+      showSnackBarMessage('failed'.tr, 'server_error_b'.tr);
     }
   }
 }
