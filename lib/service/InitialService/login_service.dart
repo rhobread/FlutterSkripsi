@@ -42,7 +42,7 @@ class LoginService {
                 (userNameEntry != null) ? userNameEntry.toString() : "";
 
             final userController = Get.find<UserController>();
-            userController.saveUser(userId, userName);
+            await userController.saveUser(userId, userName);
 
             showSnackBarMessage('success'.tr, 'login_success'.tr,
                 success: true);

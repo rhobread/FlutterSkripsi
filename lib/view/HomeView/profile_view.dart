@@ -77,8 +77,9 @@ class ProfilePage extends StatelessWidget {
       textConfirm: 'yes'.tr,
       confirmTextColor: Colors.white,
       onConfirm: () async {
-        await UserController().clearUserId();
-        Get.off(() => const LoginPage());
+        final userController = Get.find<UserController>();
+        await userController.clearUserId();
+        Get.offAll(() => const LoginPage());
       },
     );
   }
