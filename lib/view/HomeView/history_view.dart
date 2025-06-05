@@ -1,8 +1,8 @@
+import 'package:intl/intl.dart';
+import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
+import 'package:workout_skripsi_app/service/HomeService/history_service.dart';
 import 'package:workout_skripsi_app/view/HomeView/historyExercise_view.dart';
 import 'package:workout_skripsi_app/view/HomeView/historyWorkout_view.dart';
-import 'package:intl/intl.dart';
-import 'package:workout_skripsi_app/service/HomeService/history_service.dart';
-import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
 import 'package:workout_skripsi_app/view/HomeView/workoutDetails_view.dart';
 
 class HistoryPage extends StatefulWidget {
@@ -51,7 +51,7 @@ class _HistoryPageState extends State<HistoryPage> {
       userId: userController.userId.value,
     );
     setState(() {
-      _workouts = all.take(3).toList(); // only top-3
+      _workouts = all.take(3).toList();
       _loadingWorkouts = false;
     });
   }
@@ -87,7 +87,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 children: [
                   Expanded(
                     child: Text(
-                      'exercise_history'.tr, // No const here
+                      'exercise_history'.tr,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -102,7 +102,7 @@ class _HistoryPageState extends State<HistoryPage> {
                           builder: (_) => const HistoryExercisePage()),
                     ),
                     child: Text(
-                      'view_all'.tr, // No const here
+                      'view_all'.tr,
                       style: TextStyle(color: Colors.blue),
                     ),
                   ),
@@ -117,7 +117,7 @@ class _HistoryPageState extends State<HistoryPage> {
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(
-                  'no_exercises_found'.tr, // Localized text
+                  'no_exercises_found'.tr,
                   style: TextStyle(color: Colors.grey),
                 ),
               )
@@ -129,13 +129,27 @@ class _HistoryPageState extends State<HistoryPage> {
                 separatorBuilder: (_, __) => divider,
                 itemBuilder: (context, i) {
                   final ex = _exercises[i];
-                  final String rawName = ex['exercise_name'] ?? 'Unnamed';
+
+                  final String rawName =
+                      (ex['exercise_name'] as String?) ?? 'Unnamed';
                   final String name = rawName.split('(').first.trim();
-                  final img = ex['exercise_image'] as String? ?? '';
-                  final id = ex['exercise_id']?.hashCode ?? i;
+
+                  final String img = (ex['exercise_image'] as String?) ?? '';
+
+                  int exerciseId;
+                  if (ex['exercise_id'] is int) {
+                    exerciseId = ex['exercise_id'] as int;
+                  } else if (ex['id'] is int) {
+                    exerciseId = ex['id'] as int;
+                  } else {
+                    final rawId = ex['exercise_id']?.toString() ??
+                        ex['id']?.toString() ??
+                        '';
+                    exerciseId = int.tryParse(rawId) ?? 0;
+                  }
 
                   return GestureDetector(
-                    onTap: () => _showDetailSheet(id),
+                    onTap: () => _showDetailSheet(exerciseId),
                     child: Container(
                       width: double.infinity,
                       color: Colors.white,
@@ -185,7 +199,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 children: [
                   Expanded(
                     child: Text(
-                      'workout_history'.tr, // Localized text
+                      'workout_history'.tr,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -206,14 +220,14 @@ class _HistoryPageState extends State<HistoryPage> {
               ),
             ),
 
-            // Workout History List (top 3, with green checkbox)
+            // Workout History List (top 3)
             if (_loadingWorkouts)
               const Center(child: CircularProgressIndicator())
             else if (_workouts.isEmpty)
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(
-                  'no_workouts_yet'.tr, // Localized text
+                  'no_workouts_yet'.tr,
                   style: TextStyle(color: Colors.grey),
                 ),
               )
@@ -225,8 +239,10 @@ class _HistoryPageState extends State<HistoryPage> {
                 separatorBuilder: (_, __) => divider,
                 itemBuilder: (context, i) {
                   final w = _workouts[i];
-                  final date = w['date'] as String;
-                  final id = w['workout_id'] as int;
+                  final date = (w['date'] as String?) ?? '';
+                  final id = w['workout_id'] is int
+                      ? (w['workout_id'] as int)
+                      : int.tryParse(w['workout_id']?.toString() ?? '') ?? 0;
 
                   return GestureDetector(
                     onTap: () {
