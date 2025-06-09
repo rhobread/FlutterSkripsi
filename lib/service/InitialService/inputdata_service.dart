@@ -18,8 +18,10 @@ class InputDataService {
       if (height == null ||
           height.isEmpty ||
           weight == null ||
-          weight.isEmpty) {
-        showSnackBarMessage('invalid_data'.tr, 'mandatory_hw'.tr);
+          weight.isEmpty ||
+          selectedGender == null ||
+          selectedGender.isEmpty) {
+        showSnackBarMessage('invalid_data'.tr, 'all_required'.tr);
         return;
       }
     }
@@ -38,7 +40,9 @@ class InputDataService {
     final Uri fetchUrl = UrlConfig.getApiUrl('user/measurements/$userId');
 
     try {
-      final Map<String, dynamic> requestBody = {};
+      final Map<String, dynamic> requestBody = {
+        'gender': selectedGender,
+      };
 
       if (height != null && height.isNotEmpty) {
         requestBody['height'] = int.parse(height);

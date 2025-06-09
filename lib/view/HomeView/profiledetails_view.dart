@@ -36,7 +36,6 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
       setState(() {
         _userData = userData;
         // initialize gender with localized first option
-        gender = genders.isNotEmpty ? genders[0] : '';
         weight = _userData['weight'].toString();
         height = _userData['height'].toString();
         _isLoading = false;

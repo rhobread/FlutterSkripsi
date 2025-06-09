@@ -87,11 +87,7 @@ class _PickAvailabilityPageState extends State<PickAvailabilityPage> {
 
     // Validate at least one day selected
     if (!_selectedDays.values.any((sel) => sel)) {
-      Get.snackbar(
-        'validation_error'.tr,
-        'day_val_error'.tr,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      showSnackBarMessage('invalid_data'.tr, 'day_val_error'.tr);
       return;
     }
 

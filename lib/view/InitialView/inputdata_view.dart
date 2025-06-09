@@ -28,14 +28,24 @@ class _InputDataPageState extends State<InputDataPage> {
     final String height = _heightController.text.trim();
     final String weight = _weightController.text.trim();
 
+    const genderMap = {
+      'Male': 'Male',
+      'Pria': 'Male',
+      'Female': 'Female',
+      'Wanita': 'Female',
+    };
+
+    final String normalizedGender = genderMap[_selectedGender] ?? '';
+
     _inputDataService.submitMeasurements(
-        context: context,
-        userId: userController.userId.value,
-        height: height,
-        weight: weight,
-        selectedGender: _selectedGender,
-        setLoading: _setLoading,
-        isInitial: true);
+      context: context,
+      userId: userController.userId.value,
+      height: height,
+      weight: weight,
+      selectedGender: normalizedGender,
+      setLoading: _setLoading,
+      isInitial: true,
+    );
   }
 
   @override
