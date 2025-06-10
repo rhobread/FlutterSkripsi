@@ -10,7 +10,7 @@ class InputDataService {
     String? weight,
     String? selectedGender,
     required bool isInitial,
-    Function(bool)? setLoading, // Make it optional
+    Function(bool)? setLoading,
   }) async {
     final RegExp intPattern = RegExp(r'^\d+$');
 
@@ -24,26 +24,42 @@ class InputDataService {
         showSnackBarMessage('invalid_data'.tr, 'all_required'.tr);
         return;
       }
+    } else {
+      if ((height == null || height.isEmpty) &&
+          (weight == null || weight.isEmpty)) {
+        showSnackBarMessage('Error!', 'no_data_update'.tr);
+        return;
+      }
     }
 
     if (height != null && height.isNotEmpty && !intPattern.hasMatch(height)) {
-      showSnackBarMessage('invalid_data'.tr, 'weight_number_val'.tr);
+      showSnackBarMessage('invalid_data'.tr, 'height_number_val'.tr);
       return;
     }
     if (weight != null && weight.isNotEmpty && !intPattern.hasMatch(weight)) {
-      showSnackBarMessage('invalid_data'.tr, 'height_number_val'.tr);
+      showSnackBarMessage('invalid_data'.tr, 'weight_number_val'.tr);
       return;
     }
 
     setLoading?.call(true);
 
-    final Uri fetchUrl = UrlConfig.getApiUrl('user/measurements/$userId');
+    late Uri fetchUrl;
+    late Future<http.Response> responseFuture;
 
-    try {
-      final Map<String, dynamic> requestBody = {
-        'gender': selectedGender,
-      };
+    final Map<String, dynamic> requestBody = {};
 
+    if (isInitial) {
+      requestBody['gender'] = selectedGender!;
+      requestBody['height'] = int.parse(height!);
+      requestBody['weight'] = int.parse(weight!);
+
+      fetchUrl = UrlConfig.getApiUrl('user/measurements/$userId');
+      responseFuture = http.post(
+        fetchUrl,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(requestBody),
+      );
+    } else {
       if (height != null && height.isNotEmpty) {
         requestBody['height'] = int.parse(height);
       }
@@ -51,35 +67,55 @@ class InputDataService {
         requestBody['weight'] = int.parse(weight);
       }
 
-      if (requestBody.isEmpty) {
-        showSnackBarMessage('Error!', 'no_data_update'.tr);
-        setLoading?.call(false);
-        return;
-      }
-
-      final response = await http.put(
+      fetchUrl = UrlConfig.getApiUrl('user/measurements/$userId');
+      responseFuture = http.put(
         fetchUrl,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(requestBody),
       );
+    }
 
+    try {
+      final http.Response response = await responseFuture;
       setLoading?.call(false);
 
-      if (response.statusCode == 200) {
+      if ((isInitial &&
+              (response.statusCode == 200 || response.statusCode == 201)) ||
+          (!isInitial && response.statusCode == 200)) {
         if (isInitial) {
-          showSnackBarMessage('success'.tr, 'success_update_measurments'.tr,
-              success: true);
+          showSnackBarMessage(
+            'success'.tr,
+            'success_update_measurments'.tr,
+            success: true,
+          );
           Get.off(() => PickAvailabilityPage(isUpdateAvailability: false));
         } else {
-          String text =
-              (height != null && height.isNotEmpty) ? 'height'.tr : 'weight'.tr;
-          showSnackBarMessage('success'.tr, '$text${'updated_successfully'.tr}',
-              success: true);
+          String text;
+          if (height != null &&
+              height.isNotEmpty &&
+              weight != null &&
+              weight.isNotEmpty) {
+            text = '${'height'.tr} & ${'weight'.tr}';
+          } else if (height != null && height.isNotEmpty) {
+            text = 'height'.tr;
+          } else {
+            text = 'weight'.tr;
+          }
+          showSnackBarMessage(
+            'success'.tr,
+            '$text ${'updated_successfully'.tr}',
+            success: true,
+          );
         }
       } else {
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-        showSnackBarMessage('Failed!',
-            responseData['message'] ?? 'failed_update_measurments'.tr);
+        String serverMessage = 'failed_update_measurments'.tr;
+        try {
+          final Map<String, dynamic> responseData = jsonDecode(response.body);
+          if (responseData.containsKey('message')) {
+            serverMessage = responseData['message'] ?? serverMessage;
+          }
+        } catch (_) {}
+        showSnackBarMessage('Failed!', serverMessage);
       }
     } catch (e) {
       setLoading?.call(false);
