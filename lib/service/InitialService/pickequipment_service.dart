@@ -83,6 +83,8 @@ class PickEquipmentService {
         if (!isUpdateEquipment) {
           showSnackBarMessage('success'.tr, 'success_save_equipment'.tr,
               success: true);
+          final userController = Get.find<UserController>();
+          await userController.saveUserEquipment();
           final workoutResponse = await generateWorkoutPlan(userId: userId);
 
           if (workoutResponse.statusCode == 200) {

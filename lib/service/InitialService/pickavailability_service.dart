@@ -61,6 +61,11 @@ class PickAvailabilityService {
       setLoading(false);
 
       if (response.statusCode == 200) {
+        if(!isUpdateAvailability){
+          final userController = Get.find<UserController>();
+          await userController.saveUserAvailability();
+        }
+        
         showSnackBarMessage('success'.tr, 'success_update_availability'.tr,
             success: true);
       } else {

@@ -7,11 +7,11 @@ class UrlConfig {
   static String _initBaseUrl() {
     if (kDebugMode) {
       if (kIsWeb || Platform.isIOS) {
-        return 'http://localhost:3005';
+        return 'https://movix-backend-production.up.railway.app';
       } else if (Platform.isAndroid) {
-        return 'http://10.0.2.2:3005';
+        return 'https://movix-backend-production.up.railway.app';
       } else {
-        return 'http://localhost:3005';
+        return 'https://movix-backend-production.up.railway.app';
       }
     } else {
       return 'https://movix-backend-production.up.railway.app';

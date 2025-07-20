@@ -2,6 +2,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:workout_skripsi_app/service/CommonService/export_service.dart';
 import 'package:workout_skripsi_app/view/HomeView/main_view.dart';
+import 'package:workout_skripsi_app/view/InitialView/inputData_view.dart';
+import 'package:workout_skripsi_app/view/InitialView/pickAvailability_view.dart';
+import 'package:workout_skripsi_app/view/InitialView/pickLocation_view.dart';
 import 'package:workout_skripsi_app/view/InitialView/signup_view.dart';
 import 'package:workout_skripsi_app/localization/translations.dart';
 
@@ -35,11 +38,36 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      // home: GetBuilder<UserController>(
+      //   builder: (userController) {
+      //     return userController.userId.isNotEmpty
+      //         ? const MainPage()
+      //         : const SignUpPage();
+      //   },
+      // ),
       home: GetBuilder<UserController>(
         builder: (userController) {
-          return userController.userId.isNotEmpty
-              ? const MainPage()
-              : const SignUpPage();
+          if (userController.userId.isEmpty) {
+            return const SignUpPage();
+          }
+
+          if (userController.equipmentInputted.value) {
+            return const MainPage();
+          }
+
+          if (!userController.measurementsInputted.value) {
+            return const InputDataPage();
+          }
+
+          if (!userController.availabilityInputted.value) {
+            return const PickAvailabilityPage(isUpdateAvailability: false);
+          }
+
+          if (!userController.equipmentInputted.value) {
+            return const PickLocationPage();
+          }
+
+          return const MainPage(); 
         },
       ),
     );

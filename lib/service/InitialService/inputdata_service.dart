@@ -88,6 +88,8 @@ class InputDataService {
             'success_update_measurments'.tr,
             success: true,
           );
+          final userController = Get.find<UserController>();
+          await userController.saveUserInputtedWeight();
           Get.off(() => PickAvailabilityPage(isUpdateAvailability: false));
         } else {
           String text;
