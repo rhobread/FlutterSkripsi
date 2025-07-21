@@ -7,14 +7,14 @@ class UrlConfig {
   static String _initBaseUrl() {
     if (kDebugMode) {
       if (kIsWeb || Platform.isIOS) {
-        return 'https://movix-backend-production.up.railway.app';
+        return 'https://movix-backend-prod.up.railway.app';
       } else if (Platform.isAndroid) {
-        return 'https://movix-backend-production.up.railway.app';
+        return 'https://movix-backend-prod.up.railway.app';
       } else {
-        return 'https://movix-backend-production.up.railway.app';
+        return 'https://movix-backend-prod.up.railway.app';
       }
     } else {
-      return 'https://movix-backend-production.up.railway.app';
+      return 'https://movix-backend-prod.up.railway.app';
     }
   }
 
